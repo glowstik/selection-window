@@ -1,0 +1,22 @@
+.Window {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  overflow: hidden;
+}
+
+.Window > * {
+  position: absolute;
+  inset: 0;
+}
+
+.Image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+}
+
+.Selection {
+  border: 2px solid #ec2090;
+}
