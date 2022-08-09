@@ -1,12 +1,12 @@
 import React from "react";
-import image from "./image.jpg";
-import "./styles.css";
 import useSize from "@react-hook/size";
+import image from "./image.jpg";
+import * as styles from "./App.module.css";
 
 export default function App() {
   return (
-    <div className="Window">
-      <img className="Image" src={image} />
+    <div className={styles.app}>
+      <img className={styles.image} src={image} />
       <Selection />
     </div>
   );
@@ -40,7 +40,7 @@ function Selection() {
       ref={ref}
     >
       <div
-        className="Selection"
+        className={styles.selection}
         ref={selectionRef}
         style={{
           position: "absolute",

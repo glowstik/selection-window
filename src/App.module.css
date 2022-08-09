@@ -1,22 +1,22 @@
-.Window {
+.app {
   position: relative;
   width: 400px;
   height: 400px;
   overflow: hidden;
 }
 
-.Window > * {
+.app > * {
   position: absolute;
   inset: 0;
 }
 
-.Image {
+.image {
   width: 100%;
   height: 100%;
   object-fit: cover;
   user-select: none;
 }
 
-.Selection {
+.selection {
   border: 2px solid #ec2090;
 }
