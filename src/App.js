@@ -24,10 +24,10 @@ function Selection() {
 
   if (containerWidth && containerHeight && cropZoneRef.current === null) {
     cropZoneRef.current = {
-      x: containerWidth * 0.25,
-      y: containerHeight * 0.25,
-      width: containerWidth * 0.5,
-      height: containerHeight * 0.5
+      left: containerWidth * 0.25,
+      top: containerHeight * 0.25,
+      right: containerWidth * 0.75,
+      bottom: containerHeight * 0.75
     };
   }
 
@@ -44,10 +44,10 @@ function Selection() {
         ref={selectionRef}
         style={{
           position: "absolute",
-          left: px(cropZoneRef.current?.x ?? 0),
-          top: px(cropZoneRef.current?.y ?? 0),
-          width: px(cropZoneRef.current?.width ?? 0),
-          height: px(cropZoneRef.current?.height ?? 0)
+          left: px(cropZoneRef.current?.left ?? 0),
+          top: px(cropZoneRef.current?.top ?? 0),
+          width: px((cropZoneRef.current?.right ?? 0) - (cropZoneRef.current?.left ?? 0)),
+          height: px((cropZoneRef.current?.bottom ?? 0) - (cropZoneRef.current?.top ?? 0)),
         }}
       />
     </div>
@@ -62,17 +62,19 @@ function Selection() {
     e.preventDefault();
     const { clientX: x, clientY: y } = e.touches[0];
     if (activeEdges.includes("left")) {
-      cropZoneRef.current.width += cropZoneRef.current.x - x;
-      cropZoneRef.current.x = x;
+      cropZoneRef.current.left = x;
+      cropZoneRef.current.right = Math.max(cropZoneRef.current.right, x + Selection.THRESHOLD);
     } else if (activeEdges.includes("right")) {
-      cropZoneRef.current.width = x - cropZoneRef.current.x;
+      cropZoneRef.current.right = x;
+      cropZoneRef.current.left = Math.min(cropZoneRef.current.left, x - Selection.THRESHOLD);
     }
 
     if (activeEdges.includes("top")) {
-      cropZoneRef.current.height += cropZoneRef.current.y - y;
-      cropZoneRef.current.y = y;
+      cropZoneRef.current.top = y;
+      cropZoneRef.current.bottom = Math.max(cropZoneRef.current.bottom, y + Selection.THRESHOLD);
     } else if (activeEdges.includes("bottom")) {
-      cropZoneRef.current.height = y - cropZoneRef.current.y;
+      cropZoneRef.current.bottom = y;
+      cropZoneRef.current.top = Math.min(cropZoneRef.current.top, y - Selection.THRESHOLD);
     }
 
     updateSelection();
@@ -82,10 +84,10 @@ function Selection() {
 
   function getEdges({ x, y }) {
     const edges = [];
-    const dl = Math.abs(x - cropZoneRef.current.x);
-    const dr = Math.abs(x - cropZoneRef.current.x - cropZoneRef.current.width);
-    const dt = Math.abs(y - cropZoneRef.current.y);
-    const db = Math.abs(y - cropZoneRef.current.y - cropZoneRef.current.height);
+    const dl = Math.abs(x - cropZoneRef.current.left);
+    const dr = Math.abs(x - cropZoneRef.current.right);
+    const dt = Math.abs(y - cropZoneRef.current.top);
+    const db = Math.abs(y - cropZoneRef.current.bottom);
     if (dl <= dr && dl < Selection.THRESHOLD) edges.push("left");
     else if (dr <= dl && dr < Selection.THRESHOLD) edges.push("right");
     if (dt <= db && dt < Selection.THRESHOLD) edges.push("top");
@@ -99,10 +101,10 @@ function Selection() {
     frameRef.current = requestAnimationFrame(() => {
       Object.assign(selectionRef.current.style, {
         position: "absolute",
-        left: px(cropZoneRef.current.x),
-        top: px(cropZoneRef.current.y),
-        width: px(cropZoneRef.current.width),
-        height: px(cropZoneRef.current.height)
+        left: px(cropZoneRef.current.left),
+        top: px(cropZoneRef.current.top),
+        width: px(cropZoneRef.current.right - cropZoneRef.current.left),
+        height: px(cropZoneRef.current.bottom - cropZoneRef.current.top),
       });
     });
   }
