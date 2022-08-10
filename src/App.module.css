@@ -17,6 +17,12 @@
   user-select: none;
 }
 
+.window {
+  overflow: hidden;
+}
+
 .selection {
+  container: strict;
   border: 2px solid #ec2090;
+  box-shadow: 0 0 100px 100px rgba(0, 0, 0, 0.5);
 }

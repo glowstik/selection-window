@@ -20,9 +20,12 @@ function Selection() {
   const selectionRef = React.useRef(null);
   const frameRef = React.useRef(null);
   const cropZoneRef = React.useRef(null);
-  const stateRef = React.useRef({ dragging: false })
+  const stateRef = React.useRef({ 
+    dragging: false,
+    pointers: new Map(),
+    edges: []
+  })
   const [containerWidth, containerHeight] = useSize(node);
-  const [dragState, setDragState] = React.useState({ edges: [], dx: 0, dy: 0 });
 
   if (containerWidth && containerHeight && cropZoneRef.current === null) {
     cropZoneRef.current = {
@@ -50,11 +53,11 @@ function Selection() {
         node.removeEventListener('pointercancel', handleDragEnd)
       }
     },
-    [node, dragState]
+    [node]
   )
 
   return (
-    <div ref={setNode}>
+    <div ref={setNode} className={styles.window}>
       <div
         className={styles.selection}
         ref={selectionRef}
@@ -71,11 +74,14 @@ function Selection() {
 
   function handleDragStart(e) {
     e.preventDefault();
-    stateRef.current.dragging = true
+
     const { clientX: x, clientY: y } = e
     const threshold = e.pointerType === 'mouse' ? Selection.MOUSE_THRESHOLD : Selection.TOUCH_THRESHOLD
+    const pointerState = getPointerState({ x, y, threshold })
     
-    setDragState(getEdges({ x, y, threshold }));
+    stateRef.current.dragging = true
+    stateRef.current.edges.concat(pointerState.edges)
+    stateRef.current.pointers.set(e.pointerId, pointerState)
   }
 
   function handleTouchMove(e) {
@@ -86,22 +92,23 @@ function Selection() {
   function handleDrag(e) {
     if (!stateRef.current.dragging) return
     
-    const x = e.clientX - dragState.dx
-    const y = e.clientY - dragState.dy
+    const pointerState = stateRef.current.pointers.get(e.pointerId)
+    const x = e.clientX - pointerState.dx
+    const y = e.clientY - pointerState.dy
     const threshold = e.pointerType === 'mouse' ? Selection.MOUSE_THRESHOLD : Selection.TOUCH_THRESHOLD
 
-    if (dragState.edges.includes("left")) {
+    if (pointerState.edges.includes("left")) {
       cropZoneRef.current.left = x;
       cropZoneRef.current.right = Math.max(cropZoneRef.current.right, x + threshold);
-    } else if (dragState.edges.includes("right")) {
+    } else if (pointerState.edges.includes("right")) {
       cropZoneRef.current.right = x;
       cropZoneRef.current.left = Math.min(cropZoneRef.current.left, x - threshold);
     }
 
-    if (dragState.edges.includes("top")) {
+    if (pointerState.edges.includes("top")) {
       cropZoneRef.current.top = y;
       cropZoneRef.current.bottom = Math.max(cropZoneRef.current.bottom, y + threshold);
-    } else if (dragState.edges.includes("bottom")) {
+    } else if (pointerState.edges.includes("bottom")) {
       cropZoneRef.current.bottom = y;
       cropZoneRef.current.top = Math.min(cropZoneRef.current.top, y - threshold);
     }
@@ -109,11 +116,14 @@ function Selection() {
     updateSelection();
   }
 
-  function handleDragEnd() {
+  function handleDragEnd(e) {
+    const { edges } = stateRef.current.pointers.get(e.pointerId)
+    stateRef.current.edges = stateRef.current.edges.filter(x => edges.includes(x))
+    stateRef.current.pointers.delete(e.pointerId)
     stateRef.current.dragging = false
   }
 
-  function getEdges({ x, y, threshold }) {
+  function getPointerState({ x, y, threshold }) {
     const edges = [];
     const dl = x - cropZoneRef.current.left;
     const dr = x - cropZoneRef.current.right;
@@ -132,7 +142,7 @@ function Selection() {
     return { 
       dx: edges.includes('left') ? dl : edges.includes('right') ? dr : 0, 
       dy: edges.includes('top') ? dt : edges.includes('bottom') ? db : 0, 
-      edges 
+      edges: edges.filter(x => !stateRef.current.edges.includes(x))
     };
   }
 
