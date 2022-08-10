@@ -118,7 +118,7 @@ function Selection() {
 
   function handleDragEnd(e) {
     const { edges } = stateRef.current.pointers.get(e.pointerId)
-    stateRef.current.edges = stateRef.current.edges.filter(x => edges.includes(x))
+    stateRef.current.edges = stateRef.current.edges.filter(x => !edges.includes(x))
     stateRef.current.pointers.delete(e.pointerId)
     stateRef.current.dragging = false
   }
