@@ -12,8 +12,8 @@ export default function App() {
   );
 }
 
-Selection.MOUSE_THRESHOLD = 20;
-Selection.TOUCH_THRESHOLD = 50;
+Selection.MOUSE_THRESHOLD = 30;
+Selection.TOUCH_THRESHOLD = 66;
 
 function Selection() {
   const [node, setNode] = React.useState(null);
@@ -80,8 +80,8 @@ function Selection() {
     const pointerState = getPointerState({ x, y, threshold })
     
     stateRef.current.dragging = true
-    stateRef.current.edges.concat(pointerState.edges)
     stateRef.current.pointers.set(e.pointerId, pointerState)
+    stateRef.current.edges = stateRef.current.edges.concat(pointerState.edges)
   }
 
   function handleTouchMove(e) {
