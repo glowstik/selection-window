@@ -1,2 +1,6 @@
 # selection-window
-Created with CodeSandbox
+
+```
+npm i
+npm start
+```
