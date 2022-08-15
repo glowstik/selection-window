@@ -123,6 +123,8 @@ function Selection({ children }) {
   }
 
   function handleDragEnd(e) {
+    if (!stateRef.current.pointers.has(e.pointerId)) return // Drag already ended, multiple events can end dragging
+
     const { edges } = stateRef.current.pointers.get(e.pointerId)
     stateRef.current.edges = stateRef.current.edges.filter(x => !edges.includes(x))
     stateRef.current.pointers.delete(e.pointerId)
