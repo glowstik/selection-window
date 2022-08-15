@@ -37,7 +37,9 @@ function Selection({ children }) {
       left: containerWidth * 0.25,
       top: containerHeight * 0.25,
       right: containerWidth * 0.75,
-      bottom: containerHeight * 0.75
+      bottom: containerHeight * 0.75,
+      containerWidth,
+      containerHeight
     };
   }
 
@@ -103,22 +105,12 @@ function Selection({ children }) {
     const y = e.clientY - pointerState.dy
     const threshold = e.pointerType === 'mouse' ? Selection.MOUSE_THRESHOLD : Selection.TOUCH_THRESHOLD
 
-    if (pointerState.edges.includes("left")) {
-      cropZoneRef.current.left = x;
-      cropZoneRef.current.right = Math.max(cropZoneRef.current.right, x + threshold);
-    } else if (pointerState.edges.includes("right")) {
-      cropZoneRef.current.right = x;
-      cropZoneRef.current.left = Math.min(cropZoneRef.current.left, x - threshold);
+    if (pointerState.edges.length) {
+      transformSelection({ pointerState, x, y, threshold })
+    } else if (stateRef.current.pointers.size === 1) {
+      moveSelection({ dx: e.movementX, dy: e.movementY })
     }
-
-    if (pointerState.edges.includes("top")) {
-      cropZoneRef.current.top = y;
-      cropZoneRef.current.bottom = Math.max(cropZoneRef.current.bottom, y + threshold);
-    } else if (pointerState.edges.includes("bottom")) {
-      cropZoneRef.current.bottom = y;
-      cropZoneRef.current.top = Math.min(cropZoneRef.current.top, y - threshold);
-    }
-
+    
     updateSelection();
   }
 
@@ -154,6 +146,33 @@ function Selection({ children }) {
     };
   }
 
+  function transformSelection({ pointerState, x, y, threshold }) {
+    if (pointerState.edges.includes("left")) {
+      cropZoneRef.current.left = x;
+      cropZoneRef.current.right = Math.max(cropZoneRef.current.right, x + threshold);
+    } else if (pointerState.edges.includes("right")) {
+      cropZoneRef.current.right = x;
+      cropZoneRef.current.left = Math.min(cropZoneRef.current.left, x - threshold);
+    }
+
+    if (pointerState.edges.includes("top")) {
+      cropZoneRef.current.top = y;
+      cropZoneRef.current.bottom = Math.max(cropZoneRef.current.bottom, y + threshold);
+    } else if (pointerState.edges.includes("bottom")) {
+      cropZoneRef.current.bottom = y;
+      cropZoneRef.current.top = Math.min(cropZoneRef.current.top, y - threshold);
+    }
+  }
+
+  function moveSelection({ dx, dy }) {
+    const clampedDx = clamp(-cropZoneRef.current.left, cropZoneRef.current.containerWidth - cropZoneRef.current.right, dx)
+    const clampedDy = clamp(-cropZoneRef.current.top, cropZoneRef.current.containerHeight - cropZoneRef.current.bottom, dy)
+    cropZoneRef.current.left += clampedDx
+    cropZoneRef.current.right += clampedDx
+    cropZoneRef.current.top += clampedDy
+    cropZoneRef.current.bottom += clampedDy
+  }
+
   function updateSelection() {
     cancelAnimationFrame(frameRef.current);
     frameRef.current = requestAnimationFrame(() => {
@@ -170,4 +189,9 @@ function Selection({ children }) {
 
 function px(n) {
   return n + "px";
+}
+
+function clamp(left, right, value) {
+  const [min, max] = left < right ? [left, right] : [right, left]
+  return Math.max(min, Math.min(max, value))
 }
