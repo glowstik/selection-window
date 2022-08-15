@@ -7,7 +7,12 @@ export default function App() {
   return (
     <div className={styles.app}>
       <img className={styles.image} src={image} />
-      <Selection />
+      <Selection>
+        <div className={[styles.handle, styles.topLeft].join(' ')} />
+        <div className={[styles.handle, styles.topRight].join(' ')} />
+        <div className={[styles.handle, styles.bottomLeft].join(' ')} />
+        <div className={[styles.handle, styles.bottomRight].join(' ')} />
+      </Selection>
     </div>
   );
 }
@@ -15,7 +20,7 @@ export default function App() {
 Selection.MOUSE_THRESHOLD = 30;
 Selection.TOUCH_THRESHOLD = 66;
 
-function Selection() {
+function Selection({ children }) {
   const [node, setNode] = React.useState(null);
   const selectionRef = React.useRef(null);
   const frameRef = React.useRef(null);
@@ -68,6 +73,7 @@ function Selection() {
           width: px((cropZoneRef.current?.right ?? 0) - (cropZoneRef.current?.left ?? 0)),
           height: px((cropZoneRef.current?.bottom ?? 0) - (cropZoneRef.current?.top ?? 0)),
         }}
+        {...{ children }}
       />
     </div>
   );
