@@ -1,7 +1,7 @@
 import React from "react";
 import image from "./image.jpg";
 import * as styles from "./App.module.css";
-import { SelectionWindow } from './SelectionWindow'
+import { SelectionWindow } from '../dist/module'
 
 export default function App() {
   return (
