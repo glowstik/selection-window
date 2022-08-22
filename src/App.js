@@ -17,10 +17,7 @@ export default function App() {
   );
 }
 
-Selection.MOUSE_THRESHOLD = 30;
-Selection.TOUCH_THRESHOLD = 66;
-
-function Selection({ children }) {
+function Selection({ children, mouseThreshold = 30, touchThreshold = 60 }) {
   const [node, setNode] = React.useState(null);
   const selectionRef = React.useRef(null);
   const frameRef = React.useRef(null);
@@ -84,7 +81,7 @@ function Selection({ children }) {
     e.preventDefault();
 
     const { clientX: x, clientY: y } = e
-    const threshold = e.pointerType === 'mouse' ? Selection.MOUSE_THRESHOLD : Selection.TOUCH_THRESHOLD
+    const threshold = e.pointerType === 'mouse' ? mouseThreshold : touchThreshold
     const pointerState = getPointerState({ x, y, threshold })
     
     stateRef.current.dragging = true
@@ -103,7 +100,7 @@ function Selection({ children }) {
     const pointerState = stateRef.current.pointers.get(e.pointerId)
     const x = e.clientX - pointerState.dx
     const y = e.clientY - pointerState.dy
-    const threshold = e.pointerType === 'mouse' ? Selection.MOUSE_THRESHOLD : Selection.TOUCH_THRESHOLD
+    const threshold = e.pointerType === 'mouse' ? mouseThreshold : touchThreshold
 
     if (pointerState.edges.length) {
       transformSelection({ pointerState, x, y, threshold })
