@@ -1,0 +1,8 @@
+.component {
+  position: relative;
+}
+
+.selection > * {
+  width: 100%;
+  height: 100%;
+}

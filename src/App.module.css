@@ -5,7 +5,7 @@
   overflow: hidden;
 }
 
-.app > * {
+.app > .window {
   position: absolute;
   inset: 0;
 }
