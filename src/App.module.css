@@ -1,0 +1,68 @@
+.app {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  overflow: hidden;
+  margin: 200px;
+}
+
+.app > .window {
+  position: absolute;
+  inset: 0;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+}
+
+.window {
+  overflow: hidden;
+}
+
+.selection {
+  position: relative;
+  container: strict;
+  box-shadow: 
+    inset 0 0 0 1px #ec2090,
+    0 0 0 1px #ec2090,
+    0 0 200px 100px rgba(0, 0, 0, 0.5);
+}
+
+.handle.topLeft {
+  top: 0;
+  left: 0;
+}
+
+.handle.topRight {
+  top: 0;
+  right: 0;
+}
+
+.handle.bottomLeft {
+  bottom: 0;
+  left: 0;
+}
+
+.handle.bottomRight {
+  bottom: 0;
+  right: 0;
+}
+
+.handle {
+  position: absolute;
+  width: 0;
+  height: 0; 
+}
+
+.handle::before {
+  content: '';
+  display: block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #ec2090;
+  transform: translate(-50%, -50%)
+}

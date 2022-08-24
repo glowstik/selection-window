@@ -1,0 +1,1 @@
+{"mappings":"AAAA;;;;AAIA","sources":["src/SelectionWindow.module.css"],"sourcesContent":[".component {\n  position: relative;\n}\n\n.selection > * {\n  width: 100%;\n  height: 100%;\n}\n"],"names":[],"version":3,"file":"SelectionWindow.css.map","sourceRoot":"../../../"}

@@ -23,7 +23,6 @@ $ee54bb37bacb2026$export$d8556a2a8f973135 = `wAMUBW_component`;
 
 
 function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , className: className , mouseThreshold: mouseThreshold = 30 , touchThreshold: touchThreshold = 60  }) {
-    console.log("v1");
     const [node, setNode] = (0, $2WDAj$react).useState(null);
     const selectionRef = (0, $2WDAj$react).useRef(null);
     const frameRef = (0, $2WDAj$react).useRef(null);
@@ -97,7 +96,6 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , classN
         e.preventDefault();
     }
     function handleDrag(e) {
-        console.log(e);
         if (!stateRef.current.dragging) return;
         const pointerState = stateRef.current.pointers.get(e.pointerId);
         const x = e.offsetX - pointerState.dx;

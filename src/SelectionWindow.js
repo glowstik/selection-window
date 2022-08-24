@@ -3,7 +3,6 @@ import useSize from "@react-hook/size";
 import styles from './SelectionWindow.module.css'
 
 export function SelectionWindow({ children, className = undefined, mouseThreshold = 30, touchThreshold = 60 }) {
-  console.log('v1')
   const [node, setNode] = React.useState(null);
   const selectionRef = React.useRef(null);
   const frameRef = React.useRef(null);
@@ -66,13 +65,14 @@ export function SelectionWindow({ children, className = undefined, mouseThreshol
   function handleDragStart(e) {
     e.preventDefault();
     
-    const { offsetX: x, clientY: y } = e
+    const { x, y } = getXY(e)
     const threshold = e.pointerType === 'mouse' ? mouseThreshold : touchThreshold
     const pointerState = getPointerState({ x, y, threshold })
     
     stateRef.current.dragging = true
     stateRef.current.pointers.set(e.pointerId, pointerState)
     stateRef.current.edges = stateRef.current.edges.concat(pointerState.edges)
+    console.log(stateRef.current.edges)
   }
 
   function handleTouchMove(e) {
@@ -81,16 +81,14 @@ export function SelectionWindow({ children, className = undefined, mouseThreshol
   }
 
   function handleDrag(e) {
-    console.log(e)
     if (!stateRef.current.dragging) return
     
     const pointerState = stateRef.current.pointers.get(e.pointerId)
-    const x = e.offsetX - pointerState.dx
-    const y = e.offsetY - pointerState.dy
+    const { x, y } = getXY(e)
     const threshold = e.pointerType === 'mouse' ? mouseThreshold : touchThreshold
 
     if (pointerState.edges.length) {
-      transformSelection({ pointerState, x, y, threshold })
+      transformSelection({ pointerState, x: x - pointerState.dx, y: y - pointerState.dy, threshold })
     } else if (stateRef.current.pointers.size === 1) {
       moveSelection({ dx: e.movementX, dy: e.movementY })
     }
@@ -107,12 +105,22 @@ export function SelectionWindow({ children, className = undefined, mouseThreshol
     stateRef.current.dragging = false
   }
 
+  function getXY(e) {
+    const { clientX, clientY } = e
+    const rect = node.getBoundingClientRect()
+    return {
+      x: clientX - rect.left,
+      y: clientY - rect.top
+    }
+  }
+
   function getPointerState({ x, y, threshold }) {
     const edges = [];
     const dl = x - cropZoneRef.current.left;
     const dr = x - cropZoneRef.current.right;
     const dt = y - cropZoneRef.current.top;
     const db = y - cropZoneRef.current.bottom;
+    console.log({ x, y, zone: cropZoneRef.current, dl, dr, dt, db })
     const adl = Math.abs(dl);
     const adr = Math.abs(dr);
     const adt = Math.abs(dt);
