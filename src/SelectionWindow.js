@@ -2,11 +2,9 @@ import React from "react";
 import useSize from "@react-hook/size";
 import styles from './SelectionWindow.module.css'
 
-export function SelectionWindow({ children, className = undefined, mouseThreshold = 30, touchThreshold = 60 }) {
+export function SelectionWindow({ children, crop, onCropChange, className = undefined, mouseThreshold = 30, touchThreshold = 60 }) {
   const [node, setNode] = React.useState(null);
   const selectionRef = React.useRef(null);
-  const frameRef = React.useRef(null);
-  const cropZoneRef = React.useRef(null);
   const stateRef = React.useRef({ 
     dragging: false,
     pointers: new Map(),
@@ -14,32 +12,36 @@ export function SelectionWindow({ children, className = undefined, mouseThreshol
   })
   const [containerWidth, containerHeight] = useSize(node);
 
-  if (containerWidth && containerHeight && cropZoneRef.current === null) {
-    cropZoneRef.current = {
-      left: containerWidth * 0.25,
-      top: containerHeight * 0.25,
-      right: containerWidth * 0.75,
-      bottom: containerHeight * 0.75,
-      containerWidth,
-      containerHeight
-    };
-  }
+  React.useEffect(
+    () => {
+      if (!crop && containerWidth && containerHeight) {
+        onCropChange({
+          left: containerWidth * 0.25,
+          top: containerHeight * 0.25,
+          right: containerWidth * 0.75,
+          bottom: containerHeight * 0.75,
+          containerWidth,
+          containerHeight
+        })
+      }
+    },
+    [crop, containerWidth, containerHeight]
+  )
+
+  const touchMoveEvent = useEvent(handleTouchMove)
+  const dragStartEvent = useEvent(handleDragStart)
+  const dragEvent = useEvent(handleDrag)
+  const dragEndEvent = useEvent(handleDragEnd)
 
   React.useEffect(
     () => {
       if (!node) return
-      node.addEventListener('touchmove', handleTouchMove)
-      node.addEventListener('pointerdown', handleDragStart)
-      node.addEventListener('pointermove', handleDrag, { passive: true })
-      node.addEventListener('pointerup', handleDragEnd)
-      node.addEventListener('pointercancel', handleDragEnd)
-
+      node.addEventListener('touchmove', touchMoveEvent)
+      node.addEventListener('pointerdown', dragStartEvent)
+      
       return () => {
-        node.removeEventListener('touchmove', handleTouchMove)
-        node.removeEventListener('pointerdown', handleDragStart)
-        node.removeEventListener('pointermove', handleDrag, { passive: true })
-        node.removeEventListener('pointerup', handleDragEnd)
-        node.removeEventListener('pointercancel', handleDragEnd)
+        node.removeEventListener('touchmove', touchMoveEvent)
+        node.removeEventListener('pointerdown', dragStartEvent)
       }
     },
     [node]
@@ -52,10 +54,10 @@ export function SelectionWindow({ children, className = undefined, mouseThreshol
         className={styles.selection}
         style={{
           position: "absolute",
-          left: px(cropZoneRef.current?.left ?? 0),
-          top: px(cropZoneRef.current?.top ?? 0),
-          width: px((cropZoneRef.current?.right ?? 0) - (cropZoneRef.current?.left ?? 0)),
-          height: px((cropZoneRef.current?.bottom ?? 0) - (cropZoneRef.current?.top ?? 0)),
+          left: px(crop?.left ?? 0),
+          top: px(crop?.top ?? 0),
+          width: px((crop?.right ?? 0) - (crop?.left ?? 0)),
+          height: px((crop?.bottom ?? 0) - (crop?.top ?? 0)),
         }}
         {...{ children }}
       />
@@ -72,7 +74,10 @@ export function SelectionWindow({ children, className = undefined, mouseThreshol
     stateRef.current.dragging = true
     stateRef.current.pointers.set(e.pointerId, pointerState)
     stateRef.current.edges = stateRef.current.edges.concat(pointerState.edges)
-    console.log(stateRef.current.edges)
+
+    window.addEventListener('pointermove', dragEvent, { passive: true })
+    window.addEventListener('pointerup', dragEndEvent)
+    window.addEventListener('pointercancel', dragEndEvent)
   }
 
   function handleTouchMove(e) {
@@ -91,9 +96,7 @@ export function SelectionWindow({ children, className = undefined, mouseThreshol
       transformSelection({ pointerState, x: x - pointerState.dx, y: y - pointerState.dy, threshold })
     } else if (stateRef.current.pointers.size === 1) {
       moveSelection({ dx: e.movementX, dy: e.movementY })
-    }
-    
-    updateSelection();
+    } 
   }
 
   function handleDragEnd(e) {
@@ -102,7 +105,11 @@ export function SelectionWindow({ children, className = undefined, mouseThreshol
     const { edges } = stateRef.current.pointers.get(e.pointerId)
     stateRef.current.edges = stateRef.current.edges.filter(x => !edges.includes(x))
     stateRef.current.pointers.delete(e.pointerId)
-    stateRef.current.dragging = false
+    stateRef.current.dragging = Boolean(stateRef.current.edges)
+
+    window.removeEventListener('pointermove', dragEvent, { passive: true })
+    window.removeEventListener('pointerup', dragEndEvent)
+    window.removeEventListener('pointercancel', dragEndEvent)
   }
 
   function getXY(e) {
@@ -116,11 +123,11 @@ export function SelectionWindow({ children, className = undefined, mouseThreshol
 
   function getPointerState({ x, y, threshold }) {
     const edges = [];
-    const dl = x - cropZoneRef.current.left;
-    const dr = x - cropZoneRef.current.right;
-    const dt = y - cropZoneRef.current.top;
-    const db = y - cropZoneRef.current.bottom;
-    console.log({ x, y, zone: cropZoneRef.current, dl, dr, dt, db })
+    const dl = x - crop.left;
+    const dr = x - crop.right;
+    const dt = y - crop.top;
+    const db = y - crop.bottom;
+
     const adl = Math.abs(dl);
     const adr = Math.abs(dr);
     const adt = Math.abs(dt);
@@ -139,43 +146,45 @@ export function SelectionWindow({ children, className = undefined, mouseThreshol
   }
 
   function transformSelection({ pointerState, x, y, threshold }) {
+    const newCrop = { ...crop }
+
     if (pointerState.edges.includes("left")) {
-      cropZoneRef.current.left = x;
-      cropZoneRef.current.right = Math.max(cropZoneRef.current.right, x + threshold);
+      newCrop.left = x;
+      newCrop.right = Math.max(crop.right, x + threshold);
     } else if (pointerState.edges.includes("right")) {
-      cropZoneRef.current.right = x;
-      cropZoneRef.current.left = Math.min(cropZoneRef.current.left, x - threshold);
+      newCrop.right = x;
+      newCrop.left = Math.min(crop.left, x - threshold);
     }
 
     if (pointerState.edges.includes("top")) {
-      cropZoneRef.current.top = y;
-      cropZoneRef.current.bottom = Math.max(cropZoneRef.current.bottom, y + threshold);
+      newCrop.top = y;
+      newCrop.bottom = Math.max(newCrop.bottom, y + threshold);
     } else if (pointerState.edges.includes("bottom")) {
-      cropZoneRef.current.bottom = y;
-      cropZoneRef.current.top = Math.min(cropZoneRef.current.top, y - threshold);
+      newCrop.bottom = y;
+      newCrop.top = Math.min(crop.top, y - threshold);
     }
+
+    newCrop.width = newCrop.right - newCrop.left
+    newCrop.height = newCrop.bottom - newCrop.top
+
+    onCropChange(newCrop)
   }
 
   function moveSelection({ dx, dy }) {
-    const clampedDx = clamp(-cropZoneRef.current.left, cropZoneRef.current.containerWidth - cropZoneRef.current.right, dx)
-    const clampedDy = clamp(-cropZoneRef.current.top, cropZoneRef.current.containerHeight - cropZoneRef.current.bottom, dy)
-    cropZoneRef.current.left += clampedDx
-    cropZoneRef.current.right += clampedDx
-    cropZoneRef.current.top += clampedDy
-    cropZoneRef.current.bottom += clampedDy
-  }
+    const newCrop = { ...crop }
 
-  function updateSelection() {
-    cancelAnimationFrame(frameRef.current);
-    frameRef.current = requestAnimationFrame(() => {
-      Object.assign(selectionRef.current.style, {
-        position: "absolute",
-        left: px(cropZoneRef.current.left),
-        top: px(cropZoneRef.current.top),
-        width: px(cropZoneRef.current.right - cropZoneRef.current.left),
-        height: px(cropZoneRef.current.bottom - cropZoneRef.current.top),
-      });
-    });
+    const clampedDx = clamp(-crop.left, crop.containerWidth - crop.right, dx)
+    const clampedDy = clamp(-crop.top, crop.containerHeight - crop.bottom, dy)
+    
+    newCrop.left += clampedDx
+    newCrop.right += clampedDx
+    newCrop.top += clampedDy
+    newCrop.bottom += clampedDy
+
+    newCrop.width = newCrop.right - newCrop.left
+    newCrop.height = newCrop.bottom - newCrop.top
+
+    onCropChange(newCrop)
   }
 }
 
@@ -190,4 +199,11 @@ function clamp(left, right, value) {
 
 function cx(...classes) {
   return classes.filter(Boolean).join(' ')
+}
+
+function useEvent(fn) {
+  const fnRef = React.useRef(null)
+  fnRef.current = fn
+
+  return React.useCallback((...args) => fnRef.current(...args), [])
 }
