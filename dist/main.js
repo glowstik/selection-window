@@ -99,6 +99,7 @@ function $0d16028b28e5283f$export$c2644827bcb91f96({ children: children , classN
         e.preventDefault();
     }
     function handleDrag(e) {
+        console.log(e);
         if (!stateRef.current.dragging) return;
         const pointerState = stateRef.current.pointers.get(e.pointerId);
         const x = e.offsetX - pointerState.dx;

@@ -3,6 +3,7 @@ import useSize from "@react-hook/size";
 import styles from './SelectionWindow.module.css'
 
 export function SelectionWindow({ children, className = undefined, mouseThreshold = 30, touchThreshold = 60 }) {
+  console.log('v1')
   const [node, setNode] = React.useState(null);
   const selectionRef = React.useRef(null);
   const frameRef = React.useRef(null);
@@ -64,7 +65,7 @@ export function SelectionWindow({ children, className = undefined, mouseThreshol
 
   function handleDragStart(e) {
     e.preventDefault();
-
+    
     const { offsetX: x, clientY: y } = e
     const threshold = e.pointerType === 'mouse' ? mouseThreshold : touchThreshold
     const pointerState = getPointerState({ x, y, threshold })
@@ -80,6 +81,7 @@ export function SelectionWindow({ children, className = undefined, mouseThreshol
   }
 
   function handleDrag(e) {
+    console.log(e)
     if (!stateRef.current.dragging) return
     
     const pointerState = stateRef.current.pointers.get(e.pointerId)
