@@ -14,50 +14,48 @@ function $parcel$export(e, n, v, s) {
 
 var $ee54bb37bacb2026$exports = {};
 
-$parcel$export($ee54bb37bacb2026$exports, "selection", () => $ee54bb37bacb2026$export$7c69810f7b8835c9, (v) => $ee54bb37bacb2026$export$7c69810f7b8835c9 = v);
 $parcel$export($ee54bb37bacb2026$exports, "component", () => $ee54bb37bacb2026$export$d8556a2a8f973135, (v) => $ee54bb37bacb2026$export$d8556a2a8f973135 = v);
-var $ee54bb37bacb2026$export$7c69810f7b8835c9;
+$parcel$export($ee54bb37bacb2026$exports, "selection", () => $ee54bb37bacb2026$export$7c69810f7b8835c9, (v) => $ee54bb37bacb2026$export$7c69810f7b8835c9 = v);
 var $ee54bb37bacb2026$export$d8556a2a8f973135;
-$ee54bb37bacb2026$export$7c69810f7b8835c9 = `wAMUBW_selection`;
+var $ee54bb37bacb2026$export$7c69810f7b8835c9;
 $ee54bb37bacb2026$export$d8556a2a8f973135 = `wAMUBW_component`;
+$ee54bb37bacb2026$export$7c69810f7b8835c9 = `wAMUBW_selection`;
 
 
-function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , className: className , mouseThreshold: mouseThreshold = 30 , touchThreshold: touchThreshold = 60  }) {
+function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , crop: crop , onCropChange: onCropChange , className: className , mouseThreshold: mouseThreshold = 30 , touchThreshold: touchThreshold = 60  }) {
     const [node, setNode] = (0, $2WDAj$react).useState(null);
     const selectionRef = (0, $2WDAj$react).useRef(null);
-    const frameRef = (0, $2WDAj$react).useRef(null);
-    const cropZoneRef = (0, $2WDAj$react).useRef(null);
     const stateRef = (0, $2WDAj$react).useRef({
         dragging: false,
         pointers: new Map(),
         edges: []
     });
     const [containerWidth, containerHeight] = (0, $2WDAj$reacthooksize)(node);
-    if (containerWidth && containerHeight && cropZoneRef.current === null) cropZoneRef.current = {
-        left: containerWidth * 0.25,
-        top: containerHeight * 0.25,
-        right: containerWidth * 0.75,
-        bottom: containerHeight * 0.75,
-        containerWidth: containerWidth,
-        containerHeight: containerHeight
-    };
+    (0, $2WDAj$react).useEffect(()=>{
+        if (!crop && containerWidth && containerHeight) onCropChange({
+            left: containerWidth * 0.25,
+            top: containerHeight * 0.25,
+            right: containerWidth * 0.75,
+            bottom: containerHeight * 0.75,
+            containerWidth: containerWidth,
+            containerHeight: containerHeight
+        });
+    }, [
+        crop,
+        containerWidth,
+        containerHeight
+    ]);
+    const touchMoveEvent = $7c8ba892eba51f50$var$useEvent(handleTouchMove);
+    const dragStartEvent = $7c8ba892eba51f50$var$useEvent(handleDragStart);
+    const dragEvent = $7c8ba892eba51f50$var$useEvent(handleDrag);
+    const dragEndEvent = $7c8ba892eba51f50$var$useEvent(handleDragEnd);
     (0, $2WDAj$react).useEffect(()=>{
         if (!node) return;
-        node.addEventListener("touchmove", handleTouchMove);
-        node.addEventListener("pointerdown", handleDragStart);
-        node.addEventListener("pointermove", handleDrag, {
-            passive: true
-        });
-        node.addEventListener("pointerup", handleDragEnd);
-        node.addEventListener("pointercancel", handleDragEnd);
+        node.addEventListener("touchmove", touchMoveEvent);
+        node.addEventListener("pointerdown", dragStartEvent);
         return ()=>{
-            node.removeEventListener("touchmove", handleTouchMove);
-            node.removeEventListener("pointerdown", handleDragStart);
-            node.removeEventListener("pointermove", handleDrag, {
-                passive: true
-            });
-            node.removeEventListener("pointerup", handleDragEnd);
-            node.removeEventListener("pointercancel", handleDragEnd);
+            node.removeEventListener("touchmove", touchMoveEvent);
+            node.removeEventListener("pointerdown", dragStartEvent);
         };
     }, [
         node
@@ -70,17 +68,17 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , classN
             className: (0, (/*@__PURE__*/$parcel$interopDefault($ee54bb37bacb2026$exports))).selection,
             style: {
                 position: "absolute",
-                left: $7c8ba892eba51f50$var$px(cropZoneRef.current?.left ?? 0),
-                top: $7c8ba892eba51f50$var$px(cropZoneRef.current?.top ?? 0),
-                width: $7c8ba892eba51f50$var$px((cropZoneRef.current?.right ?? 0) - (cropZoneRef.current?.left ?? 0)),
-                height: $7c8ba892eba51f50$var$px((cropZoneRef.current?.bottom ?? 0) - (cropZoneRef.current?.top ?? 0))
+                left: $7c8ba892eba51f50$var$px(crop?.left ?? 0),
+                top: $7c8ba892eba51f50$var$px(crop?.top ?? 0),
+                width: $7c8ba892eba51f50$var$px((crop?.right ?? 0) - (crop?.left ?? 0)),
+                height: $7c8ba892eba51f50$var$px((crop?.bottom ?? 0) - (crop?.top ?? 0))
             },
             children: children
         })
     });
     function handleDragStart(e) {
         e.preventDefault();
-        const { clientX: x , clientY: y  } = e;
+        const { x: x , y: y  } = getXY(e);
         const threshold = e.pointerType === "mouse" ? mouseThreshold : touchThreshold;
         const pointerState = getPointerState({
             x: x,
@@ -90,6 +88,11 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , classN
         stateRef.current.dragging = true;
         stateRef.current.pointers.set(e.pointerId, pointerState);
         stateRef.current.edges = stateRef.current.edges.concat(pointerState.edges);
+        window.addEventListener("pointermove", dragEvent, {
+            passive: true
+        });
+        window.addEventListener("pointerup", dragEndEvent);
+        window.addEventListener("pointercancel", dragEndEvent);
     }
     function handleTouchMove(e) {
         if (!stateRef.current.dragging) return;
@@ -98,14 +101,13 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , classN
     function handleDrag(e) {
         if (!stateRef.current.dragging) return;
         const pointerState = stateRef.current.pointers.get(e.pointerId);
-        const x = e.clientX - pointerState.dx;
-        const y = e.clientY - pointerState.dy;
+        const { x: x , y: y  } = getXY(e);
         const threshold = e.pointerType === "mouse" ? mouseThreshold : touchThreshold;
         if (pointerState.edges.length) {
             transformSelection({
                 pointerState: pointerState,
-                x: x,
-                y: y,
+                x: x - pointerState.dx,
+                y: y - pointerState.dy,
                 threshold: threshold
             });
         } else if (stateRef.current.pointers.size === 1) {
@@ -114,21 +116,33 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , classN
                 dy: e.movementY
             });
         }
-        updateSelection();
     }
     function handleDragEnd(e) {
         if (!stateRef.current.pointers.has(e.pointerId)) return; // Drag already ended, multiple events can end dragging
         const { edges: edges  } = stateRef.current.pointers.get(e.pointerId);
         stateRef.current.edges = stateRef.current.edges.filter((x)=>!edges.includes(x));
         stateRef.current.pointers.delete(e.pointerId);
-        stateRef.current.dragging = false;
+        stateRef.current.dragging = Boolean(stateRef.current.edges);
+        window.removeEventListener("pointermove", dragEvent, {
+            passive: true
+        });
+        window.removeEventListener("pointerup", dragEndEvent);
+        window.removeEventListener("pointercancel", dragEndEvent);
+    }
+    function getXY(e) {
+        const { clientX: clientX , clientY: clientY  } = e;
+        const rect = node.getBoundingClientRect();
+        return {
+            x: clientX - rect.left,
+            y: clientY - rect.top
+        };
     }
     function getPointerState({ x: x , y: y , threshold: threshold  }) {
         const edges = [];
-        const dl = x - cropZoneRef.current.left;
-        const dr = x - cropZoneRef.current.right;
-        const dt = y - cropZoneRef.current.top;
-        const db = y - cropZoneRef.current.bottom;
+        const dl = x - crop.left;
+        const dr = x - crop.right;
+        const dt = y - crop.top;
+        const db = y - crop.bottom;
         const adl = Math.abs(dl);
         const adr = Math.abs(dr);
         const adt = Math.abs(dt);
@@ -144,40 +158,40 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , classN
         };
     }
     function transformSelection({ pointerState: pointerState , x: x , y: y , threshold: threshold  }) {
+        const newCrop = {
+            ...crop
+        };
         if (pointerState.edges.includes("left")) {
-            cropZoneRef.current.left = x;
-            cropZoneRef.current.right = Math.max(cropZoneRef.current.right, x + threshold);
+            newCrop.left = x;
+            newCrop.right = Math.max(crop.right, x + threshold);
         } else if (pointerState.edges.includes("right")) {
-            cropZoneRef.current.right = x;
-            cropZoneRef.current.left = Math.min(cropZoneRef.current.left, x - threshold);
+            newCrop.right = x;
+            newCrop.left = Math.min(crop.left, x - threshold);
         }
         if (pointerState.edges.includes("top")) {
-            cropZoneRef.current.top = y;
-            cropZoneRef.current.bottom = Math.max(cropZoneRef.current.bottom, y + threshold);
+            newCrop.top = y;
+            newCrop.bottom = Math.max(newCrop.bottom, y + threshold);
         } else if (pointerState.edges.includes("bottom")) {
-            cropZoneRef.current.bottom = y;
-            cropZoneRef.current.top = Math.min(cropZoneRef.current.top, y - threshold);
+            newCrop.bottom = y;
+            newCrop.top = Math.min(crop.top, y - threshold);
         }
+        newCrop.width = newCrop.right - newCrop.left;
+        newCrop.height = newCrop.bottom - newCrop.top;
+        onCropChange(newCrop);
     }
     function moveSelection({ dx: dx , dy: dy  }) {
-        const clampedDx = $7c8ba892eba51f50$var$clamp(-cropZoneRef.current.left, cropZoneRef.current.containerWidth - cropZoneRef.current.right, dx);
-        const clampedDy = $7c8ba892eba51f50$var$clamp(-cropZoneRef.current.top, cropZoneRef.current.containerHeight - cropZoneRef.current.bottom, dy);
-        cropZoneRef.current.left += clampedDx;
-        cropZoneRef.current.right += clampedDx;
-        cropZoneRef.current.top += clampedDy;
-        cropZoneRef.current.bottom += clampedDy;
-    }
-    function updateSelection() {
-        cancelAnimationFrame(frameRef.current);
-        frameRef.current = requestAnimationFrame(()=>{
-            Object.assign(selectionRef.current.style, {
-                position: "absolute",
-                left: $7c8ba892eba51f50$var$px(cropZoneRef.current.left),
-                top: $7c8ba892eba51f50$var$px(cropZoneRef.current.top),
-                width: $7c8ba892eba51f50$var$px(cropZoneRef.current.right - cropZoneRef.current.left),
-                height: $7c8ba892eba51f50$var$px(cropZoneRef.current.bottom - cropZoneRef.current.top)
-            });
-        });
+        const newCrop = {
+            ...crop
+        };
+        const clampedDx = $7c8ba892eba51f50$var$clamp(-crop.left, crop.containerWidth - crop.right, dx);
+        const clampedDy = $7c8ba892eba51f50$var$clamp(-crop.top, crop.containerHeight - crop.bottom, dy);
+        newCrop.left += clampedDx;
+        newCrop.right += clampedDx;
+        newCrop.top += clampedDy;
+        newCrop.bottom += clampedDy;
+        newCrop.width = newCrop.right - newCrop.left;
+        newCrop.height = newCrop.bottom - newCrop.top;
+        onCropChange(newCrop);
     }
 }
 function $7c8ba892eba51f50$var$px(n) {
@@ -195,6 +209,11 @@ function $7c8ba892eba51f50$var$clamp(left, right, value) {
 }
 function $7c8ba892eba51f50$var$cx(...classes) {
     return classes.filter(Boolean).join(" ");
+}
+function $7c8ba892eba51f50$var$useEvent(fn) {
+    const fnRef = (0, $2WDAj$react).useRef(null);
+    fnRef.current = fn;
+    return (0, $2WDAj$react).useCallback((...args)=>fnRef.current(...args), []);
 }
 
 
