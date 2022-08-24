@@ -65,7 +65,7 @@ export function SelectionWindow({ children, className = undefined, mouseThreshol
   function handleDragStart(e) {
     e.preventDefault();
 
-    const { clientX: x, clientY: y } = e
+    const { offsetX: x, clientY: y } = e
     const threshold = e.pointerType === 'mouse' ? mouseThreshold : touchThreshold
     const pointerState = getPointerState({ x, y, threshold })
     
@@ -83,8 +83,8 @@ export function SelectionWindow({ children, className = undefined, mouseThreshol
     if (!stateRef.current.dragging) return
     
     const pointerState = stateRef.current.pointers.get(e.pointerId)
-    const x = e.clientX - pointerState.dx
-    const y = e.clientY - pointerState.dy
+    const x = e.offsetX - pointerState.dx
+    const y = e.offsetY - pointerState.dy
     const threshold = e.pointerType === 'mouse' ? mouseThreshold : touchThreshold
 
     if (pointerState.edges.length) {

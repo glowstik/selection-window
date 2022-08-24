@@ -16,15 +16,16 @@ $parcel$export(module.exports, "SelectionWindow", () => $0d16028b28e5283f$export
 
 var $5d4abfe7f70a3dcc$exports = {};
 
-$parcel$export($5d4abfe7f70a3dcc$exports, "selection", () => $5d4abfe7f70a3dcc$export$7c69810f7b8835c9, (v) => $5d4abfe7f70a3dcc$export$7c69810f7b8835c9 = v);
 $parcel$export($5d4abfe7f70a3dcc$exports, "component", () => $5d4abfe7f70a3dcc$export$d8556a2a8f973135, (v) => $5d4abfe7f70a3dcc$export$d8556a2a8f973135 = v);
-var $5d4abfe7f70a3dcc$export$7c69810f7b8835c9;
+$parcel$export($5d4abfe7f70a3dcc$exports, "selection", () => $5d4abfe7f70a3dcc$export$7c69810f7b8835c9, (v) => $5d4abfe7f70a3dcc$export$7c69810f7b8835c9 = v);
 var $5d4abfe7f70a3dcc$export$d8556a2a8f973135;
-$5d4abfe7f70a3dcc$export$7c69810f7b8835c9 = `wAMUBW_selection`;
+var $5d4abfe7f70a3dcc$export$7c69810f7b8835c9;
 $5d4abfe7f70a3dcc$export$d8556a2a8f973135 = `wAMUBW_component`;
+$5d4abfe7f70a3dcc$export$7c69810f7b8835c9 = `wAMUBW_selection`;
 
 
 function $0d16028b28e5283f$export$c2644827bcb91f96({ children: children , className: className , mouseThreshold: mouseThreshold = 30 , touchThreshold: touchThreshold = 60  }) {
+    console.log("v1");
     const [node, setNode] = (0, ($parcel$interopDefault($dSH8u$react))).useState(null);
     const selectionRef = (0, ($parcel$interopDefault($dSH8u$react))).useRef(null);
     const frameRef = (0, ($parcel$interopDefault($dSH8u$react))).useRef(null);
@@ -82,7 +83,7 @@ function $0d16028b28e5283f$export$c2644827bcb91f96({ children: children , classN
     });
     function handleDragStart(e) {
         e.preventDefault();
-        const { clientX: x , clientY: y  } = e;
+        const { offsetX: x , clientY: y  } = e;
         const threshold = e.pointerType === "mouse" ? mouseThreshold : touchThreshold;
         const pointerState = getPointerState({
             x: x,
@@ -100,8 +101,8 @@ function $0d16028b28e5283f$export$c2644827bcb91f96({ children: children , classN
     function handleDrag(e) {
         if (!stateRef.current.dragging) return;
         const pointerState = stateRef.current.pointers.get(e.pointerId);
-        const x = e.clientX - pointerState.dx;
-        const y = e.clientY - pointerState.dy;
+        const x = e.offsetX - pointerState.dx;
+        const y = e.offsetY - pointerState.dy;
         const threshold = e.pointerType === "mouse" ? mouseThreshold : touchThreshold;
         if (pointerState.edges.length) {
             transformSelection({
