@@ -14,12 +14,12 @@ function $parcel$export(e, n, v, s) {
 
 var $118eac5423b196c3$exports = {};
 
-$parcel$export($118eac5423b196c3$exports, "component", () => $118eac5423b196c3$export$d8556a2a8f973135, (v) => $118eac5423b196c3$export$d8556a2a8f973135 = v);
 $parcel$export($118eac5423b196c3$exports, "selection", () => $118eac5423b196c3$export$7c69810f7b8835c9, (v) => $118eac5423b196c3$export$7c69810f7b8835c9 = v);
-var $118eac5423b196c3$export$d8556a2a8f973135;
+$parcel$export($118eac5423b196c3$exports, "component", () => $118eac5423b196c3$export$d8556a2a8f973135, (v) => $118eac5423b196c3$export$d8556a2a8f973135 = v);
 var $118eac5423b196c3$export$7c69810f7b8835c9;
-$118eac5423b196c3$export$d8556a2a8f973135 = `wAMUBW_component`;
+var $118eac5423b196c3$export$d8556a2a8f973135;
 $118eac5423b196c3$export$7c69810f7b8835c9 = `wAMUBW_selection`;
+$118eac5423b196c3$export$d8556a2a8f973135 = `wAMUBW_component`;
 
 
 function $d6226421cd976098$export$c2644827bcb91f96({ children: children , crop: crop , onCropChange: onCropChange , className: className , mouseThreshold: mouseThreshold = 30 , touchThreshold: touchThreshold = 60  }) {
@@ -37,8 +37,12 @@ function $d6226421cd976098$export$c2644827bcb91f96({ children: children , crop: 
             top: containerHeight * 0.25,
             right: containerWidth * 0.75,
             bottom: containerHeight * 0.75,
-            containerWidth: containerWidth,
-            containerHeight: containerHeight
+            width: containerWidth * 0.5,
+            height: containerHeight * 0.5,
+            container: {
+                width: containerWidth,
+                height: containerHeight
+            }
         });
     }, [
         crop,
@@ -53,13 +57,9 @@ function $d6226421cd976098$export$c2644827bcb91f96({ children: children , crop: 
         if (!node) return;
         node.addEventListener("touchmove", touchMoveEvent);
         node.addEventListener("pointerdown", dragStartEvent);
-        node.addEventListener("pointerup", dragEndEvent);
-        node.addEventListener("pointercancel", dragEndEvent);
         return ()=>{
             node.removeEventListener("touchmove", touchMoveEvent);
             node.removeEventListener("pointerdown", dragStartEvent);
-            node.removeEventListener("pointerup", dragEndEvent);
-            node.removeEventListener("pointercancel", dragEndEvent);
         };
     }, [
         node
@@ -92,9 +92,11 @@ function $d6226421cd976098$export$c2644827bcb91f96({ children: children , crop: 
         stateRef.current.dragging = true;
         stateRef.current.pointers.set(e.pointerId, pointerState);
         stateRef.current.edges = stateRef.current.edges.concat(pointerState.edges);
-        node.addEventListener("pointermove", dragEvent, {
+        window.addEventListener("pointermove", dragEvent, {
             passive: true
         });
+        window.addEventListener("pointerup", dragEndEvent);
+        window.addEventListener("pointercancel", dragEndEvent);
     }
     function handleTouchMove(e) {
         if (!stateRef.current.dragging) return;
@@ -125,9 +127,11 @@ function $d6226421cd976098$export$c2644827bcb91f96({ children: children , crop: 
         stateRef.current.edges = stateRef.current.edges.filter((x)=>!edges.includes(x));
         stateRef.current.pointers.delete(e.pointerId);
         stateRef.current.dragging = Boolean(stateRef.current.edges);
-        node.removeEventListener("pointermove", dragEvent, {
+        window.removeEventListener("pointermove", dragEvent, {
             passive: true
         });
+        window.removeEventListener("pointerup", dragEndEvent);
+        window.removeEventListener("pointercancel", dragEndEvent);
     }
     function getXY(e) {
         const { clientX: clientX , clientY: clientY  } = e;
@@ -175,9 +179,15 @@ function $d6226421cd976098$export$c2644827bcb91f96({ children: children , crop: 
             newCrop.bottom = y;
             newCrop.top = Math.min(crop.top, y - threshold);
         }
-        newCrop.width = newCrop.right - newCrop.left;
-        newCrop.height = newCrop.bottom - newCrop.top;
-        onCropChange(newCrop);
+        onCropChange({
+            ...newCrop,
+            width: newCrop.right - newCrop.left,
+            height: newCrop.bottom - newCrop.top,
+            container: {
+                width: containerWidth,
+                height: containerHeight
+            }
+        });
     }
     function moveSelection({ dx: dx , dy: dy  }) {
         const newCrop = {
@@ -189,9 +199,15 @@ function $d6226421cd976098$export$c2644827bcb91f96({ children: children , crop: 
         newCrop.right += clampedDx;
         newCrop.top += clampedDy;
         newCrop.bottom += clampedDy;
-        newCrop.width = newCrop.right - newCrop.left;
-        newCrop.height = newCrop.bottom - newCrop.top;
-        onCropChange(newCrop);
+        onCropChange({
+            ...newCrop,
+            width: newCrop.right - newCrop.left,
+            height: newCrop.bottom - newCrop.top,
+            container: {
+                width: containerWidth,
+                height: containerHeight
+            }
+        });
     }
 }
 function $d6226421cd976098$var$px(n) {

@@ -1,28 +1,26 @@
-import React from "react";
-import useSize from "@react-hook/size";
+import React from "react"
+import useSize from "@react-hook/size"
 import styles from './SelectionWindow.module.css'
 
 export function SelectionWindow({ children, crop, onCropChange, className = undefined, mouseThreshold = 30, touchThreshold = 60 }) {
-  const [node, setNode] = React.useState(null);
-  const selectionRef = React.useRef(null);
+  const [node, setNode] = React.useState(null)
+  const selectionRef = React.useRef(null)
   const stateRef = React.useRef({ 
     dragging: false,
     pointers: new Map(),
     edges: []
   })
-  const [containerWidth, containerHeight] = useSize(node);
+  const [containerWidth, containerHeight] = useSize(node)
 
   React.useEffect(
     () => {
       if (!crop && containerWidth && containerHeight) {
-        onCropChange({
+        onCropChange(updateSizes({
           left: containerWidth * 0.25,
           top: containerHeight * 0.25,
           right: containerWidth * 0.75,
           bottom: containerHeight * 0.75,
-          containerWidth,
-          containerHeight
-        })
+        }))
       }
     },
     [crop, containerWidth, containerHeight]
@@ -62,10 +60,10 @@ export function SelectionWindow({ children, crop, onCropChange, className = unde
         {...{ children }}
       />
     </div>
-  );
+  )
 
   function handleDragStart(e) {
-    e.preventDefault();
+    e.preventDefault()
     
     const { x, y } = getXY(e)
     const threshold = e.pointerType === 'mouse' ? mouseThreshold : touchThreshold
@@ -122,74 +120,82 @@ export function SelectionWindow({ children, crop, onCropChange, className = unde
   }
 
   function getPointerState({ x, y, threshold }) {
-    const edges = [];
-    const dl = x - crop.left;
-    const dr = x - crop.right;
-    const dt = y - crop.top;
-    const db = y - crop.bottom;
+    const edges = []
+    const dl = x - crop.left
+    const dr = x - crop.right
+    const dt = y - crop.top
+    const db = y - crop.bottom
 
-    const adl = Math.abs(dl);
-    const adr = Math.abs(dr);
-    const adt = Math.abs(dt);
-    const adb = Math.abs(db);
+    const adl = Math.abs(dl)
+    const adr = Math.abs(dr)
+    const adt = Math.abs(dt)
+    const adb = Math.abs(db)
 
-    if (adl <= adr && adl < threshold) edges.push("left");
-    else if (adr <= adl && adr < threshold) edges.push("right");
-    if (adt <= adb && adt < threshold) edges.push("top");
-    else if (adb <= adt && adb < threshold) edges.push("bottom");
+    if (adl <= adr && adl < threshold) edges.push("left")
+    else if (adr <= adl && adr < threshold) edges.push("right")
+    if (adt <= adb && adt < threshold) edges.push("top")
+    else if (adb <= adt && adb < threshold) edges.push("bottom")
 
     return { 
       dx: edges.includes('left') ? dl : edges.includes('right') ? dr : 0, 
       dy: edges.includes('top') ? dt : edges.includes('bottom') ? db : 0, 
       edges: edges.filter(x => !stateRef.current.edges.includes(x))
-    };
+    }
   }
 
   function transformSelection({ pointerState, x, y, threshold }) {
     const newCrop = { ...crop }
 
     if (pointerState.edges.includes("left")) {
-      newCrop.left = x;
-      newCrop.right = Math.max(crop.right, x + threshold);
+      newCrop.left = Math.max(0, x)
+      newCrop.right = Math.min(containerWidth, Math.max(crop.right, x + threshold));
     } else if (pointerState.edges.includes("right")) {
-      newCrop.right = x;
-      newCrop.left = Math.min(crop.left, x - threshold);
+      newCrop.right = Math.min(containerWidth, x);
+      newCrop.left = Math.max(0, Math.min(crop.left, x - threshold));
     }
 
     if (pointerState.edges.includes("top")) {
-      newCrop.top = y;
-      newCrop.bottom = Math.max(newCrop.bottom, y + threshold);
+      newCrop.top = Math.max(0, y)
+      newCrop.bottom = Math.min(containerHeight, Math.max(newCrop.bottom, y + threshold))
     } else if (pointerState.edges.includes("bottom")) {
-      newCrop.bottom = y;
-      newCrop.top = Math.min(crop.top, y - threshold);
+      newCrop.bottom = Math.min(containerHeight, y)
+      newCrop.top = Math.max(0, Math.min(crop.top, y - threshold))
     }
 
-    newCrop.width = newCrop.right - newCrop.left
-    newCrop.height = newCrop.bottom - newCrop.top
-
-    onCropChange(newCrop)
+    onCropChange(updateSizes(newCrop))
   }
 
   function moveSelection({ dx, dy }) {
     const newCrop = { ...crop }
-
-    const clampedDx = clamp(-crop.left, crop.containerWidth - crop.right, dx)
-    const clampedDy = clamp(-crop.top, crop.containerHeight - crop.bottom, dy)
+    const clampedDx = clamp(-crop.left, containerWidth - crop.right, dx)
+    const clampedDy = clamp(-crop.top, containerHeight - crop.bottom, dy)
     
     newCrop.left += clampedDx
     newCrop.right += clampedDx
     newCrop.top += clampedDy
     newCrop.bottom += clampedDy
 
-    newCrop.width = newCrop.right - newCrop.left
-    newCrop.height = newCrop.bottom - newCrop.top
+    onCropChange(updateSizes(newCrop))
+  }
 
-    onCropChange(newCrop)
+  function updateSizes({ left, right, top, bottom }) {
+    return {
+      left,
+      right,
+      top, 
+      bottom,
+      width: Math.min(right - left, containerWidth),
+      height: Math.min(bottom - top, containerHeight),
+      container: {
+        width: containerWidth,
+        height: containerHeight
+      }
+    }
   }
 }
 
 function px(n) {
-  return n + "px";
+  return n + "px"
 }
 
 function clamp(left, right, value) {

@@ -37,8 +37,12 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , crop: 
             top: containerHeight * 0.25,
             right: containerWidth * 0.75,
             bottom: containerHeight * 0.75,
-            containerWidth: containerWidth,
-            containerHeight: containerHeight
+            width: containerWidth * 0.5,
+            height: containerHeight * 0.5,
+            container: {
+                width: containerWidth,
+                height: containerHeight
+            }
         });
     }, [
         crop,
@@ -53,13 +57,9 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , crop: 
         if (!node) return;
         node.addEventListener("touchmove", touchMoveEvent);
         node.addEventListener("pointerdown", dragStartEvent);
-        node.addEventListener("pointerup", dragEndEvent);
-        node.addEventListener("pointercancel", dragEndEvent);
         return ()=>{
             node.removeEventListener("touchmove", touchMoveEvent);
             node.removeEventListener("pointerdown", dragStartEvent);
-            node.removeEventListener("pointerup", dragEndEvent);
-            node.removeEventListener("pointercancel", dragEndEvent);
         };
     }, [
         node
@@ -92,9 +92,11 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , crop: 
         stateRef.current.dragging = true;
         stateRef.current.pointers.set(e.pointerId, pointerState);
         stateRef.current.edges = stateRef.current.edges.concat(pointerState.edges);
-        node.addEventListener("pointermove", dragEvent, {
+        window.addEventListener("pointermove", dragEvent, {
             passive: true
         });
+        window.addEventListener("pointerup", dragEndEvent);
+        window.addEventListener("pointercancel", dragEndEvent);
     }
     function handleTouchMove(e) {
         if (!stateRef.current.dragging) return;
@@ -125,9 +127,11 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , crop: 
         stateRef.current.edges = stateRef.current.edges.filter((x)=>!edges.includes(x));
         stateRef.current.pointers.delete(e.pointerId);
         stateRef.current.dragging = Boolean(stateRef.current.edges);
-        node.removeEventListener("pointermove", dragEvent, {
+        window.removeEventListener("pointermove", dragEvent, {
             passive: true
         });
+        window.removeEventListener("pointerup", dragEndEvent);
+        window.removeEventListener("pointercancel", dragEndEvent);
     }
     function getXY(e) {
         const { clientX: clientX , clientY: clientY  } = e;
@@ -175,9 +179,15 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , crop: 
             newCrop.bottom = y;
             newCrop.top = Math.min(crop.top, y - threshold);
         }
-        newCrop.width = newCrop.right - newCrop.left;
-        newCrop.height = newCrop.bottom - newCrop.top;
-        onCropChange(newCrop);
+        onCropChange({
+            ...newCrop,
+            width: newCrop.right - newCrop.left,
+            height: newCrop.bottom - newCrop.top,
+            container: {
+                width: containerWidth,
+                height: containerHeight
+            }
+        });
     }
     function moveSelection({ dx: dx , dy: dy  }) {
         const newCrop = {
@@ -189,9 +199,15 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , crop: 
         newCrop.right += clampedDx;
         newCrop.top += clampedDy;
         newCrop.bottom += clampedDy;
-        newCrop.width = newCrop.right - newCrop.left;
-        newCrop.height = newCrop.bottom - newCrop.top;
-        onCropChange(newCrop);
+        onCropChange({
+            ...newCrop,
+            width: newCrop.right - newCrop.left,
+            height: newCrop.bottom - newCrop.top,
+            container: {
+                width: containerWidth,
+                height: containerHeight
+            }
+        });
     }
 }
 function $7c8ba892eba51f50$var$px(n) {

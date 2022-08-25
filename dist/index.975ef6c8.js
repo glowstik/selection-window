@@ -27223,15 +27223,15 @@ exports.getOrigin = getOrigin;
 
 },{}],"c4nSm":[function(require,module,exports) {
 module.exports["bottomLeft"] = `gPMrEW_bottomLeft`;
-module.exports["selection"] = `gPMrEW_selection`;
 module.exports["image"] = `gPMrEW_image`;
+module.exports["topRight"] = `gPMrEW_topRight`;
 module.exports["app"] = `gPMrEW_app`;
 module.exports["handle"] = `gPMrEW_handle`;
+module.exports["topLeft"] = `gPMrEW_topLeft`;
 module.exports["strict"] = `gPMrEW_strict`;
 module.exports["window"] = `gPMrEW_window`;
-module.exports["topRight"] = `gPMrEW_topRight`;
 module.exports["bottomRight"] = `gPMrEW_bottomRight`;
-module.exports["topLeft"] = `gPMrEW_topLeft`;
+module.exports["selection"] = `gPMrEW_selection`;
 
 },{}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
@@ -27412,14 +27412,12 @@ function SelectionWindow({ children , crop , onCropChange , className , mouseThr
     });
     const [containerWidth, containerHeight] = (0, _sizeDefault.default)(node);
     (0, _reactDefault.default).useEffect(()=>{
-        if (!crop && containerWidth && containerHeight) onCropChange({
+        if (!crop && containerWidth && containerHeight) onCropChange(updateSizes({
             left: containerWidth * 0.25,
             top: containerHeight * 0.25,
             right: containerWidth * 0.75,
-            bottom: containerHeight * 0.75,
-            containerWidth,
-            containerHeight
-        });
+            bottom: containerHeight * 0.75
+        }));
     }, [
         crop,
         containerWidth,
@@ -27456,12 +27454,12 @@ function SelectionWindow({ children , crop , onCropChange , className , mouseThr
             children
         }, void 0, false, {
             fileName: "src/SelectionWindow.js",
-            lineNumber: 52,
+            lineNumber: 50,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "src/SelectionWindow.js",
-        lineNumber: 51,
+        lineNumber: 49,
         columnNumber: 5
     }, this);
     function handleDragStart(e) {
@@ -27550,36 +27548,46 @@ function SelectionWindow({ children , crop , onCropChange , className , mouseThr
             ...crop
         };
         if (pointerState.edges.includes("left")) {
-            newCrop.left = x;
-            newCrop.right = Math.max(crop.right, x + threshold);
+            newCrop.left = Math.max(0, x);
+            newCrop.right = Math.min(containerWidth, Math.max(crop.right, x + threshold));
         } else if (pointerState.edges.includes("right")) {
-            newCrop.right = x;
-            newCrop.left = Math.min(crop.left, x - threshold);
+            newCrop.right = Math.min(containerWidth, x);
+            newCrop.left = Math.max(0, Math.min(crop.left, x - threshold));
         }
         if (pointerState.edges.includes("top")) {
-            newCrop.top = y;
-            newCrop.bottom = Math.max(newCrop.bottom, y + threshold);
+            newCrop.top = Math.max(0, y);
+            newCrop.bottom = Math.min(containerHeight, Math.max(newCrop.bottom, y + threshold));
         } else if (pointerState.edges.includes("bottom")) {
-            newCrop.bottom = y;
-            newCrop.top = Math.min(crop.top, y - threshold);
+            newCrop.bottom = Math.min(containerHeight, y);
+            newCrop.top = Math.max(0, Math.min(crop.top, y - threshold));
         }
-        newCrop.width = newCrop.right - newCrop.left;
-        newCrop.height = newCrop.bottom - newCrop.top;
-        onCropChange(newCrop);
+        onCropChange(updateSizes(newCrop));
     }
     function moveSelection({ dx , dy  }) {
         const newCrop = {
             ...crop
         };
-        const clampedDx = clamp(-crop.left, crop.containerWidth - crop.right, dx);
-        const clampedDy = clamp(-crop.top, crop.containerHeight - crop.bottom, dy);
+        const clampedDx = clamp(-crop.left, containerWidth - crop.right, dx);
+        const clampedDy = clamp(-crop.top, containerHeight - crop.bottom, dy);
         newCrop.left += clampedDx;
         newCrop.right += clampedDx;
         newCrop.top += clampedDy;
         newCrop.bottom += clampedDy;
-        newCrop.width = newCrop.right - newCrop.left;
-        newCrop.height = newCrop.bottom - newCrop.top;
-        onCropChange(newCrop);
+        onCropChange(updateSizes(newCrop));
+    }
+    function updateSizes({ left , right , top , bottom  }) {
+        return {
+            left,
+            right,
+            top,
+            bottom,
+            width: Math.min(right - left, containerWidth),
+            height: Math.min(bottom - top, containerHeight),
+            container: {
+                width: containerWidth,
+                height: containerHeight
+            }
+        };
     }
 }
 _s(SelectionWindow, "8RDb2OJ6XYEphy5QvMiPccCZmjA=", false, function() {
