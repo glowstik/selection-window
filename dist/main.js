@@ -16,12 +16,12 @@ $parcel$export(module.exports, "SelectionWindow", () => $0d16028b28e5283f$export
 
 var $5d4abfe7f70a3dcc$exports = {};
 
-$parcel$export($5d4abfe7f70a3dcc$exports, "component", () => $5d4abfe7f70a3dcc$export$d8556a2a8f973135, (v) => $5d4abfe7f70a3dcc$export$d8556a2a8f973135 = v);
 $parcel$export($5d4abfe7f70a3dcc$exports, "selection", () => $5d4abfe7f70a3dcc$export$7c69810f7b8835c9, (v) => $5d4abfe7f70a3dcc$export$7c69810f7b8835c9 = v);
-var $5d4abfe7f70a3dcc$export$d8556a2a8f973135;
+$parcel$export($5d4abfe7f70a3dcc$exports, "component", () => $5d4abfe7f70a3dcc$export$d8556a2a8f973135, (v) => $5d4abfe7f70a3dcc$export$d8556a2a8f973135 = v);
 var $5d4abfe7f70a3dcc$export$7c69810f7b8835c9;
-$5d4abfe7f70a3dcc$export$d8556a2a8f973135 = `wAMUBW_component`;
+var $5d4abfe7f70a3dcc$export$d8556a2a8f973135;
 $5d4abfe7f70a3dcc$export$7c69810f7b8835c9 = `wAMUBW_selection`;
+$5d4abfe7f70a3dcc$export$d8556a2a8f973135 = `wAMUBW_component`;
 
 
 function $0d16028b28e5283f$export$c2644827bcb91f96({ children: children , crop: crop , onCropChange: onCropChange , className: className , mouseThreshold: mouseThreshold = 30 , touchThreshold: touchThreshold = 60  }) {
@@ -34,14 +34,12 @@ function $0d16028b28e5283f$export$c2644827bcb91f96({ children: children , crop: 
     });
     const [containerWidth, containerHeight] = (0, ($parcel$interopDefault($dSH8u$reacthooksize)))(node);
     (0, ($parcel$interopDefault($dSH8u$react))).useEffect(()=>{
-        if (!crop && containerWidth && containerHeight) onCropChange({
+        if (!crop && containerWidth && containerHeight) onCropChange(updateSizes({
             left: containerWidth * 0.25,
             top: containerHeight * 0.25,
             right: containerWidth * 0.75,
-            bottom: containerHeight * 0.75,
-            containerWidth: containerWidth,
-            containerHeight: containerHeight
-        });
+            bottom: containerHeight * 0.75
+        }));
     }, [
         crop,
         containerWidth,
@@ -164,36 +162,46 @@ function $0d16028b28e5283f$export$c2644827bcb91f96({ children: children , crop: 
             ...crop
         };
         if (pointerState.edges.includes("left")) {
-            newCrop.left = x;
-            newCrop.right = Math.max(crop.right, x + threshold);
+            newCrop.left = Math.max(0, x);
+            newCrop.right = Math.min(containerWidth, Math.max(crop.right, x + threshold));
         } else if (pointerState.edges.includes("right")) {
-            newCrop.right = x;
-            newCrop.left = Math.min(crop.left, x - threshold);
+            newCrop.right = Math.min(containerWidth, x);
+            newCrop.left = Math.max(0, Math.min(crop.left, x - threshold));
         }
         if (pointerState.edges.includes("top")) {
-            newCrop.top = y;
-            newCrop.bottom = Math.max(newCrop.bottom, y + threshold);
+            newCrop.top = Math.max(0, y);
+            newCrop.bottom = Math.min(containerHeight, Math.max(newCrop.bottom, y + threshold));
         } else if (pointerState.edges.includes("bottom")) {
-            newCrop.bottom = y;
-            newCrop.top = Math.min(crop.top, y - threshold);
+            newCrop.bottom = Math.min(containerHeight, y);
+            newCrop.top = Math.max(0, Math.min(crop.top, y - threshold));
         }
-        newCrop.width = newCrop.right - newCrop.left;
-        newCrop.height = newCrop.bottom - newCrop.top;
-        onCropChange(newCrop);
+        onCropChange(updateSizes(newCrop));
     }
     function moveSelection({ dx: dx , dy: dy  }) {
         const newCrop = {
             ...crop
         };
-        const clampedDx = $0d16028b28e5283f$var$clamp(-crop.left, crop.containerWidth - crop.right, dx);
-        const clampedDy = $0d16028b28e5283f$var$clamp(-crop.top, crop.containerHeight - crop.bottom, dy);
+        const clampedDx = $0d16028b28e5283f$var$clamp(-crop.left, containerWidth - crop.right, dx);
+        const clampedDy = $0d16028b28e5283f$var$clamp(-crop.top, containerHeight - crop.bottom, dy);
         newCrop.left += clampedDx;
         newCrop.right += clampedDx;
         newCrop.top += clampedDy;
         newCrop.bottom += clampedDy;
-        newCrop.width = newCrop.right - newCrop.left;
-        newCrop.height = newCrop.bottom - newCrop.top;
-        onCropChange(newCrop);
+        onCropChange(updateSizes(newCrop));
+    }
+    function updateSizes({ left: left , right: right , top: top , bottom: bottom  }) {
+        return {
+            left: left,
+            right: right,
+            top: top,
+            bottom: bottom,
+            width: Math.min(right - left, containerWidth),
+            height: Math.min(bottom - top, containerHeight),
+            container: {
+                width: containerWidth,
+                height: containerHeight
+            }
+        };
     }
 }
 function $0d16028b28e5283f$var$px(n) {

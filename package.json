@@ -7,9 +7,7 @@
   "main": "dist/main.js",
   "module": "dist/module.js",
   "dependencies": {
-    "@react-hook/size": "2.1.2",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "@react-hook/size": "2.1.2"
   },
   "scripts": {
     "build": "parcel build"
