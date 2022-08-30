@@ -2,7 +2,16 @@ import React from "react"
 import useSize from "@react-hook/size"
 import styles from './SelectionWindow.module.css'
 
-export function SelectionWindow({ children, crop, onCropChange, className = undefined, mouseThreshold = 30, touchThreshold = 60 }) {
+export function SelectionWindow({
+  children,
+  crop,
+  onCropChange,
+  className = undefined,
+  width = undefined,
+  height = undefined,
+  mouseThreshold = 30,
+  touchThreshold = 60 
+}) {
   const [node, setNode] = React.useState(null)
   const selectionRef = React.useRef(null)
   const stateRef = React.useRef({ 
@@ -46,7 +55,7 @@ export function SelectionWindow({ children, crop, onCropChange, className = unde
   )
 
   return (
-    <div ref={setNode} className={cx(className, styles.component)}>
+    <div ref={setNode} className={cx(className, styles.component)} style={{ width: px(width), height: px(height) }}>
       <div
         ref={selectionRef}
         className={styles.selection}
@@ -195,7 +204,9 @@ export function SelectionWindow({ children, crop, onCropChange, className = unde
 }
 
 function px(n) {
-  return n + "px"
+  return (typeof n === 'number' || typeof n === 'string')
+    ? n + "px"
+    : n
 }
 
 function clamp(left, right, value) {

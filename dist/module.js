@@ -22,7 +22,7 @@ $ee54bb37bacb2026$export$7c69810f7b8835c9 = `wAMUBW_selection`;
 $ee54bb37bacb2026$export$d8556a2a8f973135 = `wAMUBW_component`;
 
 
-function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , crop: crop , onCropChange: onCropChange , className: className , mouseThreshold: mouseThreshold = 30 , touchThreshold: touchThreshold = 60  }) {
+function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , crop: crop , onCropChange: onCropChange , className: className , width: width , height: height , mouseThreshold: mouseThreshold = 30 , touchThreshold: touchThreshold = 60  }) {
     const [node, setNode] = (0, $2WDAj$react).useState(null);
     const selectionRef = (0, $2WDAj$react).useRef(null);
     const stateRef = (0, $2WDAj$react).useRef({
@@ -61,6 +61,10 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , crop: 
     return /*#__PURE__*/ (0, $2WDAj$jsx)("div", {
         ref: setNode,
         className: $7c8ba892eba51f50$var$cx(className, (0, (/*@__PURE__*/$parcel$interopDefault($ee54bb37bacb2026$exports))).component),
+        style: {
+            width: $7c8ba892eba51f50$var$px(width),
+            height: $7c8ba892eba51f50$var$px(height)
+        },
         children: /*#__PURE__*/ (0, $2WDAj$jsx)("div", {
             ref: selectionRef,
             className: (0, (/*@__PURE__*/$parcel$interopDefault($ee54bb37bacb2026$exports))).selection,
@@ -203,7 +207,7 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , crop: 
     }
 }
 function $7c8ba892eba51f50$var$px(n) {
-    return n + "px";
+    return typeof n === "number" || typeof n === "string" ? n + "px" : n;
 }
 function $7c8ba892eba51f50$var$clamp(left, right, value) {
     const [min, max] = left < right ? [

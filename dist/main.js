@@ -24,7 +24,7 @@ $5d4abfe7f70a3dcc$export$7c69810f7b8835c9 = `wAMUBW_selection`;
 $5d4abfe7f70a3dcc$export$d8556a2a8f973135 = `wAMUBW_component`;
 
 
-function $0d16028b28e5283f$export$c2644827bcb91f96({ children: children , crop: crop , onCropChange: onCropChange , className: className , mouseThreshold: mouseThreshold = 30 , touchThreshold: touchThreshold = 60  }) {
+function $0d16028b28e5283f$export$c2644827bcb91f96({ children: children , crop: crop , onCropChange: onCropChange , className: className , width: width , height: height , mouseThreshold: mouseThreshold = 30 , touchThreshold: touchThreshold = 60  }) {
     const [node, setNode] = (0, ($parcel$interopDefault($dSH8u$react))).useState(null);
     const selectionRef = (0, ($parcel$interopDefault($dSH8u$react))).useRef(null);
     const stateRef = (0, ($parcel$interopDefault($dSH8u$react))).useRef({
@@ -63,6 +63,10 @@ function $0d16028b28e5283f$export$c2644827bcb91f96({ children: children , crop: 
     return /*#__PURE__*/ (0, $dSH8u$reactjsxruntime.jsx)("div", {
         ref: setNode,
         className: $0d16028b28e5283f$var$cx(className, (0, (/*@__PURE__*/$parcel$interopDefault($5d4abfe7f70a3dcc$exports))).component),
+        style: {
+            width: $0d16028b28e5283f$var$px(width),
+            height: $0d16028b28e5283f$var$px(height)
+        },
         children: /*#__PURE__*/ (0, $dSH8u$reactjsxruntime.jsx)("div", {
             ref: selectionRef,
             className: (0, (/*@__PURE__*/$parcel$interopDefault($5d4abfe7f70a3dcc$exports))).selection,
@@ -205,7 +209,7 @@ function $0d16028b28e5283f$export$c2644827bcb91f96({ children: children , crop: 
     }
 }
 function $0d16028b28e5283f$var$px(n) {
-    return n + "px";
+    return typeof n === "number" || typeof n === "string" ? n + "px" : n;
 }
 function $0d16028b28e5283f$var$clamp(left, right, value) {
     const [min, max] = left < right ? [
