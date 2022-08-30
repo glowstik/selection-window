@@ -1,15 +1,18 @@
-import React from "react";
-import image from "./image.jpg";
-import * as styles from "./App.module.css";
+import React from "react"
+import image from "./image.jpg"
+import * as styles from "./App.module.css"
 import { SelectionWindow } from './SelectionWindow'
 
 export default function App() {
-  const [crop, setCrop] = React.useState(null)
+  const cropRectRef = React.useRef(null)
 
   return (
     <div className={styles.app}>
       <img className={styles.image} src={image} />
-      <SelectionWindow className={styles.window} onCropChange={setCrop} {...{ crop }}>
+      <SelectionWindow
+        className={styles.window}
+        onCropChange={rect => { cropRectRef.current = rect }} 
+      >
         <div className={styles.selection}>
           <div className={[styles.handle, styles.topLeft].join(' ')} />
           <div className={[styles.handle, styles.topRight].join(' ')} />
@@ -18,6 +21,6 @@ export default function App() {
         </div>
       </SelectionWindow>
     </div>
-  );
+  )
 }
 

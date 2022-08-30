@@ -27096,7 +27096,7 @@ var _selectionWindow = require("./SelectionWindow");
 var _s = $RefreshSig$();
 function App() {
     _s();
-    const [crop, setCrop] = (0, _reactDefault.default).useState(null);
+    const cropRectRef = (0, _reactDefault.default).useRef(null);
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
         className: _appModuleCss.app,
         children: [
@@ -27110,8 +27110,9 @@ function App() {
             }, this),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _selectionWindow.SelectionWindow), {
                 className: _appModuleCss.window,
-                onCropChange: setCrop,
-                crop,
+                onCropChange: (rect)=>{
+                    cropRectRef.current = rect;
+                },
                 children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                     className: _appModuleCss.selection,
                     children: [
@@ -27122,7 +27123,7 @@ function App() {
                             ].join(" ")
                         }, void 0, false, {
                             fileName: "src/App.js",
-                            lineNumber: 14,
+                            lineNumber: 17,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -27132,7 +27133,7 @@ function App() {
                             ].join(" ")
                         }, void 0, false, {
                             fileName: "src/App.js",
-                            lineNumber: 15,
+                            lineNumber: 18,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -27142,7 +27143,7 @@ function App() {
                             ].join(" ")
                         }, void 0, false, {
                             fileName: "src/App.js",
-                            lineNumber: 16,
+                            lineNumber: 19,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -27152,13 +27153,13 @@ function App() {
                             ].join(" ")
                         }, void 0, false, {
                             fileName: "src/App.js",
-                            lineNumber: 17,
+                            lineNumber: 20,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "src/App.js",
-                    lineNumber: 13,
+                    lineNumber: 16,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
@@ -27174,7 +27175,7 @@ function App() {
     }, this);
 }
 exports.default = App;
-_s(App, "dKWyiYccCRaikxUfomd0JxHg8Iw=");
+_s(App, "bgPGeNJ6B22OMXJA5NMp/BQXjio=");
 _c = App;
 var _c;
 $RefreshReg$(_c, "App");
@@ -27401,25 +27402,26 @@ var _sizeDefault = parcelHelpers.interopDefault(_size);
 var _selectionWindowModuleCss = require("./SelectionWindow.module.css");
 var _selectionWindowModuleCssDefault = parcelHelpers.interopDefault(_selectionWindowModuleCss);
 var _s = $RefreshSig$(), _s1 = $RefreshSig$();
-function SelectionWindow({ children , crop , onCropChange , className , width , height , mouseThreshold =30 , touchThreshold =60  }) {
+function SelectionWindow({ children , onCropChange , className , width , height , mouseThreshold =30 , touchThreshold =60  }) {
     _s();
+    console.log("re-render", Math.random());
     const [node, setNode] = (0, _reactDefault.default).useState(null);
     const selectionRef = (0, _reactDefault.default).useRef(null);
     const stateRef = (0, _reactDefault.default).useRef({
+        crop: null,
         dragging: false,
         pointers: new Map(),
         edges: []
     });
     const [containerWidth, containerHeight] = (0, _sizeDefault.default)(node);
     (0, _reactDefault.default).useEffect(()=>{
-        if (!crop && containerWidth && containerHeight) onCropChange(updateSizes({
+        if (!crop && containerWidth && containerHeight) handleCropChange({
             left: containerWidth * 0.25,
             top: containerHeight * 0.25,
             right: containerWidth * 0.75,
             bottom: containerHeight * 0.75
-        }));
+        });
     }, [
-        crop,
         containerWidth,
         containerHeight
     ]);
@@ -27438,6 +27440,7 @@ function SelectionWindow({ children , crop , onCropChange , className , width , 
     }, [
         node
     ]);
+    const crop = stateRef.current.crop;
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
         ref: setNode,
         className: cx(className, (0, _selectionWindowModuleCssDefault.default).component),
@@ -27458,14 +27461,24 @@ function SelectionWindow({ children , crop , onCropChange , className , width , 
             children
         }, void 0, false, {
             fileName: "src/SelectionWindow.js",
-            lineNumber: 59,
+            lineNumber: 62,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "src/SelectionWindow.js",
-        lineNumber: 58,
+        lineNumber: 61,
         columnNumber: 5
     }, this);
+    function handleCropChange(crop) {
+        stateRef.current.crop = updateSizes(crop);
+        onCropChange(stateRef.current.crop);
+        Object.assign(selectionRef.current.style, {
+            left: px(crop?.left ?? 0),
+            top: px(crop?.top ?? 0),
+            width: px((crop?.right ?? 0) - (crop?.left ?? 0)),
+            height: px((crop?.bottom ?? 0) - (crop?.top ?? 0))
+        });
+    }
     function handleDragStart(e) {
         e.preventDefault();
         const { x , y  } = getXY(e);
@@ -27528,6 +27541,7 @@ function SelectionWindow({ children , crop , onCropChange , className , width , 
         };
     }
     function getPointerState({ x , y , threshold  }) {
+        const crop = stateRef.current.crop;
         const edges = [];
         const dl = x - crop.left;
         const dr = x - crop.right;
@@ -27548,6 +27562,7 @@ function SelectionWindow({ children , crop , onCropChange , className , width , 
         };
     }
     function transformSelection({ pointerState , x , y , threshold  }) {
+        const crop = stateRef.current.crop;
         const newCrop = {
             ...crop
         };
@@ -27565,9 +27580,10 @@ function SelectionWindow({ children , crop , onCropChange , className , width , 
             newCrop.bottom = Math.min(containerHeight, y);
             newCrop.top = Math.max(0, Math.min(crop.top, y - threshold));
         }
-        onCropChange(updateSizes(newCrop));
+        handleCropChange(newCrop);
     }
     function moveSelection({ dx , dy  }) {
+        const crop = stateRef.current.crop;
         const newCrop = {
             ...crop
         };
@@ -27577,7 +27593,7 @@ function SelectionWindow({ children , crop , onCropChange , className , width , 
         newCrop.right += clampedDx;
         newCrop.top += clampedDy;
         newCrop.bottom += clampedDy;
-        onCropChange(updateSizes(newCrop));
+        handleCropChange(newCrop);
     }
     function updateSizes({ left , right , top , bottom  }) {
         return {
