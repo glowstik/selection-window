@@ -99,6 +99,8 @@ export function SelectionWindow({
     stateRef.current.pointers.set(e.pointerId, pointerState)
     stateRef.current.edges = stateRef.current.edges.concat(pointerState.edges)
 
+    console.log('start', e.pointerId, [...stateRef.current.pointers.entries()])
+
     window.addEventListener('pointermove', dragEvent, { passive: true })
     window.addEventListener('pointerup', dragEndEvent)
     window.addEventListener('pointercancel', dragEndEvent)
@@ -129,11 +131,13 @@ export function SelectionWindow({
     const { edges } = stateRef.current.pointers.get(e.pointerId)
     stateRef.current.edges = stateRef.current.edges.filter(x => !edges.includes(x))
     stateRef.current.pointers.delete(e.pointerId)
-    stateRef.current.dragging = Boolean(stateRef.current.edges)
+    stateRef.current.dragging = Boolean(stateRef.current.edges.length)
 
-    window.removeEventListener('pointermove', dragEvent, { passive: true })
-    window.removeEventListener('pointerup', dragEndEvent)
-    window.removeEventListener('pointercancel', dragEndEvent)
+    if (!stateRef.current.dragging) {
+      window.removeEventListener('pointermove', dragEvent, { passive: true })
+      window.removeEventListener('pointerup', dragEndEvent)
+      window.removeEventListener('pointercancel', dragEndEvent)
+    }
   }
 
   function getXY(e) {
