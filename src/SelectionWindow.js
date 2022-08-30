@@ -11,7 +11,6 @@ export function SelectionWindow({
   mouseThreshold = 30,
   touchThreshold = 60 
 }) {
-  console.log('re-render', Math.random())
   const [node, setNode] = React.useState(null)
   const selectionRef = React.useRef(null)
   const stateRef = React.useRef({ 
@@ -99,8 +98,6 @@ export function SelectionWindow({
     stateRef.current.pointers.set(e.pointerId, pointerState)
     stateRef.current.edges = stateRef.current.edges.concat(pointerState.edges)
 
-    console.log('start', e.pointerId, [...stateRef.current.pointers.entries()])
-
     window.addEventListener('pointermove', dragEvent, { passive: true })
     window.addEventListener('pointerup', dragEndEvent)
     window.addEventListener('pointercancel', dragEndEvent)
@@ -120,6 +117,8 @@ export function SelectionWindow({
 
     if (pointerState.edges.length) {
       transformSelection({ pointerState, x: x - pointerState.dx, y: y - pointerState.dy, threshold })
+    } else if (!pointerState.edges.length && stateRef.current.pointers.size > 1) {
+      scaleSelection({ dx: e.movementX, dy: e.movementY })
     } else if (stateRef.current.pointers.size === 1) {
       moveSelection({ dx: e.movementX, dy: e.movementY })
     } 
@@ -198,6 +197,20 @@ export function SelectionWindow({
   }
 
   function moveSelection({ dx, dy }) {
+    const crop = stateRef.current.crop
+    const newCrop = { ...crop }
+    const clampedDx = clamp(-crop.left, containerWidth - crop.right, dx)
+    const clampedDy = clamp(-crop.top, containerHeight - crop.bottom, dy)
+
+    newCrop.left = stateRef.current.edges.includes('left') ? crop.left : newCrop.left + clampedDx
+    newCrop.right = stateRef.current.edges.includes('right') ? crop.right : newCrop.right + clampedDx
+    newCrop.top = stateRef.current.edges.includes('top') ? crop.top : newCrop.top + clampedDy
+    newCrop.bottom = stateRef.current.edges.includes('bottom') ? crop.bottom : newCrop.bottom + clampedDy
+
+    handleCropChange(newCrop)
+  }
+
+  function scaleSelection({ dx, dy }) {
     const crop = stateRef.current.crop
     const newCrop = { ...crop }
     const clampedDx = clamp(-crop.left, containerWidth - crop.right, dx)
