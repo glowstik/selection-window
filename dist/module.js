@@ -22,7 +22,7 @@ $ee54bb37bacb2026$export$7c69810f7b8835c9 = `wAMUBW_selection`;
 $ee54bb37bacb2026$export$d8556a2a8f973135 = `wAMUBW_component`;
 
 
-function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , crop: crop , onCropChange: onCropChange , className: className , mouseThreshold: mouseThreshold = 30 , touchThreshold: touchThreshold = 60  }) {
+function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , crop: crop , onCropChange: onCropChange , className: className , width: width , height: height , mouseThreshold: mouseThreshold = 30 , touchThreshold: touchThreshold = 60  }) {
     const [node, setNode] = (0, $2WDAj$react).useState(null);
     const selectionRef = (0, $2WDAj$react).useRef(null);
     const stateRef = (0, $2WDAj$react).useRef({
@@ -32,18 +32,12 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , crop: 
     });
     const [containerWidth, containerHeight] = (0, $2WDAj$reacthooksize)(node);
     (0, $2WDAj$react).useEffect(()=>{
-        if (!crop && containerWidth && containerHeight) onCropChange({
+        if (!crop && containerWidth && containerHeight) onCropChange(updateSizes({
             left: containerWidth * 0.25,
             top: containerHeight * 0.25,
             right: containerWidth * 0.75,
-            bottom: containerHeight * 0.75,
-            width: containerWidth * 0.5,
-            height: containerHeight * 0.5,
-            container: {
-                width: containerWidth,
-                height: containerHeight
-            }
-        });
+            bottom: containerHeight * 0.75
+        }));
     }, [
         crop,
         containerWidth,
@@ -67,6 +61,10 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , crop: 
     return /*#__PURE__*/ (0, $2WDAj$jsx)("div", {
         ref: setNode,
         className: $7c8ba892eba51f50$var$cx(className, (0, (/*@__PURE__*/$parcel$interopDefault($ee54bb37bacb2026$exports))).component),
+        style: {
+            width: $7c8ba892eba51f50$var$px(width),
+            height: $7c8ba892eba51f50$var$px(height)
+        },
         children: /*#__PURE__*/ (0, $2WDAj$jsx)("div", {
             ref: selectionRef,
             className: (0, (/*@__PURE__*/$parcel$interopDefault($ee54bb37bacb2026$exports))).selection,
@@ -166,52 +164,50 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , crop: 
             ...crop
         };
         if (pointerState.edges.includes("left")) {
-            newCrop.left = x;
-            newCrop.right = Math.max(crop.right, x + threshold);
+            newCrop.left = Math.max(0, x);
+            newCrop.right = Math.min(containerWidth, Math.max(crop.right, x + threshold));
         } else if (pointerState.edges.includes("right")) {
-            newCrop.right = x;
-            newCrop.left = Math.min(crop.left, x - threshold);
+            newCrop.right = Math.min(containerWidth, x);
+            newCrop.left = Math.max(0, Math.min(crop.left, x - threshold));
         }
         if (pointerState.edges.includes("top")) {
-            newCrop.top = y;
-            newCrop.bottom = Math.max(newCrop.bottom, y + threshold);
+            newCrop.top = Math.max(0, y);
+            newCrop.bottom = Math.min(containerHeight, Math.max(newCrop.bottom, y + threshold));
         } else if (pointerState.edges.includes("bottom")) {
-            newCrop.bottom = y;
-            newCrop.top = Math.min(crop.top, y - threshold);
+            newCrop.bottom = Math.min(containerHeight, y);
+            newCrop.top = Math.max(0, Math.min(crop.top, y - threshold));
         }
-        onCropChange({
-            ...newCrop,
-            width: newCrop.right - newCrop.left,
-            height: newCrop.bottom - newCrop.top,
-            container: {
-                width: containerWidth,
-                height: containerHeight
-            }
-        });
+        onCropChange(updateSizes(newCrop));
     }
     function moveSelection({ dx: dx , dy: dy  }) {
         const newCrop = {
             ...crop
         };
-        const clampedDx = $7c8ba892eba51f50$var$clamp(-crop.left, crop.containerWidth - crop.right, dx);
-        const clampedDy = $7c8ba892eba51f50$var$clamp(-crop.top, crop.containerHeight - crop.bottom, dy);
+        const clampedDx = $7c8ba892eba51f50$var$clamp(-crop.left, containerWidth - crop.right, dx);
+        const clampedDy = $7c8ba892eba51f50$var$clamp(-crop.top, containerHeight - crop.bottom, dy);
         newCrop.left += clampedDx;
         newCrop.right += clampedDx;
         newCrop.top += clampedDy;
         newCrop.bottom += clampedDy;
-        onCropChange({
-            ...newCrop,
-            width: newCrop.right - newCrop.left,
-            height: newCrop.bottom - newCrop.top,
+        onCropChange(updateSizes(newCrop));
+    }
+    function updateSizes({ left: left , right: right , top: top , bottom: bottom  }) {
+        return {
+            left: left,
+            right: right,
+            top: top,
+            bottom: bottom,
+            width: Math.min(right - left, containerWidth),
+            height: Math.min(bottom - top, containerHeight),
             container: {
                 width: containerWidth,
                 height: containerHeight
             }
-        });
+        };
     }
 }
 function $7c8ba892eba51f50$var$px(n) {
-    return n + "px";
+    return typeof n === "number" || typeof n === "string" ? n + "px" : n;
 }
 function $7c8ba892eba51f50$var$clamp(left, right, value) {
     const [min, max] = left < right ? [

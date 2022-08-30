@@ -27222,16 +27222,16 @@ exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
 },{}],"c4nSm":[function(require,module,exports) {
-module.exports["bottomLeft"] = `gPMrEW_bottomLeft`;
-module.exports["image"] = `gPMrEW_image`;
-module.exports["topRight"] = `gPMrEW_topRight`;
-module.exports["app"] = `gPMrEW_app`;
-module.exports["handle"] = `gPMrEW_handle`;
-module.exports["topLeft"] = `gPMrEW_topLeft`;
 module.exports["strict"] = `gPMrEW_strict`;
 module.exports["window"] = `gPMrEW_window`;
 module.exports["bottomRight"] = `gPMrEW_bottomRight`;
+module.exports["bottomLeft"] = `gPMrEW_bottomLeft`;
+module.exports["topRight"] = `gPMrEW_topRight`;
 module.exports["selection"] = `gPMrEW_selection`;
+module.exports["handle"] = `gPMrEW_handle`;
+module.exports["image"] = `gPMrEW_image`;
+module.exports["topLeft"] = `gPMrEW_topLeft`;
+module.exports["app"] = `gPMrEW_app`;
 
 },{}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
@@ -27401,7 +27401,7 @@ var _sizeDefault = parcelHelpers.interopDefault(_size);
 var _selectionWindowModuleCss = require("./SelectionWindow.module.css");
 var _selectionWindowModuleCssDefault = parcelHelpers.interopDefault(_selectionWindowModuleCss);
 var _s = $RefreshSig$(), _s1 = $RefreshSig$();
-function SelectionWindow({ children , crop , onCropChange , className , mouseThreshold =30 , touchThreshold =60  }) {
+function SelectionWindow({ children , crop , onCropChange , className , width , height , mouseThreshold =30 , touchThreshold =60  }) {
     _s();
     const [node, setNode] = (0, _reactDefault.default).useState(null);
     const selectionRef = (0, _reactDefault.default).useRef(null);
@@ -27441,6 +27441,10 @@ function SelectionWindow({ children , crop , onCropChange , className , mouseThr
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
         ref: setNode,
         className: cx(className, (0, _selectionWindowModuleCssDefault.default).component),
+        style: {
+            width: px(width),
+            height: px(height)
+        },
         children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
             ref: selectionRef,
             className: (0, _selectionWindowModuleCssDefault.default).selection,
@@ -27454,12 +27458,12 @@ function SelectionWindow({ children , crop , onCropChange , className , mouseThr
             children
         }, void 0, false, {
             fileName: "src/SelectionWindow.js",
-            lineNumber: 50,
+            lineNumber: 59,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "src/SelectionWindow.js",
-        lineNumber: 49,
+        lineNumber: 58,
         columnNumber: 5
     }, this);
     function handleDragStart(e) {
@@ -27601,7 +27605,7 @@ _s(SelectionWindow, "8RDb2OJ6XYEphy5QvMiPccCZmjA=", false, function() {
 });
 _c = SelectionWindow;
 function px(n) {
-    return n + "px";
+    return typeof n === "number" || typeof n === "string" ? n + "px" : n;
 }
 function clamp(left, right, value) {
     const [min, max] = left < right ? [
@@ -28427,8 +28431,8 @@ const useLatest = (current)=>{
 exports.default = useLatest;
 
 },{"react":"21dqq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7dbn6":[function(require,module,exports) {
-module.exports["component"] = `wAMUBW_component`;
 module.exports["selection"] = `wAMUBW_selection`;
+module.exports["component"] = `wAMUBW_component`;
 
 },{}]},["1xC6H","ShInH","8lqZg"], "8lqZg", "parcelRequire0a95")
 

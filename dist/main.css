@@ -1,5 +1,6 @@
 .wAMUBW_component {
   position: relative;
+  overflow: hidden;
 }
 
 .wAMUBW_selection > * {
