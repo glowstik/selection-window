@@ -4,7 +4,6 @@ import styles from './SelectionWindow.module.css'
 
 export function SelectionWindow({
   children,
-  crop,
   onCropChange,
   className = undefined,
   width = undefined,
@@ -15,6 +14,7 @@ export function SelectionWindow({
   const [node, setNode] = React.useState(null)
   const selectionRef = React.useRef(null)
   const stateRef = React.useRef({ 
+    crop: null,
     dragging: false,
     pointers: new Map(),
     edges: []
@@ -24,15 +24,15 @@ export function SelectionWindow({
   React.useEffect(
     () => {
       if (!crop && containerWidth && containerHeight) {
-        onCropChange(updateSizes({
+        handleCropChange({
           left: containerWidth * 0.25,
           top: containerHeight * 0.25,
           right: containerWidth * 0.75,
           bottom: containerHeight * 0.75,
-        }))
+        })
       }
     },
-    [crop, containerWidth, containerHeight]
+    [containerWidth, containerHeight]
   )
 
   const touchMoveEvent = useEvent(handleTouchMove)
@@ -54,6 +54,8 @@ export function SelectionWindow({
     [node]
   )
 
+  const crop = stateRef.current.crop
+
   return (
     <div ref={setNode} className={cx(className, styles.component)} style={{ width: px(width), height: px(height) }}>
       <div
@@ -70,6 +72,20 @@ export function SelectionWindow({
       />
     </div>
   )
+
+  function handleCropChange(crop) {
+    stateRef.current.crop = updateSizes(crop)
+    onCropChange(stateRef.current.crop)
+    Object.assign(
+      selectionRef.current.style,
+      {
+        left: px(crop?.left ?? 0),
+        top: px(crop?.top ?? 0),
+        width: px((crop?.right ?? 0) - (crop?.left ?? 0)),
+        height: px((crop?.bottom ?? 0) - (crop?.top ?? 0)),
+      }
+    )
+  }
 
   function handleDragStart(e) {
     e.preventDefault()
@@ -101,6 +117,8 @@ export function SelectionWindow({
 
     if (pointerState.edges.length) {
       transformSelection({ pointerState, x: x - pointerState.dx, y: y - pointerState.dy, threshold })
+    } else if (!pointerState.edges.length && stateRef.current.pointers.size > 1) {
+      scaleSelection({ dx: e.movementX, dy: e.movementY })
     } else if (stateRef.current.pointers.size === 1) {
       moveSelection({ dx: e.movementX, dy: e.movementY })
     } 
@@ -112,11 +130,13 @@ export function SelectionWindow({
     const { edges } = stateRef.current.pointers.get(e.pointerId)
     stateRef.current.edges = stateRef.current.edges.filter(x => !edges.includes(x))
     stateRef.current.pointers.delete(e.pointerId)
-    stateRef.current.dragging = Boolean(stateRef.current.edges)
+    stateRef.current.dragging = Boolean(stateRef.current.edges.length)
 
-    window.removeEventListener('pointermove', dragEvent, { passive: true })
-    window.removeEventListener('pointerup', dragEndEvent)
-    window.removeEventListener('pointercancel', dragEndEvent)
+    if (!stateRef.current.dragging) {
+      window.removeEventListener('pointermove', dragEvent, { passive: true })
+      window.removeEventListener('pointerup', dragEndEvent)
+      window.removeEventListener('pointercancel', dragEndEvent)
+    }
   }
 
   function getXY(e) {
@@ -129,6 +149,7 @@ export function SelectionWindow({
   }
 
   function getPointerState({ x, y, threshold }) {
+    const crop = stateRef.current.crop
     const edges = []
     const dl = x - crop.left
     const dr = x - crop.right
@@ -153,6 +174,7 @@ export function SelectionWindow({
   }
 
   function transformSelection({ pointerState, x, y, threshold }) {
+    const crop = stateRef.current.crop
     const newCrop = { ...crop }
 
     if (pointerState.edges.includes("left")) {
@@ -171,10 +193,25 @@ export function SelectionWindow({
       newCrop.top = Math.max(0, Math.min(crop.top, y - threshold))
     }
 
-    onCropChange(updateSizes(newCrop))
+    handleCropChange(newCrop)
   }
 
   function moveSelection({ dx, dy }) {
+    const crop = stateRef.current.crop
+    const newCrop = { ...crop }
+    const clampedDx = clamp(-crop.left, containerWidth - crop.right, dx)
+    const clampedDy = clamp(-crop.top, containerHeight - crop.bottom, dy)
+
+    newCrop.left = stateRef.current.edges.includes('left') ? crop.left : newCrop.left + clampedDx
+    newCrop.right = stateRef.current.edges.includes('right') ? crop.right : newCrop.right + clampedDx
+    newCrop.top = stateRef.current.edges.includes('top') ? crop.top : newCrop.top + clampedDy
+    newCrop.bottom = stateRef.current.edges.includes('bottom') ? crop.bottom : newCrop.bottom + clampedDy
+
+    handleCropChange(newCrop)
+  }
+
+  function scaleSelection({ dx, dy }) {
+    const crop = stateRef.current.crop
     const newCrop = { ...crop }
     const clampedDx = clamp(-crop.left, containerWidth - crop.right, dx)
     const clampedDy = clamp(-crop.top, containerHeight - crop.bottom, dy)
@@ -184,7 +221,7 @@ export function SelectionWindow({
     newCrop.top += clampedDy
     newCrop.bottom += clampedDy
 
-    onCropChange(updateSizes(newCrop))
+    handleCropChange(newCrop)
   }
 
   function updateSizes({ left, right, top, bottom }) {
