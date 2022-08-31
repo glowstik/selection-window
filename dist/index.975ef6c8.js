@@ -27223,16 +27223,16 @@ exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
 },{}],"c4nSm":[function(require,module,exports) {
-module.exports["image"] = `gPMrEW_image`;
-module.exports["app"] = `gPMrEW_app`;
-module.exports["handle"] = `gPMrEW_handle`;
-module.exports["bottomRight"] = `gPMrEW_bottomRight`;
-module.exports["topRight"] = `gPMrEW_topRight`;
-module.exports["bottomLeft"] = `gPMrEW_bottomLeft`;
-module.exports["topLeft"] = `gPMrEW_topLeft`;
-module.exports["window"] = `gPMrEW_window`;
 module.exports["strict"] = `gPMrEW_strict`;
+module.exports["handle"] = `gPMrEW_handle`;
+module.exports["bottomLeft"] = `gPMrEW_bottomLeft`;
+module.exports["app"] = `gPMrEW_app`;
+module.exports["topLeft"] = `gPMrEW_topLeft`;
+module.exports["bottomRight"] = `gPMrEW_bottomRight`;
+module.exports["image"] = `gPMrEW_image`;
+module.exports["window"] = `gPMrEW_window`;
 module.exports["selection"] = `gPMrEW_selection`;
+module.exports["topRight"] = `gPMrEW_topRight`;
 
 },{}],"crMHi":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$3990 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
@@ -27252,7 +27252,7 @@ var _sizeDefault = parcelHelpers.interopDefault(_size);
 var _selectionWindowModuleCss = require("./SelectionWindow.module.css");
 var _selectionWindowModuleCssDefault = parcelHelpers.interopDefault(_selectionWindowModuleCss);
 var _s = $RefreshSig$(), _s1 = $RefreshSig$();
-function SelectionWindow({ children , onCropChange , className , width , height , mouseThreshold =30 , touchThreshold =60  }) {
+function SelectionWindow({ children , onCropChange , className , width , height , mouseThreshold =20 , touchThreshold =45  }) {
     _s();
     const [node, setNode] = (0, _reactDefault.default).useState(null);
     const selectionRef = (0, _reactDefault.default).useRef(null);
@@ -27362,12 +27362,22 @@ function SelectionWindow({ children , onCropChange , className , width , height 
                 y: y - pointerState.dy,
                 threshold
             });
-        } else if (!pointerState.edges.length && stateRef.current.pointers.size > 1) {
-            scaleSelection({
+            return;
+        } else if (!stateRef.current.edges.length && stateRef.current.pointers.size === 2) {
+            const isFirstPointer = [
+                ...stateRef.current.pointers.values()
+            ][0] === pointerState;
+            if (isFirstPointer) moveSelection({
                 dx: e.movementX,
                 dy: e.movementY
             });
-        } else if (stateRef.current.pointers.size === 1) {
+            scaleSelection({
+                pointerState,
+                dx: e.movementX,
+                dy: e.movementY,
+                threshold
+            });
+        } else if (stateRef.current.pointers.size > 0) {
             moveSelection({
                 dx: e.movementX,
                 dy: e.movementY
@@ -27379,7 +27389,7 @@ function SelectionWindow({ children , onCropChange , className , width , height 
         const { edges  } = stateRef.current.pointers.get(e.pointerId);
         stateRef.current.edges = stateRef.current.edges.filter((x)=>!edges.includes(x));
         stateRef.current.pointers.delete(e.pointerId);
-        stateRef.current.dragging = Boolean(stateRef.current.edges.length);
+        stateRef.current.dragging = Boolean(stateRef.current.pointers.size);
         if (!stateRef.current.dragging) {
             window.removeEventListener("pointermove", dragEvent, {
                 passive: true
@@ -27412,6 +27422,8 @@ function SelectionWindow({ children , onCropChange , className , width , height 
         if (adt <= adb && adt < threshold) edges.push("top");
         else if (adb <= adt && adb < threshold) edges.push("bottom");
         return {
+            x,
+            y,
             dx: edges.includes("left") ? dl : edges.includes("right") ? dr : 0,
             dy: edges.includes("top") ? dt : edges.includes("bottom") ? db : 0,
             edges: edges.filter((x)=>!stateRef.current.edges.includes(x))
@@ -27443,25 +27455,42 @@ function SelectionWindow({ children , onCropChange , className , width , height 
         const newCrop = {
             ...crop
         };
+        // We cannot constrain edges without considering the other edges: the left 
+        // edge may be well within the container while your move the right side 
+        // out. We constrain the selection by making sure the delta x and y never
+        // exceed the delta that would move any of the edges out of the container.
         const clampedDx = clamp(-crop.left, containerWidth - crop.right, dx);
         const clampedDy = clamp(-crop.top, containerHeight - crop.bottom, dy);
-        newCrop.left = stateRef.current.edges.includes("left") ? crop.left : newCrop.left + clampedDx;
-        newCrop.right = stateRef.current.edges.includes("right") ? crop.right : newCrop.right + clampedDx;
-        newCrop.top = stateRef.current.edges.includes("top") ? crop.top : newCrop.top + clampedDy;
-        newCrop.bottom = stateRef.current.edges.includes("bottom") ? crop.bottom : newCrop.bottom + clampedDy;
+        // If an edge is being 'held', it won't be moved
+        newCrop.left = stateRef.current.edges.includes("left") ? crop.left : crop.left + clampedDx;
+        newCrop.right = stateRef.current.edges.includes("right") ? crop.right : crop.right + clampedDx;
+        newCrop.top = stateRef.current.edges.includes("top") ? crop.top : crop.top + clampedDy;
+        newCrop.bottom = stateRef.current.edges.includes("bottom") ? crop.bottom : crop.bottom + clampedDy;
         handleCropChange(newCrop);
     }
-    function scaleSelection({ dx , dy  }) {
+    function scaleSelection({ pointerState , dx , dy , threshold  }) {
         const crop = stateRef.current.crop;
         const newCrop = {
             ...crop
         };
-        const clampedDx = clamp(-crop.left, containerWidth - crop.right, dx);
-        const clampedDy = clamp(-crop.top, containerHeight - crop.bottom, dy);
-        newCrop.left += clampedDx;
-        newCrop.right += clampedDx;
-        newCrop.top += clampedDy;
-        newCrop.bottom += clampedDy;
+        // New scale is calculated in reference to the distance to the other pointer on the screen
+        const [otherPointer] = [
+            ...stateRef.current.pointers.values()
+        ].filter((x)=>x !== pointerState);
+        const distanceBefore = Math.sqrt((pointerState.x - otherPointer.x) ** 2 + (pointerState.y - otherPointer.y) ** 2);
+        const distanceAfter = Math.sqrt((pointerState.x + dx - otherPointer.x) ** 2 + (pointerState.y + dy - otherPointer.y) ** 2);
+        // Change in scale
+        const deltaScale = clamp(// Cannot be so small the window would become large than the threshold, rendering some corners inaccessible
+        Math.max(threshold / containerWidth, threshold / containerHeight), // Cannot be so large the window would become larger than it's container
+        Math.min(containerWidth / crop.width, containerHeight / crop.height), // The new scale
+        distanceAfter / distanceBefore) - 1;
+        // Since we know for sure the resulting crop cannot exceed the container 
+        // size, we can simply an edge of the new crop rect without considering the
+        // other edges
+        newCrop.left = clamp(0, containerWidth - threshold, crop.left - crop.width * deltaScale * 0.5);
+        newCrop.right = clamp(threshold, containerWidth, crop.right + crop.width * deltaScale * 0.5);
+        newCrop.top = clamp(0, containerHeight - threshold, crop.top - crop.height * deltaScale * 0.5);
+        newCrop.bottom = clamp(threshold, containerHeight, crop.bottom + crop.height * deltaScale * 0.5);
         handleCropChange(newCrop);
     }
     function updateSizes({ left , right , top , bottom  }) {
@@ -27501,6 +27530,12 @@ function clamp(left, right, value) {
         left
     ];
     return Math.max(min, Math.min(max, value));
+}
+function lerp(a, b, n) {
+    return b - a + a * n;
+}
+function unlerp(a, b, n) {
+    return (n - a) / (b - a);
 }
 function cx(...classes) {
     return classes.filter(Boolean).join(" ");
@@ -28346,8 +28381,8 @@ const useLatest = (current)=>{
 exports.default = useLatest;
 
 },{"react":"21dqq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7dbn6":[function(require,module,exports) {
-module.exports["component"] = `wAMUBW_component`;
 module.exports["selection"] = `wAMUBW_selection`;
+module.exports["component"] = `wAMUBW_component`;
 
 },{}],"km3Ru":[function(require,module,exports) {
 "use strict";
