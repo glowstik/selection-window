@@ -22,7 +22,7 @@ $ee54bb37bacb2026$export$d8556a2a8f973135 = `wAMUBW_component`;
 $ee54bb37bacb2026$export$7c69810f7b8835c9 = `wAMUBW_selection`;
 
 
-function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , onCropChange: onCropChange , className: className , width: width , height: height , mouseThreshold: mouseThreshold = 30 , touchThreshold: touchThreshold = 60  }) {
+function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , onCropChange: onCropChange , className: className , width: width , height: height , mouseThreshold: mouseThreshold = 20 , touchThreshold: touchThreshold = 45  }) {
     const [node, setNode] = (0, $2WDAj$react).useState(null);
     const selectionRef = (0, $2WDAj$react).useRef(null);
     const stateRef = (0, $2WDAj$react).useRef({
@@ -123,12 +123,22 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , onCrop
                 y: y - pointerState.dy,
                 threshold: threshold
             });
-        } else if (!pointerState.edges.length && stateRef.current.pointers.size > 1) {
-            scaleSelection({
+            return;
+        } else if (!stateRef.current.edges.length && stateRef.current.pointers.size === 2) {
+            const isFirstPointer = [
+                ...stateRef.current.pointers.values()
+            ][0] === pointerState;
+            if (isFirstPointer) moveSelection({
                 dx: e.movementX,
                 dy: e.movementY
             });
-        } else if (stateRef.current.pointers.size === 1) {
+            scaleSelection({
+                pointerState: pointerState,
+                dx: e.movementX,
+                dy: e.movementY,
+                threshold: threshold
+            });
+        } else if (stateRef.current.pointers.size > 0) {
             moveSelection({
                 dx: e.movementX,
                 dy: e.movementY
@@ -140,7 +150,7 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , onCrop
         const { edges: edges  } = stateRef.current.pointers.get(e.pointerId);
         stateRef.current.edges = stateRef.current.edges.filter((x)=>!edges.includes(x));
         stateRef.current.pointers.delete(e.pointerId);
-        stateRef.current.dragging = Boolean(stateRef.current.edges.length);
+        stateRef.current.dragging = Boolean(stateRef.current.pointers.size);
         if (!stateRef.current.dragging) {
             window.removeEventListener("pointermove", dragEvent, {
                 passive: true
@@ -173,6 +183,8 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , onCrop
         if (adt <= adb && adt < threshold) edges.push("top");
         else if (adb <= adt && adb < threshold) edges.push("bottom");
         return {
+            x: x,
+            y: y,
             dx: edges.includes("left") ? dl : edges.includes("right") ? dr : 0,
             dy: edges.includes("top") ? dt : edges.includes("bottom") ? db : 0,
             edges: edges.filter((x)=>!stateRef.current.edges.includes(x))
@@ -204,25 +216,42 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , onCrop
         const newCrop = {
             ...crop
         };
+        // We cannot constrain edges without considering the other edges: the left 
+        // edge may be well within the container while your move the right side 
+        // out. We constrain the selection by making sure the delta x and y never
+        // exceed the delta that would move any of the edges out of the container.
         const clampedDx = $7c8ba892eba51f50$var$clamp(-crop.left, containerWidth - crop.right, dx);
         const clampedDy = $7c8ba892eba51f50$var$clamp(-crop.top, containerHeight - crop.bottom, dy);
-        newCrop.left = stateRef.current.edges.includes("left") ? crop.left : newCrop.left + clampedDx;
-        newCrop.right = stateRef.current.edges.includes("right") ? crop.right : newCrop.right + clampedDx;
-        newCrop.top = stateRef.current.edges.includes("top") ? crop.top : newCrop.top + clampedDy;
-        newCrop.bottom = stateRef.current.edges.includes("bottom") ? crop.bottom : newCrop.bottom + clampedDy;
+        // If an edge is being 'held', it won't be moved
+        newCrop.left = stateRef.current.edges.includes("left") ? crop.left : crop.left + clampedDx;
+        newCrop.right = stateRef.current.edges.includes("right") ? crop.right : crop.right + clampedDx;
+        newCrop.top = stateRef.current.edges.includes("top") ? crop.top : crop.top + clampedDy;
+        newCrop.bottom = stateRef.current.edges.includes("bottom") ? crop.bottom : crop.bottom + clampedDy;
         handleCropChange(newCrop);
     }
-    function scaleSelection({ dx: dx , dy: dy  }) {
+    function scaleSelection({ pointerState: pointerState , dx: dx , dy: dy , threshold: threshold  }) {
         const crop = stateRef.current.crop;
         const newCrop = {
             ...crop
         };
-        const clampedDx = $7c8ba892eba51f50$var$clamp(-crop.left, containerWidth - crop.right, dx);
-        const clampedDy = $7c8ba892eba51f50$var$clamp(-crop.top, containerHeight - crop.bottom, dy);
-        newCrop.left += clampedDx;
-        newCrop.right += clampedDx;
-        newCrop.top += clampedDy;
-        newCrop.bottom += clampedDy;
+        // New scale is calculated in reference to the distance to the other pointer on the screen
+        const [otherPointer] = [
+            ...stateRef.current.pointers.values()
+        ].filter((x)=>x !== pointerState);
+        const distanceBefore = Math.sqrt((pointerState.x - otherPointer.x) ** 2 + (pointerState.y - otherPointer.y) ** 2);
+        const distanceAfter = Math.sqrt((pointerState.x + dx - otherPointer.x) ** 2 + (pointerState.y + dy - otherPointer.y) ** 2);
+        // Change in scale
+        const deltaScale = $7c8ba892eba51f50$var$clamp(// Cannot be so small the window would become large than the threshold, rendering some corners inaccessible
+        Math.max(threshold / containerWidth, threshold / containerHeight), // Cannot be so large the window would become larger than it's container
+        Math.min(containerWidth / crop.width, containerHeight / crop.height), // The new scale
+        distanceAfter / distanceBefore) - 1;
+        // Since we know for sure the resulting crop cannot exceed the container 
+        // size, we can simply an edge of the new crop rect without considering the
+        // other edges
+        newCrop.left = $7c8ba892eba51f50$var$clamp(0, containerWidth - threshold, crop.left - crop.width * deltaScale * 0.5);
+        newCrop.right = $7c8ba892eba51f50$var$clamp(threshold, containerWidth, crop.right + crop.width * deltaScale * 0.5);
+        newCrop.top = $7c8ba892eba51f50$var$clamp(0, containerHeight - threshold, crop.top - crop.height * deltaScale * 0.5);
+        newCrop.bottom = $7c8ba892eba51f50$var$clamp(threshold, containerHeight, crop.bottom + crop.height * deltaScale * 0.5);
         handleCropChange(newCrop);
     }
     function updateSizes({ left: left , right: right , top: top , bottom: bottom  }) {
@@ -252,6 +281,12 @@ function $7c8ba892eba51f50$var$clamp(left, right, value) {
         left
     ];
     return Math.max(min, Math.min(max, value));
+}
+function $7c8ba892eba51f50$var$lerp(a, b, n) {
+    return b - a + a * n;
+}
+function $7c8ba892eba51f50$var$unlerp(a, b, n) {
+    return (n - a) / (b - a);
 }
 function $7c8ba892eba51f50$var$cx(...classes) {
     return classes.filter(Boolean).join(" ");
