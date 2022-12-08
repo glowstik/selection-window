@@ -27279,11 +27279,10 @@ function SelectionWindow({ children , onCropChange , className , width , height 
     const dragStartEvent = useEvent(handleDragStart);
     const dragEvent = useEvent(handleDrag);
     const dragEndEvent = useEvent(handleDragEnd);
-    const dragGesture = (0, _react1.useDrag)((state)=>{
-        console.log(state);
-        if (!stateRef.current.edges[0] && state._pointerId > 1) moveSelection({
-            dx: state.delta[0],
-            dy: state.delta[1]
+    const dragGesture = (0, _react1.useDrag)((touch)=>{
+        if (!stateRef.current.edges[0] && touch._pointerId > 1) moveSelection({
+            dx: touch.delta[0],
+            dy: touch.delta[1]
         });
     });
     (0, _reactDefault.default).useEffect(()=>{
@@ -27320,12 +27319,12 @@ function SelectionWindow({ children , onCropChange , className , width , height 
             children
         }, void 0, false, {
             fileName: "src/SelectionWindow.js",
-            lineNumber: 69,
+            lineNumber: 68,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "src/SelectionWindow.js",
-        lineNumber: 68,
+        lineNumber: 67,
         columnNumber: 5
     }, this);
     function handleCropChange(crop) {
