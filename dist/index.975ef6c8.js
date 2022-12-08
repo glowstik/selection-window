@@ -2358,7 +2358,7 @@ var process = require("process");
     ]);
 });
 
-},{"process":"4Q806"}],"4Q806":[function(require,module,exports) {
+},{"process":"87XAw"}],"87XAw":[function(require,module,exports) {
 // shim for using process in browser
 var process = module.exports = {};
 // cached from whatever global is present so that test runners that stub it
@@ -27223,16 +27223,16 @@ exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
 },{}],"c4nSm":[function(require,module,exports) {
-module.exports["strict"] = `gPMrEW_strict`;
-module.exports["handle"] = `gPMrEW_handle`;
-module.exports["bottomLeft"] = `gPMrEW_bottomLeft`;
 module.exports["app"] = `gPMrEW_app`;
-module.exports["topLeft"] = `gPMrEW_topLeft`;
-module.exports["bottomRight"] = `gPMrEW_bottomRight`;
 module.exports["image"] = `gPMrEW_image`;
+module.exports["handle"] = `gPMrEW_handle`;
+module.exports["strict"] = `gPMrEW_strict`;
 module.exports["window"] = `gPMrEW_window`;
 module.exports["selection"] = `gPMrEW_selection`;
+module.exports["topLeft"] = `gPMrEW_topLeft`;
 module.exports["topRight"] = `gPMrEW_topRight`;
+module.exports["bottomLeft"] = `gPMrEW_bottomLeft`;
+module.exports["bottomRight"] = `gPMrEW_bottomRight`;
 
 },{}],"crMHi":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$3990 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
@@ -27249,6 +27249,7 @@ var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
 var _size = require("@react-hook/size");
 var _sizeDefault = parcelHelpers.interopDefault(_size);
+var _react1 = require("@use-gesture/react");
 var _selectionWindowModuleCss = require("./SelectionWindow.module.css");
 var _selectionWindowModuleCssDefault = parcelHelpers.interopDefault(_selectionWindowModuleCss);
 var _s = $RefreshSig$(), _s1 = $RefreshSig$();
@@ -27278,6 +27279,13 @@ function SelectionWindow({ children , onCropChange , className , width , height 
     const dragStartEvent = useEvent(handleDragStart);
     const dragEvent = useEvent(handleDrag);
     const dragEndEvent = useEvent(handleDragEnd);
+    const dragGesture = (0, _react1.useDrag)((state)=>{
+        console.log(state);
+        if (!stateRef.current.edges[0] && state._pointerId > 1) moveSelection({
+            dx: state.delta[0],
+            dy: state.delta[1]
+        });
+    });
     (0, _reactDefault.default).useEffect(()=>{
         if (!node) return;
         node.addEventListener("touchmove", touchMoveEvent);
@@ -27298,6 +27306,7 @@ function SelectionWindow({ children , onCropChange , className , width , height 
             height: px(height)
         },
         children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+            ...dragGesture(),
             ref: selectionRef,
             className: (0, _selectionWindowModuleCssDefault.default).selection,
             style: {
@@ -27305,17 +27314,18 @@ function SelectionWindow({ children , onCropChange , className , width , height 
                 left: px(crop?.left ?? 0),
                 top: px(crop?.top ?? 0),
                 width: px((crop?.right ?? 0) - (crop?.left ?? 0)),
-                height: px((crop?.bottom ?? 0) - (crop?.top ?? 0))
+                height: px((crop?.bottom ?? 0) - (crop?.top ?? 0)),
+                touchAction: "none"
             },
             children
         }, void 0, false, {
             fileName: "src/SelectionWindow.js",
-            lineNumber: 61,
+            lineNumber: 69,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "src/SelectionWindow.js",
-        lineNumber: 60,
+        lineNumber: 68,
         columnNumber: 5
     }, this);
     function handleCropChange(crop) {
@@ -27377,7 +27387,7 @@ function SelectionWindow({ children , onCropChange , className , width , height 
                 dy: e.movementY,
                 threshold
             });
-        } else if (stateRef.current.pointers.size > 0) {
+        } else if (e.pointerId === 1) {
             moveSelection({
                 dx: e.movementX,
                 dy: e.movementY
@@ -27508,13 +27518,14 @@ function SelectionWindow({ children , onCropChange , className , width , height 
         };
     }
 }
-_s(SelectionWindow, "8RDb2OJ6XYEphy5QvMiPccCZmjA=", false, function() {
+_s(SelectionWindow, "Ilkd2ifM/Gq88QtpDj9zptCzvPU=", false, function() {
     return [
         (0, _sizeDefault.default),
         useEvent,
         useEvent,
         useEvent,
-        useEvent
+        useEvent,
+        (0, _react1.useDrag)
     ];
 });
 _c = SelectionWindow;
@@ -27555,7 +27566,7 @@ $RefreshReg$(_c, "SelectionWindow");
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","@react-hook/size":"3K4FR","./SelectionWindow.module.css":"7dbn6","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"3K4FR":[function(require,module,exports) {
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","@react-hook/size":"3K4FR","./SelectionWindow.module.css":"7dbn6","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru","@use-gesture/react":"gVqEQ"}],"3K4FR":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _react = require("react");
@@ -28381,8 +28392,8 @@ const useLatest = (current)=>{
 exports.default = useLatest;
 
 },{"react":"21dqq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7dbn6":[function(require,module,exports) {
-module.exports["selection"] = `wAMUBW_selection`;
 module.exports["component"] = `wAMUBW_component`;
+module.exports["selection"] = `wAMUBW_selection`;
 
 },{}],"km3Ru":[function(require,module,exports) {
 "use strict";
@@ -28504,6 +28515,1949 @@ function registerExportsForReactRefresh(module1) {
     }
 }
 
-},{"react-refresh/runtime":"786KC"}]},["1xC6H","ShInH","8lqZg"], "8lqZg", "parcelRequire0a95")
+},{"react-refresh/runtime":"786KC"}],"gVqEQ":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "createUseGesture", ()=>createUseGesture);
+parcelHelpers.export(exports, "useDrag", ()=>useDrag);
+parcelHelpers.export(exports, "useGesture", ()=>useGesture);
+parcelHelpers.export(exports, "useHover", ()=>useHover);
+parcelHelpers.export(exports, "useMove", ()=>useMove);
+parcelHelpers.export(exports, "usePinch", ()=>usePinch);
+parcelHelpers.export(exports, "useScroll", ()=>useScroll);
+parcelHelpers.export(exports, "useWheel", ()=>useWheel);
+var _actions = require("@use-gesture/core/actions");
+var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
+var _core = require("@use-gesture/core");
+parcelHelpers.exportAll(_actions, exports);
+var _utils = require("@use-gesture/core/utils");
+parcelHelpers.exportAll(_utils, exports);
+var _types = require("@use-gesture/core/types");
+parcelHelpers.exportAll(_types, exports);
+function useRecognizers(handlers, config = {}, gestureKey, nativeHandlers) {
+    const ctrl = (0, _reactDefault.default).useMemo(()=>new (0, _core.Controller)(handlers), []);
+    ctrl.applyHandlers(handlers, nativeHandlers);
+    ctrl.applyConfig(config, gestureKey);
+    (0, _reactDefault.default).useEffect(ctrl.effect.bind(ctrl));
+    (0, _reactDefault.default).useEffect(()=>{
+        return ctrl.clean.bind(ctrl);
+    }, []);
+    if (config.target === undefined) return ctrl.bind.bind(ctrl);
+    return undefined;
+}
+function useDrag(handler, config) {
+    (0, _actions.registerAction)((0, _actions.dragAction));
+    return useRecognizers({
+        drag: handler
+    }, config || {}, "drag");
+}
+function usePinch(handler, config) {
+    (0, _actions.registerAction)((0, _actions.pinchAction));
+    return useRecognizers({
+        pinch: handler
+    }, config || {}, "pinch");
+}
+function useWheel(handler, config) {
+    (0, _actions.registerAction)((0, _actions.wheelAction));
+    return useRecognizers({
+        wheel: handler
+    }, config || {}, "wheel");
+}
+function useScroll(handler, config) {
+    (0, _actions.registerAction)((0, _actions.scrollAction));
+    return useRecognizers({
+        scroll: handler
+    }, config || {}, "scroll");
+}
+function useMove(handler, config) {
+    (0, _actions.registerAction)((0, _actions.moveAction));
+    return useRecognizers({
+        move: handler
+    }, config || {}, "move");
+}
+function useHover(handler, config) {
+    (0, _actions.registerAction)((0, _actions.hoverAction));
+    return useRecognizers({
+        hover: handler
+    }, config || {}, "hover");
+}
+function createUseGesture(actions) {
+    actions.forEach((0, _actions.registerAction));
+    return function useGesture(_handlers, _config) {
+        const { handlers , nativeHandlers , config  } = (0, _core.parseMergedHandlers)(_handlers, _config || {});
+        return useRecognizers(handlers, config, undefined, nativeHandlers);
+    };
+}
+function useGesture(handlers, config) {
+    const hook = createUseGesture([
+        (0, _actions.dragAction),
+        (0, _actions.pinchAction),
+        (0, _actions.scrollAction),
+        (0, _actions.wheelAction),
+        (0, _actions.moveAction),
+        (0, _actions.hoverAction)
+    ]);
+    return hook(handlers, config || {});
+}
+
+},{"@use-gesture/core/actions":"kqQut","react":"21dqq","@use-gesture/core":"a9rlE","@use-gesture/core/utils":"kcNQH","@use-gesture/core/types":"4a9W9","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"kqQut":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "ConfigResolverMap", ()=>(0, _actionsE3D93FdeEsmJs.C));
+parcelHelpers.export(exports, "EngineMap", ()=>(0, _actionsE3D93FdeEsmJs.E));
+parcelHelpers.export(exports, "dragAction", ()=>(0, _actionsE3D93FdeEsmJs.e));
+parcelHelpers.export(exports, "hoverAction", ()=>(0, _actionsE3D93FdeEsmJs.h));
+parcelHelpers.export(exports, "moveAction", ()=>(0, _actionsE3D93FdeEsmJs.m));
+parcelHelpers.export(exports, "pinchAction", ()=>(0, _actionsE3D93FdeEsmJs.f));
+parcelHelpers.export(exports, "registerAction", ()=>(0, _actionsE3D93FdeEsmJs.r));
+parcelHelpers.export(exports, "scrollAction", ()=>(0, _actionsE3D93FdeEsmJs.s));
+parcelHelpers.export(exports, "wheelAction", ()=>(0, _actionsE3D93FdeEsmJs.w));
+var _mathsB28D9B98EsmJs = require("../../dist/maths-b28d9b98.esm.js");
+var _actionsE3D93FdeEsmJs = require("../../dist/actions-e3d93fde.esm.js");
+
+},{"../../dist/maths-b28d9b98.esm.js":"iBQ8u","../../dist/actions-e3d93fde.esm.js":"2fEAd","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"iBQ8u":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "V", ()=>V);
+parcelHelpers.export(exports, "c", ()=>computeRubberband);
+parcelHelpers.export(exports, "r", ()=>rubberbandIfOutOfBounds);
+function clamp(v, min, max) {
+    return Math.max(min, Math.min(v, max));
+}
+const V = {
+    toVector (v, fallback) {
+        if (v === undefined) v = fallback;
+        return Array.isArray(v) ? v : [
+            v,
+            v
+        ];
+    },
+    add (v1, v2) {
+        return [
+            v1[0] + v2[0],
+            v1[1] + v2[1]
+        ];
+    },
+    sub (v1, v2) {
+        return [
+            v1[0] - v2[0],
+            v1[1] - v2[1]
+        ];
+    },
+    addTo (v1, v2) {
+        v1[0] += v2[0];
+        v1[1] += v2[1];
+    },
+    subTo (v1, v2) {
+        v1[0] -= v2[0];
+        v1[1] -= v2[1];
+    }
+};
+function rubberband(distance, dimension, constant) {
+    if (dimension === 0 || Math.abs(dimension) === Infinity) return Math.pow(distance, constant * 5);
+    return distance * dimension * constant / (dimension + constant * distance);
+}
+function rubberbandIfOutOfBounds(position, min, max, constant = 0.15) {
+    if (constant === 0) return clamp(position, min, max);
+    if (position < min) return -rubberband(min - position, max - min, constant) + min;
+    if (position > max) return +rubberband(position - max, max - min, constant) + max;
+    return position;
+}
+function computeRubberband(bounds, [Vx, Vy], [Rx, Ry]) {
+    const [[X0, X1], [Y0, Y1]] = bounds;
+    return [
+        rubberbandIfOutOfBounds(Vx, X0, X1, Rx),
+        rubberbandIfOutOfBounds(Vy, Y0, Y1, Ry)
+    ];
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"2fEAd":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "C", ()=>ConfigResolverMap);
+parcelHelpers.export(exports, "E", ()=>EngineMap);
+parcelHelpers.export(exports, "S", ()=>SUPPORT);
+parcelHelpers.export(exports, "_", ()=>_objectSpread2);
+parcelHelpers.export(exports, "a", ()=>_defineProperty);
+parcelHelpers.export(exports, "b", ()=>touchIds);
+parcelHelpers.export(exports, "c", ()=>chain);
+parcelHelpers.export(exports, "d", ()=>toHandlerProp);
+parcelHelpers.export(exports, "e", ()=>dragAction);
+parcelHelpers.export(exports, "f", ()=>pinchAction);
+parcelHelpers.export(exports, "h", ()=>hoverAction);
+parcelHelpers.export(exports, "i", ()=>isTouch);
+parcelHelpers.export(exports, "m", ()=>moveAction);
+parcelHelpers.export(exports, "p", ()=>parseProp);
+parcelHelpers.export(exports, "r", ()=>registerAction);
+parcelHelpers.export(exports, "s", ()=>scrollAction);
+parcelHelpers.export(exports, "t", ()=>toDomEventType);
+parcelHelpers.export(exports, "w", ()=>wheelAction);
+var _mathsB28D9B98EsmJs = require("./maths-b28d9b98.esm.js");
+function _defineProperty(obj, key, value) {
+    if (key in obj) Object.defineProperty(obj, key, {
+        value: value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+    });
+    else obj[key] = value;
+    return obj;
+}
+function ownKeys(object, enumerableOnly) {
+    var keys = Object.keys(object);
+    if (Object.getOwnPropertySymbols) {
+        var symbols = Object.getOwnPropertySymbols(object);
+        enumerableOnly && (symbols = symbols.filter(function(sym) {
+            return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+        })), keys.push.apply(keys, symbols);
+    }
+    return keys;
+}
+function _objectSpread2(target) {
+    for(var i = 1; i < arguments.length; i++){
+        var source = null != arguments[i] ? arguments[i] : {};
+        i % 2 ? ownKeys(Object(source), !0).forEach(function(key) {
+            _defineProperty(target, key, source[key]);
+        }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function(key) {
+            Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+        });
+    }
+    return target;
+}
+const EVENT_TYPE_MAP = {
+    pointer: {
+        start: "down",
+        change: "move",
+        end: "up"
+    },
+    mouse: {
+        start: "down",
+        change: "move",
+        end: "up"
+    },
+    touch: {
+        start: "start",
+        change: "move",
+        end: "end"
+    },
+    gesture: {
+        start: "start",
+        change: "change",
+        end: "end"
+    }
+};
+function capitalize(string) {
+    if (!string) return "";
+    return string[0].toUpperCase() + string.slice(1);
+}
+const actionsWithoutCaptureSupported = [
+    "enter",
+    "leave"
+];
+function hasCapture(capture = false, actionKey) {
+    return capture && !actionsWithoutCaptureSupported.includes(actionKey);
+}
+function toHandlerProp(device, action = "", capture = false) {
+    const deviceProps = EVENT_TYPE_MAP[device];
+    const actionKey = deviceProps ? deviceProps[action] || action : action;
+    return "on" + capitalize(device) + capitalize(actionKey) + (hasCapture(capture, actionKey) ? "Capture" : "");
+}
+const pointerCaptureEvents = [
+    "gotpointercapture",
+    "lostpointercapture"
+];
+function parseProp(prop) {
+    let eventKey = prop.substring(2).toLowerCase();
+    const passive = !!~eventKey.indexOf("passive");
+    if (passive) eventKey = eventKey.replace("passive", "");
+    const captureKey = pointerCaptureEvents.includes(eventKey) ? "capturecapture" : "capture";
+    const capture = !!~eventKey.indexOf(captureKey);
+    if (capture) eventKey = eventKey.replace("capture", "");
+    return {
+        device: eventKey,
+        capture,
+        passive
+    };
+}
+function toDomEventType(device, action = "") {
+    const deviceProps = EVENT_TYPE_MAP[device];
+    const actionKey = deviceProps ? deviceProps[action] || action : action;
+    return device + actionKey;
+}
+function isTouch(event) {
+    return "touches" in event;
+}
+function getPointerType(event) {
+    if (isTouch(event)) return "touch";
+    if ("pointerType" in event) return event.pointerType;
+    return "mouse";
+}
+function getCurrentTargetTouchList(event) {
+    return Array.from(event.touches).filter((e)=>{
+        var _event$currentTarget, _event$currentTarget$;
+        return e.target === event.currentTarget || ((_event$currentTarget = event.currentTarget) === null || _event$currentTarget === void 0 ? void 0 : (_event$currentTarget$ = _event$currentTarget.contains) === null || _event$currentTarget$ === void 0 ? void 0 : _event$currentTarget$.call(_event$currentTarget, e.target));
+    });
+}
+function getTouchList(event) {
+    return event.type === "touchend" || event.type === "touchcancel" ? event.changedTouches : event.targetTouches;
+}
+function getValueEvent(event) {
+    return isTouch(event) ? getTouchList(event)[0] : event;
+}
+function distanceAngle(P1, P2) {
+    const dx = P2.clientX - P1.clientX;
+    const dy = P2.clientY - P1.clientY;
+    const cx = (P2.clientX + P1.clientX) / 2;
+    const cy = (P2.clientY + P1.clientY) / 2;
+    const distance = Math.hypot(dx, dy);
+    const angle = -(Math.atan2(dx, dy) * 180) / Math.PI;
+    const origin = [
+        cx,
+        cy
+    ];
+    return {
+        angle,
+        distance,
+        origin
+    };
+}
+function touchIds(event) {
+    return getCurrentTargetTouchList(event).map((touch)=>touch.identifier);
+}
+function touchDistanceAngle(event, ids) {
+    const [P1, P2] = Array.from(event.touches).filter((touch)=>ids.includes(touch.identifier));
+    return distanceAngle(P1, P2);
+}
+function pointerId(event) {
+    const valueEvent = getValueEvent(event);
+    return isTouch(event) ? valueEvent.identifier : valueEvent.pointerId;
+}
+function pointerValues(event) {
+    const valueEvent = getValueEvent(event);
+    return [
+        valueEvent.clientX,
+        valueEvent.clientY
+    ];
+}
+const LINE_HEIGHT = 40;
+const PAGE_HEIGHT = 800;
+function wheelValues(event) {
+    let { deltaX , deltaY , deltaMode  } = event;
+    if (deltaMode === 1) {
+        deltaX *= LINE_HEIGHT;
+        deltaY *= LINE_HEIGHT;
+    } else if (deltaMode === 2) {
+        deltaX *= PAGE_HEIGHT;
+        deltaY *= PAGE_HEIGHT;
+    }
+    return [
+        deltaX,
+        deltaY
+    ];
+}
+function scrollValues(event) {
+    var _ref, _ref2;
+    const { scrollX , scrollY , scrollLeft , scrollTop  } = event.currentTarget;
+    return [
+        (_ref = scrollX !== null && scrollX !== void 0 ? scrollX : scrollLeft) !== null && _ref !== void 0 ? _ref : 0,
+        (_ref2 = scrollY !== null && scrollY !== void 0 ? scrollY : scrollTop) !== null && _ref2 !== void 0 ? _ref2 : 0
+    ];
+}
+function getEventDetails(event) {
+    const payload = {};
+    if ("buttons" in event) payload.buttons = event.buttons;
+    if ("shiftKey" in event) {
+        const { shiftKey , altKey , metaKey , ctrlKey  } = event;
+        Object.assign(payload, {
+            shiftKey,
+            altKey,
+            metaKey,
+            ctrlKey
+        });
+    }
+    return payload;
+}
+function call(v, ...args) {
+    if (typeof v === "function") return v(...args);
+    else return v;
+}
+function noop() {}
+function chain(...fns) {
+    if (fns.length === 0) return noop;
+    if (fns.length === 1) return fns[0];
+    return function() {
+        let result;
+        for (const fn of fns)result = fn.apply(this, arguments) || result;
+        return result;
+    };
+}
+function assignDefault(value, fallback) {
+    return Object.assign({}, fallback, value || {});
+}
+const BEFORE_LAST_KINEMATICS_DELAY = 32;
+class Engine {
+    constructor(ctrl, args, key){
+        this.ctrl = ctrl;
+        this.args = args;
+        this.key = key;
+        if (!this.state) {
+            this.state = {};
+            this.computeValues([
+                0,
+                0
+            ]);
+            this.computeInitial();
+            if (this.init) this.init();
+            this.reset();
+        }
+    }
+    get state() {
+        return this.ctrl.state[this.key];
+    }
+    set state(state) {
+        this.ctrl.state[this.key] = state;
+    }
+    get shared() {
+        return this.ctrl.state.shared;
+    }
+    get eventStore() {
+        return this.ctrl.gestureEventStores[this.key];
+    }
+    get timeoutStore() {
+        return this.ctrl.gestureTimeoutStores[this.key];
+    }
+    get config() {
+        return this.ctrl.config[this.key];
+    }
+    get sharedConfig() {
+        return this.ctrl.config.shared;
+    }
+    get handler() {
+        return this.ctrl.handlers[this.key];
+    }
+    reset() {
+        const { state , shared , ingKey , args  } = this;
+        shared[ingKey] = state._active = state.active = state._blocked = state._force = false;
+        state._step = [
+            false,
+            false
+        ];
+        state.intentional = false;
+        state._movement = [
+            0,
+            0
+        ];
+        state._distance = [
+            0,
+            0
+        ];
+        state._direction = [
+            0,
+            0
+        ];
+        state._delta = [
+            0,
+            0
+        ];
+        state._bounds = [
+            [
+                -Infinity,
+                Infinity
+            ],
+            [
+                -Infinity,
+                Infinity
+            ]
+        ];
+        state.args = args;
+        state.axis = undefined;
+        state.memo = undefined;
+        state.elapsedTime = 0;
+        state.direction = [
+            0,
+            0
+        ];
+        state.distance = [
+            0,
+            0
+        ];
+        state.overflow = [
+            0,
+            0
+        ];
+        state._movementBound = [
+            false,
+            false
+        ];
+        state.velocity = [
+            0,
+            0
+        ];
+        state.movement = [
+            0,
+            0
+        ];
+        state.delta = [
+            0,
+            0
+        ];
+        state.timeStamp = 0;
+    }
+    start(event) {
+        const state = this.state;
+        const config = this.config;
+        if (!state._active) {
+            this.reset();
+            this.computeInitial();
+            state._active = true;
+            state.target = event.target;
+            state.currentTarget = event.currentTarget;
+            state.lastOffset = config.from ? call(config.from, state) : state.offset;
+            state.offset = state.lastOffset;
+        }
+        state.startTime = state.timeStamp = event.timeStamp;
+    }
+    computeValues(values) {
+        const state = this.state;
+        state._values = values;
+        state.values = this.config.transform(values);
+    }
+    computeInitial() {
+        const state = this.state;
+        state._initial = state._values;
+        state.initial = state.values;
+    }
+    compute(event) {
+        const { state , config , shared  } = this;
+        state.args = this.args;
+        let dt = 0;
+        if (event) {
+            state.event = event;
+            if (config.preventDefault && event.cancelable) state.event.preventDefault();
+            state.type = event.type;
+            shared.touches = this.ctrl.pointerIds.size || this.ctrl.touchIds.size;
+            shared.locked = !!document.pointerLockElement;
+            Object.assign(shared, getEventDetails(event));
+            shared.down = shared.pressed = shared.buttons % 2 === 1 || shared.touches > 0;
+            dt = event.timeStamp - state.timeStamp;
+            state.timeStamp = event.timeStamp;
+            state.elapsedTime = state.timeStamp - state.startTime;
+        }
+        if (state._active) {
+            const _absoluteDelta = state._delta.map(Math.abs);
+            (0, _mathsB28D9B98EsmJs.V).addTo(state._distance, _absoluteDelta);
+        }
+        if (this.axisIntent) this.axisIntent(event);
+        const [_m0, _m1] = state._movement;
+        const [t0, t1] = config.threshold;
+        const { _step , values  } = state;
+        if (config.hasCustomTransform) {
+            if (_step[0] === false) _step[0] = Math.abs(_m0) >= t0 && values[0];
+            if (_step[1] === false) _step[1] = Math.abs(_m1) >= t1 && values[1];
+        } else {
+            if (_step[0] === false) _step[0] = Math.abs(_m0) >= t0 && Math.sign(_m0) * t0;
+            if (_step[1] === false) _step[1] = Math.abs(_m1) >= t1 && Math.sign(_m1) * t1;
+        }
+        state.intentional = _step[0] !== false || _step[1] !== false;
+        if (!state.intentional) return;
+        const movement = [
+            0,
+            0
+        ];
+        if (config.hasCustomTransform) {
+            const [v0, v1] = values;
+            movement[0] = _step[0] !== false ? v0 - _step[0] : 0;
+            movement[1] = _step[1] !== false ? v1 - _step[1] : 0;
+        } else {
+            movement[0] = _step[0] !== false ? _m0 - _step[0] : 0;
+            movement[1] = _step[1] !== false ? _m1 - _step[1] : 0;
+        }
+        if (this.restrictToAxis && !state._blocked) this.restrictToAxis(movement);
+        const previousOffset = state.offset;
+        const gestureIsActive = state._active && !state._blocked || state.active;
+        if (gestureIsActive) {
+            state.first = state._active && !state.active;
+            state.last = !state._active && state.active;
+            state.active = shared[this.ingKey] = state._active;
+            if (event) {
+                if (state.first) {
+                    if ("bounds" in config) state._bounds = call(config.bounds, state);
+                    if (this.setup) this.setup();
+                }
+                state.movement = movement;
+                this.computeOffset();
+            }
+        }
+        const [ox, oy] = state.offset;
+        const [[x0, x1], [y0, y1]] = state._bounds;
+        state.overflow = [
+            ox < x0 ? -1 : ox > x1 ? 1 : 0,
+            oy < y0 ? -1 : oy > y1 ? 1 : 0
+        ];
+        state._movementBound[0] = state.overflow[0] ? state._movementBound[0] === false ? state._movement[0] : state._movementBound[0] : false;
+        state._movementBound[1] = state.overflow[1] ? state._movementBound[1] === false ? state._movement[1] : state._movementBound[1] : false;
+        const rubberband = state._active ? config.rubberband || [
+            0,
+            0
+        ] : [
+            0,
+            0
+        ];
+        state.offset = (0, _mathsB28D9B98EsmJs.c)(state._bounds, state.offset, rubberband);
+        state.delta = (0, _mathsB28D9B98EsmJs.V).sub(state.offset, previousOffset);
+        this.computeMovement();
+        if (gestureIsActive && (!state.last || dt > BEFORE_LAST_KINEMATICS_DELAY)) {
+            state.delta = (0, _mathsB28D9B98EsmJs.V).sub(state.offset, previousOffset);
+            const absoluteDelta = state.delta.map(Math.abs);
+            (0, _mathsB28D9B98EsmJs.V).addTo(state.distance, absoluteDelta);
+            state.direction = state.delta.map(Math.sign);
+            state._direction = state._delta.map(Math.sign);
+            if (!state.first && dt > 0) state.velocity = [
+                absoluteDelta[0] / dt,
+                absoluteDelta[1] / dt
+            ];
+        }
+    }
+    emit() {
+        const state = this.state;
+        const shared = this.shared;
+        const config = this.config;
+        if (!state._active) this.clean();
+        if ((state._blocked || !state.intentional) && !state._force && !config.triggerAllEvents) return;
+        const memo = this.handler(_objectSpread2(_objectSpread2(_objectSpread2({}, shared), state), {}, {
+            [this.aliasKey]: state.values
+        }));
+        if (memo !== undefined) state.memo = memo;
+    }
+    clean() {
+        this.eventStore.clean();
+        this.timeoutStore.clean();
+    }
+}
+function selectAxis([dx, dy], threshold) {
+    const absDx = Math.abs(dx);
+    const absDy = Math.abs(dy);
+    if (absDx > absDy && absDx > threshold) return "x";
+    if (absDy > absDx && absDy > threshold) return "y";
+    return undefined;
+}
+class CoordinatesEngine extends Engine {
+    constructor(...args){
+        super(...args);
+        _defineProperty(this, "aliasKey", "xy");
+    }
+    reset() {
+        super.reset();
+        this.state.axis = undefined;
+    }
+    init() {
+        this.state.offset = [
+            0,
+            0
+        ];
+        this.state.lastOffset = [
+            0,
+            0
+        ];
+    }
+    computeOffset() {
+        this.state.offset = (0, _mathsB28D9B98EsmJs.V).add(this.state.lastOffset, this.state.movement);
+    }
+    computeMovement() {
+        this.state.movement = (0, _mathsB28D9B98EsmJs.V).sub(this.state.offset, this.state.lastOffset);
+    }
+    axisIntent(event) {
+        const state = this.state;
+        const config = this.config;
+        if (!state.axis && event) {
+            const threshold = typeof config.axisThreshold === "object" ? config.axisThreshold[getPointerType(event)] : config.axisThreshold;
+            state.axis = selectAxis(state._movement, threshold);
+        }
+        state._blocked = (config.lockDirection || !!config.axis) && !state.axis || !!config.axis && config.axis !== state.axis;
+    }
+    restrictToAxis(v) {
+        if (this.config.axis || this.config.lockDirection) switch(this.state.axis){
+            case "x":
+                v[1] = 0;
+                break;
+            case "y":
+                v[0] = 0;
+                break;
+        }
+    }
+}
+const identity = (v)=>v;
+const DEFAULT_RUBBERBAND = 0.15;
+const commonConfigResolver = {
+    enabled (value = true) {
+        return value;
+    },
+    eventOptions (value, _k, config) {
+        return _objectSpread2(_objectSpread2({}, config.shared.eventOptions), value);
+    },
+    preventDefault (value = false) {
+        return value;
+    },
+    triggerAllEvents (value = false) {
+        return value;
+    },
+    rubberband (value = 0) {
+        switch(value){
+            case true:
+                return [
+                    DEFAULT_RUBBERBAND,
+                    DEFAULT_RUBBERBAND
+                ];
+            case false:
+                return [
+                    0,
+                    0
+                ];
+            default:
+                return (0, _mathsB28D9B98EsmJs.V).toVector(value);
+        }
+    },
+    from (value) {
+        if (typeof value === "function") return value;
+        if (value != null) return (0, _mathsB28D9B98EsmJs.V).toVector(value);
+    },
+    transform (value, _k, config) {
+        const transform = value || config.shared.transform;
+        this.hasCustomTransform = !!transform;
+        {
+            const originalTransform = transform || identity;
+            return (v)=>{
+                const r = originalTransform(v);
+                if (!isFinite(r[0]) || !isFinite(r[1])) console.warn(`[@use-gesture]: config.transform() must produce a valid result, but it was: [${r[0]},${[
+                    1
+                ]}]`);
+                return r;
+            };
+        }
+        return transform || identity;
+    },
+    threshold (value) {
+        return (0, _mathsB28D9B98EsmJs.V).toVector(value, 0);
+    }
+};
+Object.assign(commonConfigResolver, {
+    domTarget (value) {
+        if (value !== undefined) throw Error(`[@use-gesture]: \`domTarget\` option has been renamed to \`target\`.`);
+        return NaN;
+    },
+    lockDirection (value) {
+        if (value !== undefined) throw Error(`[@use-gesture]: \`lockDirection\` option has been merged with \`axis\`. Use it as in \`{ axis: 'lock' }\``);
+        return NaN;
+    },
+    initial (value) {
+        if (value !== undefined) throw Error(`[@use-gesture]: \`initial\` option has been renamed to \`from\`.`);
+        return NaN;
+    }
+});
+const DEFAULT_AXIS_THRESHOLD = 0;
+const coordinatesConfigResolver = _objectSpread2(_objectSpread2({}, commonConfigResolver), {}, {
+    axis (_v, _k, { axis  }) {
+        this.lockDirection = axis === "lock";
+        if (!this.lockDirection) return axis;
+    },
+    axisThreshold (value = DEFAULT_AXIS_THRESHOLD) {
+        return value;
+    },
+    bounds (value = {}) {
+        if (typeof value === "function") return (state)=>coordinatesConfigResolver.bounds(value(state));
+        if ("current" in value) return ()=>value.current;
+        if (typeof HTMLElement === "function" && value instanceof HTMLElement) return value;
+        const { left =-Infinity , right =Infinity , top =-Infinity , bottom =Infinity  } = value;
+        return [
+            [
+                left,
+                right
+            ],
+            [
+                top,
+                bottom
+            ]
+        ];
+    }
+});
+const DISPLACEMENT = 10;
+const KEYS_DELTA_MAP = {
+    ArrowRight: (factor = 1)=>[
+            DISPLACEMENT * factor,
+            0
+        ],
+    ArrowLeft: (factor = 1)=>[
+            -DISPLACEMENT * factor,
+            0
+        ],
+    ArrowUp: (factor = 1)=>[
+            0,
+            -DISPLACEMENT * factor
+        ],
+    ArrowDown: (factor = 1)=>[
+            0,
+            DISPLACEMENT * factor
+        ]
+};
+class DragEngine extends CoordinatesEngine {
+    constructor(...args){
+        super(...args);
+        _defineProperty(this, "ingKey", "dragging");
+    }
+    reset() {
+        super.reset();
+        const state = this.state;
+        state._pointerId = undefined;
+        state._pointerActive = false;
+        state._keyboardActive = false;
+        state._preventScroll = false;
+        state._delayed = false;
+        state.swipe = [
+            0,
+            0
+        ];
+        state.tap = false;
+        state.canceled = false;
+        state.cancel = this.cancel.bind(this);
+    }
+    setup() {
+        const state = this.state;
+        if (state._bounds instanceof HTMLElement) {
+            const boundRect = state._bounds.getBoundingClientRect();
+            const targetRect = state.currentTarget.getBoundingClientRect();
+            const _bounds = {
+                left: boundRect.left - targetRect.left + state.offset[0],
+                right: boundRect.right - targetRect.right + state.offset[0],
+                top: boundRect.top - targetRect.top + state.offset[1],
+                bottom: boundRect.bottom - targetRect.bottom + state.offset[1]
+            };
+            state._bounds = coordinatesConfigResolver.bounds(_bounds);
+        }
+    }
+    cancel() {
+        const state = this.state;
+        if (state.canceled) return;
+        state.canceled = true;
+        state._active = false;
+        setTimeout(()=>{
+            this.compute();
+            this.emit();
+        }, 0);
+    }
+    setActive() {
+        this.state._active = this.state._pointerActive || this.state._keyboardActive;
+    }
+    clean() {
+        this.pointerClean();
+        this.state._pointerActive = false;
+        this.state._keyboardActive = false;
+        super.clean();
+    }
+    pointerDown(event) {
+        const config = this.config;
+        const state = this.state;
+        if (event.buttons != null && (Array.isArray(config.pointerButtons) ? !config.pointerButtons.includes(event.buttons) : config.pointerButtons !== -1 && config.pointerButtons !== event.buttons)) return;
+        const ctrlIds = this.ctrl.setEventIds(event);
+        if (config.pointerCapture) event.target.setPointerCapture(event.pointerId);
+        if (ctrlIds && ctrlIds.size > 1 && state._pointerActive) return;
+        this.start(event);
+        this.setupPointer(event);
+        state._pointerId = pointerId(event);
+        state._pointerActive = true;
+        this.computeValues(pointerValues(event));
+        this.computeInitial();
+        if (config.preventScrollAxis && getPointerType(event) !== "mouse") {
+            state._active = false;
+            this.setupScrollPrevention(event);
+        } else if (config.delay > 0) {
+            this.setupDelayTrigger(event);
+            if (config.triggerAllEvents) {
+                this.compute(event);
+                this.emit();
+            }
+        } else this.startPointerDrag(event);
+    }
+    startPointerDrag(event) {
+        const state = this.state;
+        state._active = true;
+        state._preventScroll = true;
+        state._delayed = false;
+        this.compute(event);
+        this.emit();
+    }
+    pointerMove(event) {
+        const state = this.state;
+        const config = this.config;
+        if (!state._pointerActive) return;
+        if (state.type === event.type && event.timeStamp === state.timeStamp) return;
+        const id = pointerId(event);
+        if (state._pointerId !== undefined && id !== state._pointerId) return;
+        const _values = pointerValues(event);
+        if (document.pointerLockElement === event.target) state._delta = [
+            event.movementX,
+            event.movementY
+        ];
+        else {
+            state._delta = (0, _mathsB28D9B98EsmJs.V).sub(_values, state._values);
+            this.computeValues(_values);
+        }
+        (0, _mathsB28D9B98EsmJs.V).addTo(state._movement, state._delta);
+        this.compute(event);
+        if (state._delayed && state.intentional) {
+            this.timeoutStore.remove("dragDelay");
+            state.active = false;
+            this.startPointerDrag(event);
+            return;
+        }
+        if (config.preventScrollAxis && !state._preventScroll) {
+            if (state.axis) {
+                if (state.axis === config.preventScrollAxis || config.preventScrollAxis === "xy") {
+                    state._active = false;
+                    this.clean();
+                    return;
+                } else {
+                    this.timeoutStore.remove("startPointerDrag");
+                    this.startPointerDrag(event);
+                    return;
+                }
+            } else return;
+        }
+        this.emit();
+    }
+    pointerUp(event) {
+        this.ctrl.setEventIds(event);
+        try {
+            if (this.config.pointerCapture && event.target.hasPointerCapture(event.pointerId)) event.target.releasePointerCapture(event.pointerId);
+        } catch (_unused) {
+            console.warn(`[@use-gesture]: If you see this message, it's likely that you're using an outdated version of \`@react-three/fiber\`. \n\nPlease upgrade to the latest version.`);
+        }
+        const state = this.state;
+        const config = this.config;
+        if (!state._active || !state._pointerActive) return;
+        const id = pointerId(event);
+        if (state._pointerId !== undefined && id !== state._pointerId) return;
+        this.state._pointerActive = false;
+        this.setActive();
+        this.compute(event);
+        const [dx, dy] = state._distance;
+        state.tap = dx <= config.tapsThreshold && dy <= config.tapsThreshold;
+        if (state.tap && config.filterTaps) state._force = true;
+        else {
+            const [dirx, diry] = state.direction;
+            const [vx, vy] = state.velocity;
+            const [mx, my] = state.movement;
+            const [svx, svy] = config.swipe.velocity;
+            const [sx, sy] = config.swipe.distance;
+            const sdt = config.swipe.duration;
+            if (state.elapsedTime < sdt) {
+                if (Math.abs(vx) > svx && Math.abs(mx) > sx) state.swipe[0] = dirx;
+                if (Math.abs(vy) > svy && Math.abs(my) > sy) state.swipe[1] = diry;
+            }
+        }
+        this.emit();
+    }
+    pointerClick(event) {
+        if (!this.state.tap && event.detail > 0) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    }
+    setupPointer(event) {
+        const config = this.config;
+        const device = config.device;
+        try {
+            if (device === "pointer" && config.preventScrollDelay === undefined) {
+                const currentTarget = "uv" in event ? event.sourceEvent.currentTarget : event.currentTarget;
+                const style = window.getComputedStyle(currentTarget);
+                if (style.touchAction === "auto") console.warn(`[@use-gesture]: The drag target has its \`touch-action\` style property set to \`auto\`. It is recommended to add \`touch-action: 'none'\` so that the drag gesture behaves correctly on touch-enabled devices. For more information read this: https://use-gesture.netlify.app/docs/extras/#touch-action.\n\nThis message will only show in development mode. It won't appear in production. If this is intended, you can ignore it.`, currentTarget);
+            }
+        } catch (_unused2) {}
+        if (config.pointerLock) event.currentTarget.requestPointerLock();
+        if (!config.pointerCapture) {
+            this.eventStore.add(this.sharedConfig.window, device, "change", this.pointerMove.bind(this));
+            this.eventStore.add(this.sharedConfig.window, device, "end", this.pointerUp.bind(this));
+            this.eventStore.add(this.sharedConfig.window, device, "cancel", this.pointerUp.bind(this));
+        }
+    }
+    pointerClean() {
+        if (this.config.pointerLock && document.pointerLockElement === this.state.currentTarget) document.exitPointerLock();
+    }
+    preventScroll(event) {
+        if (this.state._preventScroll && event.cancelable) event.preventDefault();
+    }
+    setupScrollPrevention(event) {
+        this.state._preventScroll = false;
+        persistEvent(event);
+        const remove = this.eventStore.add(this.sharedConfig.window, "touch", "change", this.preventScroll.bind(this), {
+            passive: false
+        });
+        this.eventStore.add(this.sharedConfig.window, "touch", "end", remove);
+        this.eventStore.add(this.sharedConfig.window, "touch", "cancel", remove);
+        this.timeoutStore.add("startPointerDrag", this.startPointerDrag.bind(this), this.config.preventScrollDelay, event);
+    }
+    setupDelayTrigger(event) {
+        this.state._delayed = true;
+        this.timeoutStore.add("dragDelay", ()=>{
+            this.state._step = [
+                0,
+                0
+            ];
+            this.startPointerDrag(event);
+        }, this.config.delay);
+    }
+    keyDown(event) {
+        const deltaFn = KEYS_DELTA_MAP[event.key];
+        if (deltaFn) {
+            const state = this.state;
+            const factor = event.shiftKey ? 10 : event.altKey ? 0.1 : 1;
+            this.start(event);
+            state._delta = deltaFn(factor);
+            state._keyboardActive = true;
+            (0, _mathsB28D9B98EsmJs.V).addTo(state._movement, state._delta);
+            this.compute(event);
+            this.emit();
+        }
+    }
+    keyUp(event) {
+        if (!(event.key in KEYS_DELTA_MAP)) return;
+        this.state._keyboardActive = false;
+        this.setActive();
+        this.compute(event);
+        this.emit();
+    }
+    bind(bindFunction) {
+        const device = this.config.device;
+        bindFunction(device, "start", this.pointerDown.bind(this));
+        if (this.config.pointerCapture) {
+            bindFunction(device, "change", this.pointerMove.bind(this));
+            bindFunction(device, "end", this.pointerUp.bind(this));
+            bindFunction(device, "cancel", this.pointerUp.bind(this));
+            bindFunction("lostPointerCapture", "", this.pointerUp.bind(this));
+        }
+        if (this.config.keys) {
+            bindFunction("key", "down", this.keyDown.bind(this));
+            bindFunction("key", "up", this.keyUp.bind(this));
+        }
+        if (this.config.filterTaps) bindFunction("click", "", this.pointerClick.bind(this), {
+            capture: true,
+            passive: false
+        });
+    }
+}
+function persistEvent(event) {
+    "persist" in event && typeof event.persist === "function" && event.persist();
+}
+const isBrowser = typeof window !== "undefined" && window.document && window.document.createElement;
+function supportsTouchEvents() {
+    return isBrowser && "ontouchstart" in window;
+}
+function isTouchScreen() {
+    return supportsTouchEvents() || isBrowser && window.navigator.maxTouchPoints > 1;
+}
+function supportsPointerEvents() {
+    return isBrowser && "onpointerdown" in window;
+}
+function supportsPointerLock() {
+    return isBrowser && "exitPointerLock" in window.document;
+}
+function supportsGestureEvents() {
+    try {
+        return "constructor" in GestureEvent;
+    } catch (e) {
+        return false;
+    }
+}
+const SUPPORT = {
+    isBrowser,
+    gesture: supportsGestureEvents(),
+    touch: isTouchScreen(),
+    touchscreen: isTouchScreen(),
+    pointer: supportsPointerEvents(),
+    pointerLock: supportsPointerLock()
+};
+const DEFAULT_PREVENT_SCROLL_DELAY = 250;
+const DEFAULT_DRAG_DELAY = 180;
+const DEFAULT_SWIPE_VELOCITY = 0.5;
+const DEFAULT_SWIPE_DISTANCE = 50;
+const DEFAULT_SWIPE_DURATION = 250;
+const DEFAULT_DRAG_AXIS_THRESHOLD = {
+    mouse: 0,
+    touch: 0,
+    pen: 8
+};
+const dragConfigResolver = _objectSpread2(_objectSpread2({}, coordinatesConfigResolver), {}, {
+    device (_v, _k, { pointer: { touch =false , lock =false , mouse =false  } = {}  }) {
+        this.pointerLock = lock && SUPPORT.pointerLock;
+        if (SUPPORT.touch && touch) return "touch";
+        if (this.pointerLock) return "mouse";
+        if (SUPPORT.pointer && !mouse) return "pointer";
+        if (SUPPORT.touch) return "touch";
+        return "mouse";
+    },
+    preventScrollAxis (value, _k, { preventScroll  }) {
+        this.preventScrollDelay = typeof preventScroll === "number" ? preventScroll : preventScroll || preventScroll === undefined && value ? DEFAULT_PREVENT_SCROLL_DELAY : undefined;
+        if (!SUPPORT.touchscreen || preventScroll === false) return undefined;
+        return value ? value : preventScroll !== undefined ? "y" : undefined;
+    },
+    pointerCapture (_v, _k, { pointer: { capture =true , buttons =1 , keys =true  } = {}  }) {
+        this.pointerButtons = buttons;
+        this.keys = keys;
+        return !this.pointerLock && this.device === "pointer" && capture;
+    },
+    threshold (value, _k, { filterTaps =false , tapsThreshold =3 , axis  }) {
+        const threshold = (0, _mathsB28D9B98EsmJs.V).toVector(value, filterTaps ? tapsThreshold : axis ? 1 : 0);
+        this.filterTaps = filterTaps;
+        this.tapsThreshold = tapsThreshold;
+        return threshold;
+    },
+    swipe ({ velocity =DEFAULT_SWIPE_VELOCITY , distance =DEFAULT_SWIPE_DISTANCE , duration =DEFAULT_SWIPE_DURATION  } = {}) {
+        return {
+            velocity: this.transform((0, _mathsB28D9B98EsmJs.V).toVector(velocity)),
+            distance: this.transform((0, _mathsB28D9B98EsmJs.V).toVector(distance)),
+            duration
+        };
+    },
+    delay (value = 0) {
+        switch(value){
+            case true:
+                return DEFAULT_DRAG_DELAY;
+            case false:
+                return 0;
+            default:
+                return value;
+        }
+    },
+    axisThreshold (value) {
+        if (!value) return DEFAULT_DRAG_AXIS_THRESHOLD;
+        return _objectSpread2(_objectSpread2({}, DEFAULT_DRAG_AXIS_THRESHOLD), value);
+    }
+});
+Object.assign(dragConfigResolver, {
+    useTouch (value) {
+        if (value !== undefined) throw Error(`[@use-gesture]: \`useTouch\` option has been renamed to \`pointer.touch\`. Use it as in \`{ pointer: { touch: true } }\`.`);
+        return NaN;
+    },
+    experimental_preventWindowScrollY (value) {
+        if (value !== undefined) throw Error(`[@use-gesture]: \`experimental_preventWindowScrollY\` option has been renamed to \`preventScroll\`.`);
+        return NaN;
+    },
+    swipeVelocity (value) {
+        if (value !== undefined) throw Error(`[@use-gesture]: \`swipeVelocity\` option has been renamed to \`swipe.velocity\`. Use it as in \`{ swipe: { velocity: 0.5 } }\`.`);
+        return NaN;
+    },
+    swipeDistance (value) {
+        if (value !== undefined) throw Error(`[@use-gesture]: \`swipeDistance\` option has been renamed to \`swipe.distance\`. Use it as in \`{ swipe: { distance: 50 } }\`.`);
+        return NaN;
+    },
+    swipeDuration (value) {
+        if (value !== undefined) throw Error(`[@use-gesture]: \`swipeDuration\` option has been renamed to \`swipe.duration\`. Use it as in \`{ swipe: { duration: 250 } }\`.`);
+        return NaN;
+    }
+});
+function clampStateInternalMovementToBounds(state) {
+    const [ox, oy] = state.overflow;
+    const [dx, dy] = state._delta;
+    const [dirx, diry] = state._direction;
+    if (ox < 0 && dx > 0 && dirx < 0 || ox > 0 && dx < 0 && dirx > 0) state._movement[0] = state._movementBound[0];
+    if (oy < 0 && dy > 0 && diry < 0 || oy > 0 && dy < 0 && diry > 0) state._movement[1] = state._movementBound[1];
+}
+const SCALE_ANGLE_RATIO_INTENT_DEG = 30;
+const PINCH_WHEEL_RATIO = 100;
+class PinchEngine extends Engine {
+    constructor(...args){
+        super(...args);
+        _defineProperty(this, "ingKey", "pinching");
+        _defineProperty(this, "aliasKey", "da");
+    }
+    init() {
+        this.state.offset = [
+            1,
+            0
+        ];
+        this.state.lastOffset = [
+            1,
+            0
+        ];
+        this.state._pointerEvents = new Map();
+    }
+    reset() {
+        super.reset();
+        const state = this.state;
+        state._touchIds = [];
+        state.canceled = false;
+        state.cancel = this.cancel.bind(this);
+        state.turns = 0;
+    }
+    computeOffset() {
+        const { type , movement , lastOffset  } = this.state;
+        if (type === "wheel") this.state.offset = (0, _mathsB28D9B98EsmJs.V).add(movement, lastOffset);
+        else this.state.offset = [
+            (1 + movement[0]) * lastOffset[0],
+            movement[1] + lastOffset[1]
+        ];
+    }
+    computeMovement() {
+        const { offset , lastOffset  } = this.state;
+        this.state.movement = [
+            offset[0] / lastOffset[0],
+            offset[1] - lastOffset[1]
+        ];
+    }
+    axisIntent() {
+        const state = this.state;
+        const [_m0, _m1] = state._movement;
+        if (!state.axis) {
+            const axisMovementDifference = Math.abs(_m0) * SCALE_ANGLE_RATIO_INTENT_DEG - Math.abs(_m1);
+            if (axisMovementDifference < 0) state.axis = "angle";
+            else if (axisMovementDifference > 0) state.axis = "scale";
+        }
+    }
+    restrictToAxis(v) {
+        if (this.config.lockDirection) {
+            if (this.state.axis === "scale") v[1] = 0;
+            else if (this.state.axis === "angle") v[0] = 0;
+        }
+    }
+    cancel() {
+        const state = this.state;
+        if (state.canceled) return;
+        setTimeout(()=>{
+            state.canceled = true;
+            state._active = false;
+            this.compute();
+            this.emit();
+        }, 0);
+    }
+    touchStart(event) {
+        this.ctrl.setEventIds(event);
+        const state = this.state;
+        const ctrlTouchIds = this.ctrl.touchIds;
+        if (state._active) {
+            if (state._touchIds.every((id)=>ctrlTouchIds.has(id))) return;
+        }
+        if (ctrlTouchIds.size < 2) return;
+        this.start(event);
+        state._touchIds = Array.from(ctrlTouchIds).slice(0, 2);
+        const payload = touchDistanceAngle(event, state._touchIds);
+        this.pinchStart(event, payload);
+    }
+    pointerStart(event) {
+        if (event.buttons != null && event.buttons % 2 !== 1) return;
+        this.ctrl.setEventIds(event);
+        event.target.setPointerCapture(event.pointerId);
+        const state = this.state;
+        const _pointerEvents = state._pointerEvents;
+        const ctrlPointerIds = this.ctrl.pointerIds;
+        if (state._active) {
+            if (Array.from(_pointerEvents.keys()).every((id)=>ctrlPointerIds.has(id))) return;
+        }
+        if (_pointerEvents.size < 2) _pointerEvents.set(event.pointerId, event);
+        if (state._pointerEvents.size < 2) return;
+        this.start(event);
+        const payload = distanceAngle(...Array.from(_pointerEvents.values()));
+        this.pinchStart(event, payload);
+    }
+    pinchStart(event, payload) {
+        const state = this.state;
+        state.origin = payload.origin;
+        this.computeValues([
+            payload.distance,
+            payload.angle
+        ]);
+        this.computeInitial();
+        this.compute(event);
+        this.emit();
+    }
+    touchMove(event) {
+        if (!this.state._active) return;
+        const payload = touchDistanceAngle(event, this.state._touchIds);
+        this.pinchMove(event, payload);
+    }
+    pointerMove(event) {
+        const _pointerEvents = this.state._pointerEvents;
+        if (_pointerEvents.has(event.pointerId)) _pointerEvents.set(event.pointerId, event);
+        if (!this.state._active) return;
+        const payload = distanceAngle(...Array.from(_pointerEvents.values()));
+        this.pinchMove(event, payload);
+    }
+    pinchMove(event, payload) {
+        const state = this.state;
+        const prev_a = state._values[1];
+        const delta_a = payload.angle - prev_a;
+        let delta_turns = 0;
+        if (Math.abs(delta_a) > 270) delta_turns += Math.sign(delta_a);
+        this.computeValues([
+            payload.distance,
+            payload.angle - 360 * delta_turns
+        ]);
+        state.origin = payload.origin;
+        state.turns = delta_turns;
+        state._movement = [
+            state._values[0] / state._initial[0] - 1,
+            state._values[1] - state._initial[1]
+        ];
+        this.compute(event);
+        this.emit();
+    }
+    touchEnd(event) {
+        this.ctrl.setEventIds(event);
+        if (!this.state._active) return;
+        if (this.state._touchIds.some((id)=>!this.ctrl.touchIds.has(id))) {
+            this.state._active = false;
+            this.compute(event);
+            this.emit();
+        }
+    }
+    pointerEnd(event) {
+        const state = this.state;
+        this.ctrl.setEventIds(event);
+        try {
+            event.target.releasePointerCapture(event.pointerId);
+        } catch (_unused) {}
+        if (state._pointerEvents.has(event.pointerId)) state._pointerEvents.delete(event.pointerId);
+        if (!state._active) return;
+        if (state._pointerEvents.size < 2) {
+            state._active = false;
+            this.compute(event);
+            this.emit();
+        }
+    }
+    gestureStart(event) {
+        if (event.cancelable) event.preventDefault();
+        const state = this.state;
+        if (state._active) return;
+        this.start(event);
+        this.computeValues([
+            event.scale,
+            event.rotation
+        ]);
+        state.origin = [
+            event.clientX,
+            event.clientY
+        ];
+        this.compute(event);
+        this.emit();
+    }
+    gestureMove(event) {
+        if (event.cancelable) event.preventDefault();
+        if (!this.state._active) return;
+        const state = this.state;
+        this.computeValues([
+            event.scale,
+            event.rotation
+        ]);
+        state.origin = [
+            event.clientX,
+            event.clientY
+        ];
+        const _previousMovement = state._movement;
+        state._movement = [
+            event.scale - 1,
+            event.rotation
+        ];
+        state._delta = (0, _mathsB28D9B98EsmJs.V).sub(state._movement, _previousMovement);
+        this.compute(event);
+        this.emit();
+    }
+    gestureEnd(event) {
+        if (!this.state._active) return;
+        this.state._active = false;
+        this.compute(event);
+        this.emit();
+    }
+    wheel(event) {
+        const modifierKey = this.config.modifierKey;
+        if (modifierKey && !event[modifierKey]) return;
+        if (!this.state._active) this.wheelStart(event);
+        else this.wheelChange(event);
+        this.timeoutStore.add("wheelEnd", this.wheelEnd.bind(this));
+    }
+    wheelStart(event) {
+        this.start(event);
+        this.wheelChange(event);
+    }
+    wheelChange(event) {
+        const isR3f = "uv" in event;
+        if (!isR3f) {
+            if (event.cancelable) event.preventDefault();
+            if (!event.defaultPrevented) console.warn(`[@use-gesture]: To properly support zoom on trackpads, try using the \`target\` option.\n\nThis message will only appear in development mode.`);
+        }
+        const state = this.state;
+        state._delta = [
+            -wheelValues(event)[1] / PINCH_WHEEL_RATIO * state.offset[0],
+            0
+        ];
+        (0, _mathsB28D9B98EsmJs.V).addTo(state._movement, state._delta);
+        clampStateInternalMovementToBounds(state);
+        this.state.origin = [
+            event.clientX,
+            event.clientY
+        ];
+        this.compute(event);
+        this.emit();
+    }
+    wheelEnd() {
+        if (!this.state._active) return;
+        this.state._active = false;
+        this.compute();
+        this.emit();
+    }
+    bind(bindFunction) {
+        const device = this.config.device;
+        if (!!device) {
+            bindFunction(device, "start", this[device + "Start"].bind(this));
+            bindFunction(device, "change", this[device + "Move"].bind(this));
+            bindFunction(device, "end", this[device + "End"].bind(this));
+            bindFunction(device, "cancel", this[device + "End"].bind(this));
+        }
+        if (this.config.pinchOnWheel) bindFunction("wheel", "", this.wheel.bind(this), {
+            passive: false
+        });
+    }
+}
+const pinchConfigResolver = _objectSpread2(_objectSpread2({}, commonConfigResolver), {}, {
+    device (_v, _k, { shared , pointer: { touch =false  } = {}  }) {
+        const sharedConfig = shared;
+        if (sharedConfig.target && !SUPPORT.touch && SUPPORT.gesture) return "gesture";
+        if (SUPPORT.touch && touch) return "touch";
+        if (SUPPORT.touchscreen) {
+            if (SUPPORT.pointer) return "pointer";
+            if (SUPPORT.touch) return "touch";
+        }
+    },
+    bounds (_v, _k, { scaleBounds ={} , angleBounds ={}  }) {
+        const _scaleBounds = (state)=>{
+            const D = assignDefault(call(scaleBounds, state), {
+                min: -Infinity,
+                max: Infinity
+            });
+            return [
+                D.min,
+                D.max
+            ];
+        };
+        const _angleBounds = (state)=>{
+            const A = assignDefault(call(angleBounds, state), {
+                min: -Infinity,
+                max: Infinity
+            });
+            return [
+                A.min,
+                A.max
+            ];
+        };
+        if (typeof scaleBounds !== "function" && typeof angleBounds !== "function") return [
+            _scaleBounds(),
+            _angleBounds()
+        ];
+        return (state)=>[
+                _scaleBounds(state),
+                _angleBounds(state)
+            ];
+    },
+    threshold (value, _k, config) {
+        this.lockDirection = config.axis === "lock";
+        const threshold = (0, _mathsB28D9B98EsmJs.V).toVector(value, this.lockDirection ? [
+            0.1,
+            3
+        ] : 0);
+        return threshold;
+    },
+    modifierKey (value) {
+        if (value === undefined) return "ctrlKey";
+        return value;
+    },
+    pinchOnWheel (value = true) {
+        return value;
+    }
+});
+class MoveEngine extends CoordinatesEngine {
+    constructor(...args){
+        super(...args);
+        _defineProperty(this, "ingKey", "moving");
+    }
+    move(event) {
+        if (this.config.mouseOnly && event.pointerType !== "mouse") return;
+        if (!this.state._active) this.moveStart(event);
+        else this.moveChange(event);
+        this.timeoutStore.add("moveEnd", this.moveEnd.bind(this));
+    }
+    moveStart(event) {
+        this.start(event);
+        this.computeValues(pointerValues(event));
+        this.compute(event);
+        this.computeInitial();
+        this.emit();
+    }
+    moveChange(event) {
+        if (!this.state._active) return;
+        const values = pointerValues(event);
+        const state = this.state;
+        state._delta = (0, _mathsB28D9B98EsmJs.V).sub(values, state._values);
+        (0, _mathsB28D9B98EsmJs.V).addTo(state._movement, state._delta);
+        this.computeValues(values);
+        this.compute(event);
+        this.emit();
+    }
+    moveEnd(event) {
+        if (!this.state._active) return;
+        this.state._active = false;
+        this.compute(event);
+        this.emit();
+    }
+    bind(bindFunction) {
+        bindFunction("pointer", "change", this.move.bind(this));
+        bindFunction("pointer", "leave", this.moveEnd.bind(this));
+    }
+}
+const moveConfigResolver = _objectSpread2(_objectSpread2({}, coordinatesConfigResolver), {}, {
+    mouseOnly: (value = true)=>value
+});
+class ScrollEngine extends CoordinatesEngine {
+    constructor(...args){
+        super(...args);
+        _defineProperty(this, "ingKey", "scrolling");
+    }
+    scroll(event) {
+        if (!this.state._active) this.start(event);
+        this.scrollChange(event);
+        this.timeoutStore.add("scrollEnd", this.scrollEnd.bind(this));
+    }
+    scrollChange(event) {
+        if (event.cancelable) event.preventDefault();
+        const state = this.state;
+        const values = scrollValues(event);
+        state._delta = (0, _mathsB28D9B98EsmJs.V).sub(values, state._values);
+        (0, _mathsB28D9B98EsmJs.V).addTo(state._movement, state._delta);
+        this.computeValues(values);
+        this.compute(event);
+        this.emit();
+    }
+    scrollEnd() {
+        if (!this.state._active) return;
+        this.state._active = false;
+        this.compute();
+        this.emit();
+    }
+    bind(bindFunction) {
+        bindFunction("scroll", "", this.scroll.bind(this));
+    }
+}
+const scrollConfigResolver = coordinatesConfigResolver;
+class WheelEngine extends CoordinatesEngine {
+    constructor(...args){
+        super(...args);
+        _defineProperty(this, "ingKey", "wheeling");
+    }
+    wheel(event) {
+        if (!this.state._active) this.start(event);
+        this.wheelChange(event);
+        this.timeoutStore.add("wheelEnd", this.wheelEnd.bind(this));
+    }
+    wheelChange(event) {
+        const state = this.state;
+        state._delta = wheelValues(event);
+        (0, _mathsB28D9B98EsmJs.V).addTo(state._movement, state._delta);
+        clampStateInternalMovementToBounds(state);
+        this.compute(event);
+        this.emit();
+    }
+    wheelEnd() {
+        if (!this.state._active) return;
+        this.state._active = false;
+        this.compute();
+        this.emit();
+    }
+    bind(bindFunction) {
+        bindFunction("wheel", "", this.wheel.bind(this));
+    }
+}
+const wheelConfigResolver = coordinatesConfigResolver;
+class HoverEngine extends CoordinatesEngine {
+    constructor(...args){
+        super(...args);
+        _defineProperty(this, "ingKey", "hovering");
+    }
+    enter(event) {
+        if (this.config.mouseOnly && event.pointerType !== "mouse") return;
+        this.start(event);
+        this.computeValues(pointerValues(event));
+        this.compute(event);
+        this.emit();
+    }
+    leave(event) {
+        if (this.config.mouseOnly && event.pointerType !== "mouse") return;
+        const state = this.state;
+        if (!state._active) return;
+        state._active = false;
+        const values = pointerValues(event);
+        state._movement = state._delta = (0, _mathsB28D9B98EsmJs.V).sub(values, state._values);
+        this.computeValues(values);
+        this.compute(event);
+        state.delta = state.movement;
+        this.emit();
+    }
+    bind(bindFunction) {
+        bindFunction("pointer", "enter", this.enter.bind(this));
+        bindFunction("pointer", "leave", this.leave.bind(this));
+    }
+}
+const hoverConfigResolver = _objectSpread2(_objectSpread2({}, coordinatesConfigResolver), {}, {
+    mouseOnly: (value = true)=>value
+});
+const EngineMap = new Map();
+const ConfigResolverMap = new Map();
+function registerAction(action) {
+    EngineMap.set(action.key, action.engine);
+    ConfigResolverMap.set(action.key, action.resolver);
+}
+const dragAction = {
+    key: "drag",
+    engine: DragEngine,
+    resolver: dragConfigResolver
+};
+const hoverAction = {
+    key: "hover",
+    engine: HoverEngine,
+    resolver: hoverConfigResolver
+};
+const moveAction = {
+    key: "move",
+    engine: MoveEngine,
+    resolver: moveConfigResolver
+};
+const pinchAction = {
+    key: "pinch",
+    engine: PinchEngine,
+    resolver: pinchConfigResolver
+};
+const scrollAction = {
+    key: "scroll",
+    engine: ScrollEngine,
+    resolver: scrollConfigResolver
+};
+const wheelAction = {
+    key: "wheel",
+    engine: WheelEngine,
+    resolver: wheelConfigResolver
+};
+
+},{"./maths-b28d9b98.esm.js":"iBQ8u","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"a9rlE":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Controller", ()=>Controller);
+parcelHelpers.export(exports, "parseMergedHandlers", ()=>parseMergedHandlers);
+var _actionsE3D93FdeEsmJs = require("./actions-e3d93fde.esm.js");
+var _mathsB28D9B98EsmJs = require("./maths-b28d9b98.esm.js");
+function _objectWithoutPropertiesLoose(source, excluded) {
+    if (source == null) return {};
+    var target = {};
+    var sourceKeys = Object.keys(source);
+    var key, i;
+    for(i = 0; i < sourceKeys.length; i++){
+        key = sourceKeys[i];
+        if (excluded.indexOf(key) >= 0) continue;
+        target[key] = source[key];
+    }
+    return target;
+}
+function _objectWithoutProperties(source, excluded) {
+    if (source == null) return {};
+    var target = _objectWithoutPropertiesLoose(source, excluded);
+    var key, i;
+    if (Object.getOwnPropertySymbols) {
+        var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+        for(i = 0; i < sourceSymbolKeys.length; i++){
+            key = sourceSymbolKeys[i];
+            if (excluded.indexOf(key) >= 0) continue;
+            if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+            target[key] = source[key];
+        }
+    }
+    return target;
+}
+const sharedConfigResolver = {
+    target (value) {
+        if (value) return ()=>"current" in value ? value.current : value;
+        return undefined;
+    },
+    enabled (value = true) {
+        return value;
+    },
+    window (value = (0, _actionsE3D93FdeEsmJs.S).isBrowser ? window : undefined) {
+        return value;
+    },
+    eventOptions ({ passive =true , capture =false  } = {}) {
+        return {
+            passive,
+            capture
+        };
+    },
+    transform (value) {
+        return value;
+    }
+};
+const _excluded = [
+    "target",
+    "eventOptions",
+    "window",
+    "enabled",
+    "transform"
+];
+function resolveWith(config = {}, resolvers) {
+    const result = {};
+    for (const [key, resolver] of Object.entries(resolvers))switch(typeof resolver){
+        case "function":
+            {
+                const r = resolver.call(result, config[key], key, config);
+                if (!Number.isNaN(r)) result[key] = r;
+            }
+            break;
+        case "object":
+            result[key] = resolveWith(config[key], resolver);
+            break;
+        case "boolean":
+            if (resolver) result[key] = config[key];
+            break;
+    }
+    return result;
+}
+function parse(newConfig, gestureKey, _config = {}) {
+    const _ref = newConfig, { target , eventOptions , window: window1 , enabled , transform  } = _ref, rest = _objectWithoutProperties(_ref, _excluded);
+    _config.shared = resolveWith({
+        target,
+        eventOptions,
+        window: window1,
+        enabled,
+        transform
+    }, sharedConfigResolver);
+    if (gestureKey) {
+        const resolver = (0, _actionsE3D93FdeEsmJs.C).get(gestureKey);
+        _config[gestureKey] = resolveWith((0, _actionsE3D93FdeEsmJs._)({
+            shared: _config.shared
+        }, rest), resolver);
+    } else for(const key in rest){
+        const resolver1 = (0, _actionsE3D93FdeEsmJs.C).get(key);
+        if (resolver1) _config[key] = resolveWith((0, _actionsE3D93FdeEsmJs._)({
+            shared: _config.shared
+        }, rest[key]), resolver1);
+        else if (![
+            "drag",
+            "pinch",
+            "scroll",
+            "wheel",
+            "move",
+            "hover"
+        ].includes(key)) {
+            if (key === "domTarget") throw Error(`[@use-gesture]: \`domTarget\` option has been renamed to \`target\`.`);
+            console.warn(`[@use-gesture]: Unknown config key \`${key}\` was used. Please read the documentation for further information.`);
+        }
+    }
+    return _config;
+}
+class EventStore {
+    constructor(ctrl, gestureKey){
+        (0, _actionsE3D93FdeEsmJs.a)(this, "_listeners", new Set());
+        this._ctrl = ctrl;
+        this._gestureKey = gestureKey;
+    }
+    add(element, device, action, handler, options) {
+        const listeners = this._listeners;
+        const type = (0, _actionsE3D93FdeEsmJs.t)(device, action);
+        const _options = this._gestureKey ? this._ctrl.config[this._gestureKey].eventOptions : {};
+        const eventOptions = (0, _actionsE3D93FdeEsmJs._)((0, _actionsE3D93FdeEsmJs._)({}, _options), options);
+        element.addEventListener(type, handler, eventOptions);
+        const remove = ()=>{
+            element.removeEventListener(type, handler, eventOptions);
+            listeners.delete(remove);
+        };
+        listeners.add(remove);
+        return remove;
+    }
+    clean() {
+        this._listeners.forEach((remove)=>remove());
+        this._listeners.clear();
+    }
+}
+class TimeoutStore {
+    constructor(){
+        (0, _actionsE3D93FdeEsmJs.a)(this, "_timeouts", new Map());
+    }
+    add(key, callback, ms = 140, ...args) {
+        this.remove(key);
+        this._timeouts.set(key, window.setTimeout(callback, ms, ...args));
+    }
+    remove(key) {
+        const timeout = this._timeouts.get(key);
+        if (timeout) window.clearTimeout(timeout);
+    }
+    clean() {
+        this._timeouts.forEach((timeout)=>void window.clearTimeout(timeout));
+        this._timeouts.clear();
+    }
+}
+class Controller {
+    constructor(handlers){
+        (0, _actionsE3D93FdeEsmJs.a)(this, "gestures", new Set());
+        (0, _actionsE3D93FdeEsmJs.a)(this, "_targetEventStore", new EventStore(this));
+        (0, _actionsE3D93FdeEsmJs.a)(this, "gestureEventStores", {});
+        (0, _actionsE3D93FdeEsmJs.a)(this, "gestureTimeoutStores", {});
+        (0, _actionsE3D93FdeEsmJs.a)(this, "handlers", {});
+        (0, _actionsE3D93FdeEsmJs.a)(this, "config", {});
+        (0, _actionsE3D93FdeEsmJs.a)(this, "pointerIds", new Set());
+        (0, _actionsE3D93FdeEsmJs.a)(this, "touchIds", new Set());
+        (0, _actionsE3D93FdeEsmJs.a)(this, "state", {
+            shared: {
+                shiftKey: false,
+                metaKey: false,
+                ctrlKey: false,
+                altKey: false
+            }
+        });
+        resolveGestures(this, handlers);
+    }
+    setEventIds(event) {
+        if ((0, _actionsE3D93FdeEsmJs.i)(event)) {
+            this.touchIds = new Set((0, _actionsE3D93FdeEsmJs.b)(event));
+            return this.touchIds;
+        } else if ("pointerId" in event) {
+            if (event.type === "pointerup" || event.type === "pointercancel") this.pointerIds.delete(event.pointerId);
+            else if (event.type === "pointerdown") this.pointerIds.add(event.pointerId);
+            return this.pointerIds;
+        }
+    }
+    applyHandlers(handlers, nativeHandlers) {
+        this.handlers = handlers;
+        this.nativeHandlers = nativeHandlers;
+    }
+    applyConfig(config, gestureKey) {
+        this.config = parse(config, gestureKey, this.config);
+    }
+    clean() {
+        this._targetEventStore.clean();
+        for (const key of this.gestures){
+            this.gestureEventStores[key].clean();
+            this.gestureTimeoutStores[key].clean();
+        }
+    }
+    effect() {
+        if (this.config.shared.target) this.bind();
+        return ()=>this._targetEventStore.clean();
+    }
+    bind(...args) {
+        const sharedConfig = this.config.shared;
+        const props = {};
+        let target;
+        if (sharedConfig.target) {
+            target = sharedConfig.target();
+            if (!target) return;
+        }
+        if (sharedConfig.enabled) {
+            for (const gestureKey of this.gestures){
+                const gestureConfig = this.config[gestureKey];
+                const bindFunction = bindToProps(props, gestureConfig.eventOptions, !!target);
+                if (gestureConfig.enabled) {
+                    const Engine = (0, _actionsE3D93FdeEsmJs.E).get(gestureKey);
+                    new Engine(this, args, gestureKey).bind(bindFunction);
+                }
+            }
+            const nativeBindFunction = bindToProps(props, sharedConfig.eventOptions, !!target);
+            for(const eventKey in this.nativeHandlers)nativeBindFunction(eventKey, "", (event)=>this.nativeHandlers[eventKey]((0, _actionsE3D93FdeEsmJs._)((0, _actionsE3D93FdeEsmJs._)({}, this.state.shared), {}, {
+                    event,
+                    args
+                })), undefined, true);
+        }
+        for(const handlerProp in props)props[handlerProp] = (0, _actionsE3D93FdeEsmJs.c)(...props[handlerProp]);
+        if (!target) return props;
+        for(const handlerProp1 in props){
+            const { device , capture , passive  } = (0, _actionsE3D93FdeEsmJs.p)(handlerProp1);
+            this._targetEventStore.add(target, device, "", props[handlerProp1], {
+                capture,
+                passive
+            });
+        }
+    }
+}
+function setupGesture(ctrl, gestureKey) {
+    ctrl.gestures.add(gestureKey);
+    ctrl.gestureEventStores[gestureKey] = new EventStore(ctrl, gestureKey);
+    ctrl.gestureTimeoutStores[gestureKey] = new TimeoutStore();
+}
+function resolveGestures(ctrl, internalHandlers) {
+    if (internalHandlers.drag) setupGesture(ctrl, "drag");
+    if (internalHandlers.wheel) setupGesture(ctrl, "wheel");
+    if (internalHandlers.scroll) setupGesture(ctrl, "scroll");
+    if (internalHandlers.move) setupGesture(ctrl, "move");
+    if (internalHandlers.pinch) setupGesture(ctrl, "pinch");
+    if (internalHandlers.hover) setupGesture(ctrl, "hover");
+}
+const bindToProps = (props, eventOptions, withPassiveOption)=>(device, action, handler, options = {}, isNative = false)=>{
+        var _options$capture, _options$passive;
+        const capture = (_options$capture = options.capture) !== null && _options$capture !== void 0 ? _options$capture : eventOptions.capture;
+        const passive = (_options$passive = options.passive) !== null && _options$passive !== void 0 ? _options$passive : eventOptions.passive;
+        let handlerProp = isNative ? device : (0, _actionsE3D93FdeEsmJs.d)(device, action, capture);
+        if (withPassiveOption && passive) handlerProp += "Passive";
+        props[handlerProp] = props[handlerProp] || [];
+        props[handlerProp].push(handler);
+    };
+const RE_NOT_NATIVE = /^on(Drag|Wheel|Scroll|Move|Pinch|Hover)/;
+function sortHandlers(_handlers) {
+    const native = {};
+    const handlers = {};
+    const actions = new Set();
+    for(let key in _handlers)if (RE_NOT_NATIVE.test(key)) {
+        actions.add(RegExp.lastMatch);
+        handlers[key] = _handlers[key];
+    } else native[key] = _handlers[key];
+    return [
+        handlers,
+        native,
+        actions
+    ];
+}
+function registerGesture(actions, handlers, handlerKey, key, internalHandlers, config) {
+    if (!actions.has(handlerKey)) return;
+    if (!(0, _actionsE3D93FdeEsmJs.E).has(key)) {
+        console.warn(`[@use-gesture]: You've created a custom handler that that uses the \`${key}\` gesture but isn't properly configured.\n\nPlease add \`${key}Action\` when creating your handler.`);
+        return;
+    }
+    const startKey = handlerKey + "Start";
+    const endKey = handlerKey + "End";
+    const fn = (state)=>{
+        let memo = undefined;
+        if (state.first && startKey in handlers) handlers[startKey](state);
+        if (handlerKey in handlers) memo = handlers[handlerKey](state);
+        if (state.last && endKey in handlers) handlers[endKey](state);
+        return memo;
+    };
+    internalHandlers[key] = fn;
+    config[key] = config[key] || {};
+}
+function parseMergedHandlers(mergedHandlers, mergedConfig) {
+    const [handlers, nativeHandlers, actions] = sortHandlers(mergedHandlers);
+    const internalHandlers = {};
+    registerGesture(actions, handlers, "onDrag", "drag", internalHandlers, mergedConfig);
+    registerGesture(actions, handlers, "onWheel", "wheel", internalHandlers, mergedConfig);
+    registerGesture(actions, handlers, "onScroll", "scroll", internalHandlers, mergedConfig);
+    registerGesture(actions, handlers, "onPinch", "pinch", internalHandlers, mergedConfig);
+    registerGesture(actions, handlers, "onMove", "move", internalHandlers, mergedConfig);
+    registerGesture(actions, handlers, "onHover", "hover", internalHandlers, mergedConfig);
+    return {
+        handlers: internalHandlers,
+        config: mergedConfig,
+        nativeHandlers
+    };
+}
+
+},{"./actions-e3d93fde.esm.js":"2fEAd","./maths-b28d9b98.esm.js":"iBQ8u","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"kcNQH":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "rubberbandIfOutOfBounds", ()=>(0, _mathsB28D9B98EsmJs.r));
+var _mathsB28D9B98EsmJs = require("../../dist/maths-b28d9b98.esm.js");
+
+},{"../../dist/maths-b28d9b98.esm.js":"iBQ8u","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"4a9W9":[function(require,module,exports) {
+
+},{}]},["1xC6H","ShInH","8lqZg"], "8lqZg", "parcelRequire0a95")
 
 //# sourceMappingURL=index.975ef6c8.js.map
