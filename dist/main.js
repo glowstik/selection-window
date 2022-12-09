@@ -2,6 +2,7 @@ require("./main.css");
 var $dSH8u$reactjsxruntime = require("react/jsx-runtime");
 var $dSH8u$react = require("react");
 var $dSH8u$reacthooksize = require("@react-hook/size");
+var $dSH8u$usegesturereact = require("@use-gesture/react");
 
 function $parcel$interopDefault(a) {
   return a && a.__esModule ? a.default : a;
@@ -11,6 +12,7 @@ function $parcel$export(e, n, v, s) {
 }
 
 $parcel$export(module.exports, "SelectionWindow", () => $0d16028b28e5283f$export$c2644827bcb91f96);
+
 
 
 
@@ -49,6 +51,12 @@ function $0d16028b28e5283f$export$c2644827bcb91f96({ children: children , onCrop
     const dragStartEvent = $0d16028b28e5283f$var$useEvent(handleDragStart);
     const dragEvent = $0d16028b28e5283f$var$useEvent(handleDrag);
     const dragEndEvent = $0d16028b28e5283f$var$useEvent(handleDragEnd);
+    const dragGesture = (0, $dSH8u$usegesturereact.useDrag)((touch)=>{
+        if (!stateRef.current.edges[0] && touch._pointerId > 1) moveSelection({
+            dx: touch.delta[0],
+            dy: touch.delta[1]
+        });
+    });
     (0, ($parcel$interopDefault($dSH8u$react))).useEffect(()=>{
         if (!node) return;
         node.addEventListener("touchmove", touchMoveEvent);
@@ -69,6 +77,7 @@ function $0d16028b28e5283f$export$c2644827bcb91f96({ children: children , onCrop
             height: $0d16028b28e5283f$var$px(height)
         },
         children: /*#__PURE__*/ (0, $dSH8u$reactjsxruntime.jsx)("div", {
+            ...dragGesture(),
             ref: selectionRef,
             className: (0, (/*@__PURE__*/$parcel$interopDefault($5d4abfe7f70a3dcc$exports))).selection,
             style: {
@@ -76,7 +85,8 @@ function $0d16028b28e5283f$export$c2644827bcb91f96({ children: children , onCrop
                 left: $0d16028b28e5283f$var$px(crop?.left ?? 0),
                 top: $0d16028b28e5283f$var$px(crop?.top ?? 0),
                 width: $0d16028b28e5283f$var$px((crop?.right ?? 0) - (crop?.left ?? 0)),
-                height: $0d16028b28e5283f$var$px((crop?.bottom ?? 0) - (crop?.top ?? 0))
+                height: $0d16028b28e5283f$var$px((crop?.bottom ?? 0) - (crop?.top ?? 0)),
+                touchAction: "none"
             },
             children: children
         })
@@ -140,7 +150,7 @@ function $0d16028b28e5283f$export$c2644827bcb91f96({ children: children , onCrop
                 dy: e.movementY,
                 threshold: threshold
             });
-        } else if (stateRef.current.pointers.size > 0) {
+        } else if (e.pointerId === 1) {
             moveSelection({
                 dx: e.movementX,
                 dy: e.movementY
