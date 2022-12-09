@@ -1,5 +1,6 @@
 import React from "react"
 import useSize from "@react-hook/size"
+import {useDrag} from '@use-gesture/react'
 import styles from './SelectionWindow.module.css'
 
 export function SelectionWindow({
@@ -40,6 +41,12 @@ export function SelectionWindow({
   const dragEvent = useEvent(handleDrag)
   const dragEndEvent = useEvent(handleDragEnd)
 
+  const dragGesture = useDrag((touch) => {
+    if(!stateRef.current.edges[0] && touch._pointerId > 1) {
+      moveSelection({ dx: touch.delta[0], dy: touch.delta[1] })
+    }
+  })
+
   React.useEffect(
     () => {
       if (!node) return
@@ -59,6 +66,7 @@ export function SelectionWindow({
   return (
     <div ref={setNode} className={cx(className, styles.component)} style={{ width: px(width), height: px(height) }}>
       <div
+        {...dragGesture()}
         ref={selectionRef}
         className={styles.selection}
         style={{
@@ -67,6 +75,7 @@ export function SelectionWindow({
           top: px(crop?.top ?? 0),
           width: px((crop?.right ?? 0) - (crop?.left ?? 0)),
           height: px((crop?.bottom ?? 0) - (crop?.top ?? 0)),
+          touchAction: 'none'
         }}
         {...{ children }}
       />
@@ -122,9 +131,9 @@ export function SelectionWindow({
       const isFirstPointer = [...stateRef.current.pointers.values()][0] === pointerState
       if(isFirstPointer) moveSelection({ dx: e.movementX, dy: e.movementY })
       scaleSelection({ pointerState, dx: e.movementX, dy: e.movementY, threshold })
-    } else if (stateRef.current.pointers.size > 0) {
+    } else if (e.pointerId === 1) {
       moveSelection({ dx: e.movementX, dy: e.movementY })
-    } 
+    }
   }
 
   function handleDragEnd(e) {
