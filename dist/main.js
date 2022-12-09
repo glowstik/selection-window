@@ -124,7 +124,7 @@ function $0d16028b28e5283f$export$c2644827bcb91f96({ children: children , onCrop
     }
     function handleTouchMove(e) {
         if (!stateRef.current.dragging) return;
-        e.preventDefault();
+    // e.preventDefault()
     }
     function handleDrag(e) {
         if (!stateRef.current.dragging) return;

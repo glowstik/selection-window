@@ -115,7 +115,7 @@ export function SelectionWindow({
 
   function handleTouchMove(e) {
     if (!stateRef.current.dragging) return
-    e.preventDefault()
+    // e.preventDefault()
   }
 
   function handleDrag(e) {
