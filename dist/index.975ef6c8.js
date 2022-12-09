@@ -27223,15 +27223,15 @@ exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
 },{}],"c4nSm":[function(require,module,exports) {
+module.exports["handle"] = `gPMrEW_handle`;
 module.exports["app"] = `gPMrEW_app`;
 module.exports["image"] = `gPMrEW_image`;
-module.exports["handle"] = `gPMrEW_handle`;
 module.exports["strict"] = `gPMrEW_strict`;
 module.exports["window"] = `gPMrEW_window`;
-module.exports["selection"] = `gPMrEW_selection`;
-module.exports["topLeft"] = `gPMrEW_topLeft`;
-module.exports["topRight"] = `gPMrEW_topRight`;
 module.exports["bottomLeft"] = `gPMrEW_bottomLeft`;
+module.exports["selection"] = `gPMrEW_selection`;
+module.exports["topRight"] = `gPMrEW_topRight`;
+module.exports["topLeft"] = `gPMrEW_topLeft`;
 module.exports["bottomRight"] = `gPMrEW_bottomRight`;
 
 },{}],"crMHi":[function(require,module,exports) {
@@ -28391,8 +28391,8 @@ const useLatest = (current)=>{
 exports.default = useLatest;
 
 },{"react":"21dqq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7dbn6":[function(require,module,exports) {
-module.exports["component"] = `wAMUBW_component`;
 module.exports["selection"] = `wAMUBW_selection`;
+module.exports["component"] = `wAMUBW_component`;
 
 },{}],"km3Ru":[function(require,module,exports) {
 "use strict";
