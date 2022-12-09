@@ -52,10 +52,13 @@ function $0d16028b28e5283f$export$c2644827bcb91f96({ children: children , onCrop
     const dragEvent = $0d16028b28e5283f$var$useEvent(handleDrag);
     const dragEndEvent = $0d16028b28e5283f$var$useEvent(handleDragEnd);
     const dragGesture = (0, $dSH8u$usegesturereact.useDrag)((touch)=>{
-        if (!stateRef.current.edges[0] && touch._pointerId > 1) moveSelection({
-            dx: touch.delta[0],
-            dy: touch.delta[1]
-        });
+        if (!stateRef.current.edges[0] && touch._pointerId > 1) {
+            console.log(touch);
+            moveSelection({
+                dx: touch.delta[0],
+                dy: touch.delta[1]
+            });
+        }
     });
     (0, ($parcel$interopDefault($dSH8u$react))).useEffect(()=>{
         if (!node) return;

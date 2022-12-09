@@ -50,10 +50,13 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , onCrop
     const dragEvent = $7c8ba892eba51f50$var$useEvent(handleDrag);
     const dragEndEvent = $7c8ba892eba51f50$var$useEvent(handleDragEnd);
     const dragGesture = (0, $2WDAj$useDrag)((touch)=>{
-        if (!stateRef.current.edges[0] && touch._pointerId > 1) moveSelection({
-            dx: touch.delta[0],
-            dy: touch.delta[1]
-        });
+        if (!stateRef.current.edges[0] && touch._pointerId > 1) {
+            console.log(touch);
+            moveSelection({
+                dx: touch.delta[0],
+                dy: touch.delta[1]
+            });
+        }
     });
     (0, $2WDAj$react).useEffect(()=>{
         if (!node) return;
