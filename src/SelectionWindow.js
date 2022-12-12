@@ -41,11 +41,12 @@ export function SelectionWindow({
   const dragEvent = useEvent(handleDrag)
   const dragEndEvent = useEvent(handleDragEnd)
 
-  const dragGesture = useDrag((touch) => {
-    if(!stateRef.current.edges[0] && touch._pointerId > 1 || touch._pointerId < 0) {
-      moveSelection({ dx: touch.delta[0], dy: touch.delta[1] })
-    }
-  })
+  // const dragGesture = useDrag((touch) => {
+  //   console.log(!stateRef.current.edges.length)
+  //   if(!stateRef.current.edges.length && touch._pointerId > 1 || touch._pointerId < 0) {
+  //     moveSelection({ dx: touch.delta[0], dy: touch.delta[1] })
+  //   }
+  // })
 
   React.useEffect(
     () => {
@@ -66,7 +67,7 @@ export function SelectionWindow({
   return (
     <div ref={setNode} className={cx(className, styles.component)} style={{ width: px(width), height: px(height) }}>
       <div
-        {...dragGesture()}
+        // {...dragGesture()}
         ref={selectionRef}
         className={styles.selection}
         style={{
@@ -131,7 +132,7 @@ export function SelectionWindow({
       const isFirstPointer = [...stateRef.current.pointers.values()][0] === pointerState
       if(isFirstPointer) moveSelection({ dx: e.movementX, dy: e.movementY })
       scaleSelection({ pointerState, dx: e.movementX, dy: e.movementY, threshold })
-    } else if (e.pointerId === 1) {
+    } else if (e.pointerId >= 1) {
       moveSelection({ dx: e.movementX, dy: e.movementY })
     }
   }

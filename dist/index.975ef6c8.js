@@ -27279,12 +27279,12 @@ function SelectionWindow({ children , onCropChange , className , width , height 
     const dragStartEvent = useEvent(handleDragStart);
     const dragEvent = useEvent(handleDrag);
     const dragEndEvent = useEvent(handleDragEnd);
-    const dragGesture = (0, _react1.useDrag)((touch)=>{
-        if (!stateRef.current.edges[0] && touch._pointerId > 1 || touch._pointerId < 0) moveSelection({
-            dx: touch.delta[0],
-            dy: touch.delta[1]
-        });
-    });
+    // const dragGesture = useDrag((touch) => {
+    //   console.log(!stateRef.current.edges.length)
+    //   if(!stateRef.current.edges.length && touch._pointerId > 1 || touch._pointerId < 0) {
+    //     moveSelection({ dx: touch.delta[0], dy: touch.delta[1] })
+    //   }
+    // })
     (0, _reactDefault.default).useEffect(()=>{
         if (!node) return;
         node.addEventListener("touchmove", touchMoveEvent);
@@ -27305,7 +27305,7 @@ function SelectionWindow({ children , onCropChange , className , width , height 
             height: px(height)
         },
         children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-            ...dragGesture(),
+            // {...dragGesture()}
             ref: selectionRef,
             className: (0, _selectionWindowModuleCssDefault.default).selection,
             style: {
@@ -27319,12 +27319,12 @@ function SelectionWindow({ children , onCropChange , className , width , height 
             children
         }, void 0, false, {
             fileName: "src/SelectionWindow.js",
-            lineNumber: 68,
+            lineNumber: 69,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "src/SelectionWindow.js",
-        lineNumber: 67,
+        lineNumber: 68,
         columnNumber: 5
     }, this);
     function handleCropChange(crop) {
@@ -27386,7 +27386,7 @@ function SelectionWindow({ children , onCropChange , className , width , height 
                 dy: e.movementY,
                 threshold
             });
-        } else if (e.pointerId === 1) {
+        } else if (e.pointerId >= 1) {
             moveSelection({
                 dx: e.movementX,
                 dy: e.movementY
@@ -27517,14 +27517,13 @@ function SelectionWindow({ children , onCropChange , className , width , height 
         };
     }
 }
-_s(SelectionWindow, "Ilkd2ifM/Gq88QtpDj9zptCzvPU=", false, function() {
+_s(SelectionWindow, "8RDb2OJ6XYEphy5QvMiPccCZmjA=", false, function() {
     return [
         (0, _sizeDefault.default),
         useEvent,
         useEvent,
         useEvent,
-        useEvent,
-        (0, _react1.useDrag)
+        useEvent
     ];
 });
 _c = SelectionWindow;
