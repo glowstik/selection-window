@@ -42,7 +42,7 @@ export function SelectionWindow({
   const dragEndEvent = useEvent(handleDragEnd)
 
   const dragGesture = useDrag((touch) => {
-    if(!stateRef.current.edges[0] && touch._pointerId > 1) {
+    if(!stateRef.current.edges[0] && touch._pointerId > 1 || touch._pointerId < 0) {
       moveSelection({ dx: touch.delta[0], dy: touch.delta[1] })
     }
   })

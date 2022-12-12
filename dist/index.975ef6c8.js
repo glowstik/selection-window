@@ -27223,16 +27223,16 @@ exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
 },{}],"c4nSm":[function(require,module,exports) {
-module.exports["handle"] = `gPMrEW_handle`;
-module.exports["app"] = `gPMrEW_app`;
-module.exports["image"] = `gPMrEW_image`;
-module.exports["strict"] = `gPMrEW_strict`;
-module.exports["window"] = `gPMrEW_window`;
-module.exports["bottomLeft"] = `gPMrEW_bottomLeft`;
-module.exports["selection"] = `gPMrEW_selection`;
-module.exports["topRight"] = `gPMrEW_topRight`;
-module.exports["topLeft"] = `gPMrEW_topLeft`;
 module.exports["bottomRight"] = `gPMrEW_bottomRight`;
+module.exports["image"] = `gPMrEW_image`;
+module.exports["selection"] = `gPMrEW_selection`;
+module.exports["topLeft"] = `gPMrEW_topLeft`;
+module.exports["strict"] = `gPMrEW_strict`;
+module.exports["app"] = `gPMrEW_app`;
+module.exports["handle"] = `gPMrEW_handle`;
+module.exports["topRight"] = `gPMrEW_topRight`;
+module.exports["bottomLeft"] = `gPMrEW_bottomLeft`;
+module.exports["window"] = `gPMrEW_window`;
 
 },{}],"crMHi":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$3990 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
@@ -27280,7 +27280,7 @@ function SelectionWindow({ children , onCropChange , className , width , height 
     const dragEvent = useEvent(handleDrag);
     const dragEndEvent = useEvent(handleDragEnd);
     const dragGesture = (0, _react1.useDrag)((touch)=>{
-        if (!stateRef.current.edges[0] && touch._pointerId > 1) moveSelection({
+        if (!stateRef.current.edges[0] && touch._pointerId > 1 || touch._pointerId < 0) moveSelection({
             dx: touch.delta[0],
             dy: touch.delta[1]
         });
