@@ -8,10 +8,10 @@ export default function App() {
 
   return (
     <div className={styles.app}>
-      <img className={styles.image} src={image} />
+      <img id='img' className={styles.image} src={image} />
       <SelectionWindow
         className={styles.window}
-        onCropChange={rect => { cropRectRef.current = rect }} 
+        onCropChange={rect => { cropRectRef.current = rect }}
       >
         <div className={styles.selection}>
           <div className={[styles.handle, styles.topLeft].join(' ')} />
@@ -23,4 +23,3 @@ export default function App() {
     </div>
   )
 }
-

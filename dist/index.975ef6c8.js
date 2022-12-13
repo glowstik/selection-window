@@ -27101,6 +27101,7 @@ function App() {
         className: _appModuleCss.app,
         children: [
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("img", {
+                id: "img",
                 className: _appModuleCss.image,
                 src: (0, _imageJpgDefault.default)
             }, void 0, false, {
@@ -27223,16 +27224,16 @@ exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
 },{}],"c4nSm":[function(require,module,exports) {
-module.exports["bottomRight"] = `gPMrEW_bottomRight`;
-module.exports["image"] = `gPMrEW_image`;
-module.exports["selection"] = `gPMrEW_selection`;
-module.exports["topLeft"] = `gPMrEW_topLeft`;
-module.exports["strict"] = `gPMrEW_strict`;
-module.exports["app"] = `gPMrEW_app`;
-module.exports["handle"] = `gPMrEW_handle`;
-module.exports["topRight"] = `gPMrEW_topRight`;
 module.exports["bottomLeft"] = `gPMrEW_bottomLeft`;
+module.exports["image"] = `gPMrEW_image`;
 module.exports["window"] = `gPMrEW_window`;
+module.exports["app"] = `gPMrEW_app`;
+module.exports["selection"] = `gPMrEW_selection`;
+module.exports["bottomRight"] = `gPMrEW_bottomRight`;
+module.exports["topRight"] = `gPMrEW_topRight`;
+module.exports["handle"] = `gPMrEW_handle`;
+module.exports["strict"] = `gPMrEW_strict`;
+module.exports["topLeft"] = `gPMrEW_topLeft`;
 
 },{}],"crMHi":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$3990 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
@@ -27263,6 +27264,10 @@ function SelectionWindow({ children , onCropChange , className , width , height 
         pointers: new Map(),
         edges: []
     });
+    const [cropZoom, setCropZoom] = (0, _reactDefault.default).useState({
+        scale: 1,
+        zooming: false
+    });
     const [containerWidth, containerHeight] = (0, _sizeDefault.default)(node);
     (0, _reactDefault.default).useEffect(()=>{
         if (!crop && containerWidth && containerHeight) handleCropChange({
@@ -27280,10 +27285,28 @@ function SelectionWindow({ children , onCropChange , className , width , height 
     const dragEvent = useEvent(handleDrag);
     const dragEndEvent = useEvent(handleDragEnd);
     const dragGesture = (0, _react1.useDrag)((touch)=>{
-        if (!stateRef.current.edges.length && touch._pointerId > 1 || touch._pointerId < 0) moveSelection({
+        console.log(!stateRef.current.edges.length);
+        if (!stateRef.current.edges.length && touch._pointerId > 1 || touch._pointerId < 0) !cropZoom.zooming && moveSelection({
             dx: touch.delta[0],
             dy: touch.delta[1]
         });
+    });
+    (0, _react1.usePinch)((pinch)=>{
+        console.log(pinch.last);
+        setCropZoom({
+            zooming: true
+        });
+        const img = document.getElementById("img");
+        img.style.transform = `scale(${cropZoom.scale})`;
+        if (pinch.offset[0] >= 1 && !stateRef.current.edges.length) setCropZoom((zoom)=>({
+                ...zoom,
+                scale: pinch.offset[0]
+            }));
+        if (pinch.last) setCropZoom({
+            zooming: false
+        });
+    }, {
+        target: selectionRef.current
     });
     (0, _reactDefault.default).useEffect(()=>{
         if (!node) return;
@@ -27319,12 +27342,12 @@ function SelectionWindow({ children , onCropChange , className , width , height 
             children
         }, void 0, false, {
             fileName: "src/SelectionWindow.js",
-            lineNumber: 68,
+            lineNumber: 81,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "src/SelectionWindow.js",
-        lineNumber: 67,
+        lineNumber: 80,
         columnNumber: 5
     }, this);
     function handleCropChange(crop) {
@@ -27505,14 +27528,15 @@ function SelectionWindow({ children , onCropChange , className , width , height 
         };
     }
 }
-_s(SelectionWindow, "Ilkd2ifM/Gq88QtpDj9zptCzvPU=", false, function() {
+_s(SelectionWindow, "cVMYQs92H6M8YKsYFI09aorovWg=", false, function() {
     return [
         (0, _sizeDefault.default),
         useEvent,
         useEvent,
         useEvent,
         useEvent,
-        (0, _react1.useDrag)
+        (0, _react1.useDrag),
+        (0, _react1.usePinch)
     ];
 });
 _c = SelectionWindow;
@@ -28379,8 +28403,8 @@ const useLatest = (current)=>{
 exports.default = useLatest;
 
 },{"react":"21dqq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7dbn6":[function(require,module,exports) {
-module.exports["selection"] = `wAMUBW_selection`;
 module.exports["component"] = `wAMUBW_component`;
+module.exports["selection"] = `wAMUBW_selection`;
 
 },{}],"km3Ru":[function(require,module,exports) {
 "use strict";

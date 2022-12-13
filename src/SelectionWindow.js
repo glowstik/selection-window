@@ -1,6 +1,6 @@
 import React from "react"
 import useSize from "@react-hook/size"
-import {useDrag} from '@use-gesture/react'
+import {useDrag, usePinch} from '@use-gesture/react'
 import styles from './SelectionWindow.module.css'
 
 export function SelectionWindow({
@@ -20,6 +20,7 @@ export function SelectionWindow({
     pointers: new Map(),
     edges: []
   })
+  const [cropZoom, setCropZoom] = React.useState({scale: 1, zooming: false})
   const [containerWidth, containerHeight] = useSize(node)
 
   React.useEffect(
@@ -42,10 +43,22 @@ export function SelectionWindow({
   const dragEndEvent = useEvent(handleDragEnd)
 
   const dragGesture = useDrag((touch) => {
+    console.log(!stateRef.current.edges.length)
     if(!stateRef.current.edges.length && touch._pointerId > 1 || touch._pointerId < 0) {
-      moveSelection({ dx: touch.delta[0], dy: touch.delta[1] })
+      !cropZoom.zooming ? moveSelection({ dx: touch.delta[0], dy: touch.delta[1] }) : null
     }
   })
+
+  usePinch((pinch) => {
+    console.log(pinch.last)
+    setCropZoom({zooming: true})
+    const img = document.getElementById('img')
+    img.style.transform = `scale(${cropZoom.scale})`
+    if(pinch.offset[0] >= 1 && !stateRef.current.edges.length) {
+      setCropZoom((zoom) => ({...zoom, scale: pinch.offset[0]}))
+    }
+    if(pinch.last) setCropZoom({zooming: false})
+  }, {target: selectionRef.current})
 
   React.useEffect(
     () => {
