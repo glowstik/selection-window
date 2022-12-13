@@ -52,13 +52,10 @@ function $0d16028b28e5283f$export$c2644827bcb91f96({ children: children , onCrop
     const dragEvent = $0d16028b28e5283f$var$useEvent(handleDrag);
     const dragEndEvent = $0d16028b28e5283f$var$useEvent(handleDragEnd);
     const dragGesture = (0, $dSH8u$usegesturereact.useDrag)((touch)=>{
-        if (!stateRef.current.edges[0] && touch._pointerId > 1) {
-            console.log(touch);
-            moveSelection({
-                dx: touch.delta[0],
-                dy: touch.delta[1]
-            });
-        }
+        if (!stateRef.current.edges.length && touch._pointerId > 1 || touch._pointerId < 0) moveSelection({
+            dx: touch.delta[0],
+            dy: touch.delta[1]
+        });
     });
     (0, ($parcel$interopDefault($dSH8u$react))).useEffect(()=>{
         if (!node) return;
@@ -124,7 +121,7 @@ function $0d16028b28e5283f$export$c2644827bcb91f96({ children: children , onCrop
     }
     function handleTouchMove(e) {
         if (!stateRef.current.dragging) return;
-    // e.preventDefault()
+        e.preventDefault();
     }
     function handleDrag(e) {
         if (!stateRef.current.dragging) return;
@@ -140,19 +137,7 @@ function $0d16028b28e5283f$export$c2644827bcb91f96({ children: children , onCrop
             });
             return;
         } else if (!stateRef.current.edges.length && stateRef.current.pointers.size === 2) {
-            const isFirstPointer = [
-                ...stateRef.current.pointers.values()
-            ][0] === pointerState;
-            if (isFirstPointer) moveSelection({
-                dx: e.movementX,
-                dy: e.movementY
-            });
-            scaleSelection({
-                pointerState: pointerState,
-                dx: e.movementX,
-                dy: e.movementY,
-                threshold: threshold
-            });
+            return;
         } else if (e.pointerId === 1) {
             moveSelection({
                 dx: e.movementX,
