@@ -27319,14 +27319,10 @@ function SelectionWindow({ children , onCropChange , className , width , height 
     //   // console.log(cropper.x, cropper.y)
     // }, {target: selectionRef.current})
     useGesture({
-        onDrag: ({ movement: [dx, dy] , event , cancel  })=>{
-            // console.log(event)
+        onDrag: ({ offset: [dx, dy]  })=>{
             const imgWrapper = document.getElementById("imageWrapper");
             imgWrapper.style.top = cropper.y + "px";
             imgWrapper.style.left = cropper.x + "px";
-            const imgRect = imgWrapper.getBoundingClientRect();
-            const selectionWindowRect = selectionRef.current.getBoundingClientRect();
-            if (imgRect.left > selectionWindowRect.left) cancel();
             if (!stateRef.current.edges.length) !cropper.zooming && setCropper((crop)=>({
                     ...crop,
                     x: dx,
@@ -27334,16 +27330,22 @@ function SelectionWindow({ children , onCropChange , className , width , height 
                 }));
         },
         onDragEnd: (e)=>{
-        // if (!stateRef.current.pointers.has(e._pointerId)) return // Drag already ended, multiple events can end dragging
-        // const { edges } = stateRef.current.pointers.get(e._pointerId)
-        // stateRef.current.edges = stateRef.current.edges.filter(x => !edges.includes(x))
-        // stateRef.current.pointers.delete(e._pointerId)
-        // stateRef.current.dragging = Boolean(stateRef.current.pointers.size)
-        // if (!stateRef.current.dragging) {
-        //   window.removeEventListener('pointermove', dragEvent, { passive: true })
-        //   window.removeEventListener('pointerup', dragEndEvent)
-        //   window.removeEventListener('pointercancel', dragEndEvent)
-        // }
+            console.log(stateRef.current.crop);
+            const newCrop = cropper;
+            const imgRect = imgWrapperRef.current.getBoundingClientRect();
+            console.log(imgRect.width);
+            const cropperRect = selectionRef.current.getBoundingClientRect();
+            console.log(cropperRect.width);
+            if (cropperRect.left < imgRect.left) newCrop.x = stateRef.current.crop.left;
+            else if (cropperRect.right > imgRect.right) newCrop.x = -(imgRect.width - cropperRect.width) - -cropperRect.width / 2;
+            if (cropperRect.top < imgRect.top) newCrop.y = stateRef.current.crop.top;
+            else if (cropperRect.bottom > imgRect.bottom) newCrop.y = -(imgRect.height - cropperRect.height) - -cropperRect.height / 2;
+            setCropper(newCrop);
+            imgWrapperRef.current.style.left = cropper.x + "px";
+            imgWrapperRef.current.style.right = cropper.x + "px";
+            imgWrapperRef.current.style.top = cropper.y + "px";
+            imgWrapperRef.current.style.bottom = cropper.y + "px";
+            console.log(cropper.x);
         }
     }, {
         drag: {
@@ -27421,12 +27423,12 @@ function SelectionWindow({ children , onCropChange , className , width , height 
             children
         }, void 0, false, {
             fileName: "src/SelectionWindow.js",
-            lineNumber: 160,
+            lineNumber: 165,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "src/SelectionWindow.js",
-        lineNumber: 159,
+        lineNumber: 164,
         columnNumber: 5
     }, this);
     function handleCropChange(crop) {
@@ -27445,7 +27447,6 @@ function SelectionWindow({ children , onCropChange , className , width , height 
     }
     function handleDragStart(e) {
         e.preventDefault();
-        console.log(cropper.x, cropper.y);
         const { x , y  } = getXY(e);
         const threshold = e.pointerType === "mouse" ? mouseThreshold : touchThreshold;
         const pointerState = getPointerState({
@@ -28482,8 +28483,8 @@ const useLatest = (current)=>{
 exports.default = useLatest;
 
 },{"react":"21dqq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7dbn6":[function(require,module,exports) {
-module.exports["selection"] = `wAMUBW_selection`;
 module.exports["component"] = `wAMUBW_component`;
+module.exports["selection"] = `wAMUBW_selection`;
 
 },{}],"km3Ru":[function(require,module,exports) {
 "use strict";

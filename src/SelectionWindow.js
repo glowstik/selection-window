@@ -65,17 +65,11 @@ export function SelectionWindow({
   // }, {target: selectionRef.current})
 
   useGesture({
-    onDrag: ({movement: [dx, dy], event, cancel}) => {
-      // console.log(event)
+    onDrag: ({offset: [dx, dy]}) => {
       const imgWrapper = document.getElementById('imageWrapper')
       imgWrapper.style.top = cropper.y+'px'
       imgWrapper.style.left = cropper.x+'px'
 
-      const imgRect = imgWrapper.getBoundingClientRect()
-      const selectionWindowRect = selectionRef.current.getBoundingClientRect()
-      if(imgRect.left > selectionWindowRect.left) {
-        cancel()
-      }
       if(!stateRef.current.edges.length) {
         !cropper.zooming ? setCropper((crop) => ({
           ...crop,
@@ -86,23 +80,34 @@ export function SelectionWindow({
     },
 
     onDragEnd: (e) => {
-      // if (!stateRef.current.pointers.has(e._pointerId)) return // Drag already ended, multiple events can end dragging
-
-      // const { edges } = stateRef.current.pointers.get(e._pointerId)
-      // stateRef.current.edges = stateRef.current.edges.filter(x => !edges.includes(x))
-      // stateRef.current.pointers.delete(e._pointerId)
-      // stateRef.current.dragging = Boolean(stateRef.current.pointers.size)
-
-      // if (!stateRef.current.dragging) {
-      //   window.removeEventListener('pointermove', dragEvent, { passive: true })
-      //   window.removeEventListener('pointerup', dragEndEvent)
-      //   window.removeEventListener('pointercancel', dragEndEvent)
-      // }
+      console.log(stateRef.current.crop)
+      const newCrop = cropper
+      const imgRect = imgWrapperRef.current.getBoundingClientRect()
+      console.log(imgRect.width)
+      const cropperRect = selectionRef.current.getBoundingClientRect()
+      console.log(cropperRect.width)
+      if(cropperRect.left < imgRect.left) {
+        newCrop.x = stateRef.current.crop.left
+      } else if(cropperRect.right > imgRect.right) {
+        newCrop.x = -(imgRect.width - cropperRect.width) - -cropperRect.width / 2
+      }
+      if(cropperRect.top < imgRect.top) {
+        newCrop.y = stateRef.current.crop.top
+      } else if(cropperRect.bottom > imgRect.bottom) {
+        newCrop.y = -(imgRect.height - cropperRect.height) - -cropperRect.height / 2
+      }
+      setCropper(newCrop)
+      imgWrapperRef.current.style.left = cropper.x+'px'
+      imgWrapperRef.current.style.right = cropper.x+'px'
+      imgWrapperRef.current.style.top = cropper.y+'px'
+      imgWrapperRef.current.style.bottom = cropper.y+'px'
+      console.log(cropper.x)
     },
-  }, 
+  },
     {
       drag: {
         from: () => [cropper.x, cropper.y],
+        // bounds: () => boundingClientRectRef.current.bounds < selectionRef.current.getBoundingClientRect()
       },
       target: selectionRef.current,
       eventOptions: {passive: false},
@@ -199,7 +204,6 @@ export function SelectionWindow({
 
   function handleDragStart(e) {
     e.preventDefault()
-    console.log(cropper.x, cropper.y)
     
     const { x, y } = getXY(e)
     const threshold = e.pointerType === 'mouse' ? mouseThreshold : touchThreshold
