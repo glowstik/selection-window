@@ -65,15 +65,11 @@ export function SelectionWindow({
   // }, {target: selectionRef.current})
 
   useGesture({
-    onDrag: ({offset: [dx, dy], cancel}) => {
+    onDrag: ({offset: [dx, dy]}) => {
       const imgWrapper = document.getElementById('imageWrapper')
-      imgWrapper.style.top = cropper.y+'px'
-      imgWrapper.style.left = cropper.x+'px'
-
-      if(stateRef.current.edges.length) {
-        console.log('edge')
-        cancel()
-      }
+      imgWrapperRef.current.style.top = cropper.y+'px'
+      imgWrapperRef.current.style.left = cropper.x+'px'
+      // console.log(imgWrapperRef.current.style.left)
 
       if(!stateRef.current.edges.length) {
         !cropper.zooming ? setCropper((crop) => ({
@@ -82,21 +78,28 @@ export function SelectionWindow({
           y: dy
         })) : null
       }
+      // console.log(cropper.x, cropper.y)
     },
 
     onDragEnd: (e) => {
+      // console.log(stateRef.current.crop.left)
       const newCrop = cropper
       const imgRect = imgWrapperRef.current.getBoundingClientRect()
       const cropperRect = selectionRef.current.getBoundingClientRect()
+
+      const originalWidth = imgWrapperRef.current.clientWidth
+      const widthOverhang = (imgRect.width - originalWidth) / 2
+      // console.log(widthOverhang)
+
       if(cropperRect.left < imgRect.left) {
-        newCrop.x = stateRef.current.crop.left
+        newCrop.x = widthOverhang + stateRef.current.crop.left
       } else if(cropperRect.right > imgRect.right) {
-        newCrop.x = -(imgRect.width - cropperRect.width) - -cropperRect.width / 2
+        newCrop.x = -(imgRect.width - cropperRect.width / 2) + widthOverhang - -cropperRect.width
       }
       if(cropperRect.top < imgRect.top) {
-        newCrop.y = stateRef.current.crop.top
+        newCrop.y = widthOverhang + stateRef.current.crop.top
       } else if(cropperRect.bottom > imgRect.bottom) {
-        newCrop.y = -(imgRect.height - cropperRect.height) - -cropperRect.height / 2
+        newCrop.y = -(imgRect.height - cropperRect.height / 2) + widthOverhang - -cropperRect.height
       }
       setCropper(newCrop)
       imgWrapperRef.current.style.left = cropper.x+'px'
@@ -104,45 +107,56 @@ export function SelectionWindow({
       imgWrapperRef.current.style.top = cropper.y+'px'
       imgWrapperRef.current.style.bottom = cropper.y+'px'
     },
+    onPinch: ({offset: [d], event}) => {
+      // console.log(event.offsetX, event.offsetY)
+      setCropper({zooming: true})
+      const imageWrapper = document.getElementById('imageWrapper')
+      imageWrapper.style.transform = `scale(${cropper.scale})`
+      // console.log(imgWrapperRef.current)
+
+      // pinch.memo = {bounds: node.getBoundingClientRect()}
+
+      // const nodeBounds = node.getBoundingClientRect()
+      // const nodeX = nodeBounds.x + nodeBounds.width / 2
+      // const nodeY = nodeBounds.y + nodeBounds.height / 2
+
+      // const zoomX = nodeX - pinch.origin[0]
+      // const zoomY = nodeY - pinch.origin[1]
+
+      if(!stateRef.current.edges.length) {
+        setCropper((zoom) => ({
+          ...zoom,
+          scale: d,
+          // zoomDX: zoomX * pinch.offset[0] / 50,
+          // zoomDY: zoomY * pinch.offset[0] / 50
+        }))
+        // console.log(cropZoom.zoomDX, cropZoom.zoomDY)
+        // img.style.transformOrigin = `${cropZoom.zoomDX} ${cropZoom.zoomDY}`
+      }
+      // if(!pinch.pinching) setCropper({zooming: false})
+    },
+    onPinchEnd: ({offset: [dx, dy]}) => {
+      setCropper({zooming: false})
+      imgWrapperRef.current.style.top = cropper.y+'px'
+      imgWrapperRef.current.style.left = cropper.x+'px'
+
+      setCropper((zoom) => ({
+        ...zoom,
+        x: dx,
+        y: dy
+      }))
+    }
   },
     {
       drag: {
         from: () => [cropper.x, cropper.y],
-        // bounds: () => boundingClientRectRef.current.bounds < selectionRef.current.getBoundingClientRect()
+      },
+      pinch: {
+        scaleBounds: {min: 1}
       },
       target: selectionRef.current,
       eventOptions: {passive: false},
     })
-
-  // usePinch((pinch) => {
-  //   console.log(pinch)
-  //   setCropper({zooming: true})
-  //   const imageWrapper = document.getElementById('imageWrapper')
-  //   imageWrapper.style.transform = `scale(${cropper.scale})`
-
-  //   // pinch.memo = {bounds: node.getBoundingClientRect()}
-
-  //   const nodeBounds = node.getBoundingClientRect()
-  //   // console.log(nodeBounds)
-  //   const nodeX = nodeBounds.x + nodeBounds.width / 2
-  //   const nodeY = nodeBounds.y + nodeBounds.height / 2
-
-  //   const zoomX = nodeX - pinch.origin[0]
-  //   const zoomY = nodeY - pinch.origin[1]
-
-  //   if(pinch.offset[0] >= 1 && !stateRef.current.edges.length) {
-  //     setCropper((zoom) => ({
-  //       ...zoom,
-  //       scale: pinch.offset[0],
-  //       // zoomDX: zoomX * pinch.offset[0] / 50,
-  //       // zoomDY: zoomY * pinch.offset[0] / 50
-  //     }))
-  //     // console.log(cropZoom.zoomDX, cropZoom.zoomDY)
-  //     // img.style.transformOrigin = `${cropZoom.zoomDX} ${cropZoom.zoomDY}`
-  //   }
-  //   if(pinch.last) setCropper({zooming: false})
-  //   // return pinch.memo
-  // }, {target: selectionRef.current})
 
   React.useEffect(
     () => {
