@@ -27232,17 +27232,17 @@ exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
 },{}],"c4nSm":[function(require,module,exports) {
+module.exports["handle"] = `gPMrEW_handle`;
+module.exports["imageWrapper"] = `gPMrEW_imageWrapper`;
 module.exports["selection"] = `gPMrEW_selection`;
 module.exports["window"] = `gPMrEW_window`;
 module.exports["image"] = `gPMrEW_image`;
 module.exports["topLeft"] = `gPMrEW_topLeft`;
-module.exports["topRight"] = `gPMrEW_topRight`;
 module.exports["bottomRight"] = `gPMrEW_bottomRight`;
-module.exports["imageWrapper"] = `gPMrEW_imageWrapper`;
-module.exports["strict"] = `gPMrEW_strict`;
 module.exports["bottomLeft"] = `gPMrEW_bottomLeft`;
-module.exports["handle"] = `gPMrEW_handle`;
 module.exports["app"] = `gPMrEW_app`;
+module.exports["strict"] = `gPMrEW_strict`;
+module.exports["topRight"] = `gPMrEW_topRight`;
 
 },{}],"crMHi":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$3990 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
@@ -27319,10 +27319,14 @@ function SelectionWindow({ children , onCropChange , className , width , height 
     //   // console.log(cropper.x, cropper.y)
     // }, {target: selectionRef.current})
     useGesture({
-        onDrag: ({ offset: [dx, dy]  })=>{
+        onDrag: ({ offset: [dx, dy] , cancel  })=>{
             const imgWrapper = document.getElementById("imageWrapper");
             imgWrapper.style.top = cropper.y + "px";
             imgWrapper.style.left = cropper.x + "px";
+            if (stateRef.current.edges.length) {
+                console.log("edge");
+                cancel();
+            }
             if (!stateRef.current.edges.length) !cropper.zooming && setCropper((crop)=>({
                     ...crop,
                     x: dx,
@@ -27330,12 +27334,9 @@ function SelectionWindow({ children , onCropChange , className , width , height 
                 }));
         },
         onDragEnd: (e)=>{
-            console.log(stateRef.current.crop);
             const newCrop = cropper;
             const imgRect = imgWrapperRef.current.getBoundingClientRect();
-            console.log(imgRect.width);
             const cropperRect = selectionRef.current.getBoundingClientRect();
-            console.log(cropperRect.width);
             if (cropperRect.left < imgRect.left) newCrop.x = stateRef.current.crop.left;
             else if (cropperRect.right > imgRect.right) newCrop.x = -(imgRect.width - cropperRect.width) - -cropperRect.width / 2;
             if (cropperRect.top < imgRect.top) newCrop.y = stateRef.current.crop.top;
@@ -27345,7 +27346,6 @@ function SelectionWindow({ children , onCropChange , className , width , height 
             imgWrapperRef.current.style.right = cropper.x + "px";
             imgWrapperRef.current.style.top = cropper.y + "px";
             imgWrapperRef.current.style.bottom = cropper.y + "px";
-            console.log(cropper.x);
         }
     }, {
         drag: {
@@ -27414,21 +27414,17 @@ function SelectionWindow({ children , onCropChange , className , width , height 
                 top: px(crop?.top ?? 0),
                 width: px((crop?.right ?? 0) - (crop?.left ?? 0)),
                 height: px((crop?.bottom ?? 0) - (crop?.top ?? 0)),
-                // left: 0,
-                // top: px(0),
-                // width: containerWidth,
-                // height: px(containerHeight),
                 touchAction: "none"
             },
             children
         }, void 0, false, {
             fileName: "src/SelectionWindow.js",
-            lineNumber: 165,
+            lineNumber: 166,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "src/SelectionWindow.js",
-        lineNumber: 164,
+        lineNumber: 165,
         columnNumber: 5
     }, this);
     function handleCropChange(crop) {
@@ -27437,7 +27433,7 @@ function SelectionWindow({ children , onCropChange , className , width , height 
         const imgWrapper = document.getElementById("imageWrapper");
         imgWrapperRef.current = imgWrapper;
         // imgWrapperRef.current.cropWrapper = updateSizes(crop)
-        console.log(imgWrapperRef.current);
+        // console.log(imgWrapperRef.current)
         Object.assign(selectionRef.current.style, {
             left: px(crop?.left ?? 0),
             top: px(crop?.top ?? 0),
@@ -27457,9 +27453,7 @@ function SelectionWindow({ children , onCropChange , className , width , height 
         stateRef.current.dragging = true;
         stateRef.current.pointers.set(e.pointerId, pointerState);
         stateRef.current.edges = stateRef.current.edges.concat(pointerState.edges);
-        window.addEventListener("pointermove", dragEvent, {
-            passive: true
-        });
+        // window.addEventListener('pointermove', dragEvent, { passive: true })
         window.addEventListener("pointerup", dragEndEvent);
         window.addEventListener("pointercancel", dragEndEvent);
     }
@@ -28483,8 +28477,8 @@ const useLatest = (current)=>{
 exports.default = useLatest;
 
 },{"react":"21dqq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7dbn6":[function(require,module,exports) {
-module.exports["component"] = `wAMUBW_component`;
 module.exports["selection"] = `wAMUBW_selection`;
+module.exports["component"] = `wAMUBW_component`;
 
 },{}],"km3Ru":[function(require,module,exports) {
 "use strict";

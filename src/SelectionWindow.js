@@ -65,10 +65,15 @@ export function SelectionWindow({
   // }, {target: selectionRef.current})
 
   useGesture({
-    onDrag: ({offset: [dx, dy]}) => {
+    onDrag: ({offset: [dx, dy], cancel}) => {
       const imgWrapper = document.getElementById('imageWrapper')
       imgWrapper.style.top = cropper.y+'px'
       imgWrapper.style.left = cropper.x+'px'
+
+      if(stateRef.current.edges.length) {
+        console.log('edge')
+        cancel()
+      }
 
       if(!stateRef.current.edges.length) {
         !cropper.zooming ? setCropper((crop) => ({
@@ -80,12 +85,9 @@ export function SelectionWindow({
     },
 
     onDragEnd: (e) => {
-      console.log(stateRef.current.crop)
       const newCrop = cropper
       const imgRect = imgWrapperRef.current.getBoundingClientRect()
-      console.log(imgRect.width)
       const cropperRect = selectionRef.current.getBoundingClientRect()
-      console.log(cropperRect.width)
       if(cropperRect.left < imgRect.left) {
         newCrop.x = stateRef.current.crop.left
       } else if(cropperRect.right > imgRect.right) {
@@ -101,7 +103,6 @@ export function SelectionWindow({
       imgWrapperRef.current.style.right = cropper.x+'px'
       imgWrapperRef.current.style.top = cropper.y+'px'
       imgWrapperRef.current.style.bottom = cropper.y+'px'
-      console.log(cropper.x)
     },
   },
     {
@@ -172,10 +173,6 @@ export function SelectionWindow({
           top: px(crop?.top ?? 0),
           width: px((crop?.right ?? 0) - (crop?.left ?? 0)),
           height: px((crop?.bottom ?? 0) - (crop?.top ?? 0)),
-          // left: 0,
-          // top: px(0),
-          // width: containerWidth,
-          // height: px(containerHeight),
           touchAction: 'none'
         }}
         {...{ children }}
@@ -190,7 +187,7 @@ export function SelectionWindow({
     const imgWrapper = document.getElementById('imageWrapper')
     imgWrapperRef.current = imgWrapper
     // imgWrapperRef.current.cropWrapper = updateSizes(crop)
-    console.log(imgWrapperRef.current)
+    // console.log(imgWrapperRef.current)
     Object.assign(
       selectionRef.current.style,
       {
@@ -213,7 +210,7 @@ export function SelectionWindow({
     stateRef.current.pointers.set(e.pointerId, pointerState)
     stateRef.current.edges = stateRef.current.edges.concat(pointerState.edges)
 
-    window.addEventListener('pointermove', dragEvent, { passive: true })
+    // window.addEventListener('pointermove', dragEvent, { passive: true })
     window.addEventListener('pointerup', dragEndEvent)
     window.addEventListener('pointercancel', dragEndEvent)
   }
