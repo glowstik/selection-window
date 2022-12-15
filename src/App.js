@@ -8,7 +8,9 @@ export default function App() {
 
   return (
     <div className={styles.app}>
-      <img id='img' className={styles.image} src={image} />
+      <div id='imageWrapper' className={styles.imageWrapper}>
+        <img id='img' className={styles.image} src={image} />
+      </div>
       <SelectionWindow
         className={styles.window}
         onCropChange={rect => { cropRectRef.current = rect }}

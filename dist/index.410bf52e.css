@@ -11,6 +11,12 @@
   inset: 0;
 }
 
+.gPMrEW_imageWrapper {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
 .gPMrEW_image {
   width: 100%;
   height: 100%;

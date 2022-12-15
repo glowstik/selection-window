@@ -1,6 +1,6 @@
 import React from "react"
 import useSize from "@react-hook/size"
-import {useDrag, usePinch} from '@use-gesture/react'
+import {createUseGesture, dragAction, pinchAction} from '@use-gesture/react'
 import styles from './SelectionWindow.module.css'
 
 export function SelectionWindow({
@@ -20,7 +20,9 @@ export function SelectionWindow({
     pointers: new Map(),
     edges: []
   })
-  const [cropZoom, setCropZoom] = React.useState({scale: 1, zooming: false})
+  // const imgWrapper = document.getElementById('imageWrapper')
+  const imgWrapperRef = React.useRef({cropWrapper: null})
+  const [cropper, setCropper] = React.useState({scale: 1, x: 0, y: 0, zooming: false})
   const [containerWidth, containerHeight] = useSize(node)
 
   React.useEffect(
@@ -42,23 +44,99 @@ export function SelectionWindow({
   const dragEvent = useEvent(handleDrag)
   const dragEndEvent = useEvent(handleDragEnd)
 
-  const dragGesture = useDrag((touch) => {
-    console.log(!stateRef.current.edges.length)
-    if(!stateRef.current.edges.length && touch._pointerId > 1 || touch._pointerId < 0) {
-      !cropZoom.zooming ? moveSelection({ dx: touch.delta[0], dy: touch.delta[1] }) : null
-    }
-  })
+  const useGesture = createUseGesture([dragAction, pinchAction])
 
-  usePinch((pinch) => {
-    console.log(pinch.last)
-    setCropZoom({zooming: true})
-    const img = document.getElementById('img')
-    img.style.transform = `scale(${cropZoom.scale})`
-    if(pinch.offset[0] >= 1 && !stateRef.current.edges.length) {
-      setCropZoom((zoom) => ({...zoom, scale: pinch.offset[0]}))
-    }
-    if(pinch.last) setCropZoom({zooming: false})
-  }, {target: selectionRef.current})
+  // useDrag((touch) => {
+  //   const imgWrapper = document.getElementById('imageWrapper')
+  //   imgWrapper.style.top = cropper.y+'px'
+  //   imgWrapper.style.left = cropper.x+'px'
+
+  //   const nodeBounds = node.getBoundingClientRect()
+  //   console.log(nodeBounds)
+    
+    // if(!stateRef.current.edges.length) {
+    //   !cropper.zooming ? setCropper((crop) => ({
+    //     ...crop,
+    //     x: touch.offset[0],
+    //     y: touch.offset[1]
+    //   })) : null
+    // }
+  //   // console.log(cropper.x, cropper.y)
+  // }, {target: selectionRef.current})
+
+  useGesture({
+    onDrag: ({movement: [dx, dy], event, cancel}) => {
+      // console.log(event)
+      const imgWrapper = document.getElementById('imageWrapper')
+      imgWrapper.style.top = cropper.y+'px'
+      imgWrapper.style.left = cropper.x+'px'
+
+      const imgRect = imgWrapper.getBoundingClientRect()
+      const selectionWindowRect = selectionRef.current.getBoundingClientRect()
+      if(imgRect.left > selectionWindowRect.left) {
+        cancel()
+      }
+      if(!stateRef.current.edges.length) {
+        !cropper.zooming ? setCropper((crop) => ({
+          ...crop,
+          x: dx,
+          y: dy
+        })) : null
+      }
+    },
+
+    onDragEnd: (e) => {
+      // if (!stateRef.current.pointers.has(e._pointerId)) return // Drag already ended, multiple events can end dragging
+
+      // const { edges } = stateRef.current.pointers.get(e._pointerId)
+      // stateRef.current.edges = stateRef.current.edges.filter(x => !edges.includes(x))
+      // stateRef.current.pointers.delete(e._pointerId)
+      // stateRef.current.dragging = Boolean(stateRef.current.pointers.size)
+
+      // if (!stateRef.current.dragging) {
+      //   window.removeEventListener('pointermove', dragEvent, { passive: true })
+      //   window.removeEventListener('pointerup', dragEndEvent)
+      //   window.removeEventListener('pointercancel', dragEndEvent)
+      // }
+    },
+  }, 
+    {
+      drag: {
+        from: () => [cropper.x, cropper.y],
+      },
+      target: selectionRef.current,
+      eventOptions: {passive: false},
+    })
+
+  // usePinch((pinch) => {
+  //   console.log(pinch)
+  //   setCropper({zooming: true})
+  //   const imageWrapper = document.getElementById('imageWrapper')
+  //   imageWrapper.style.transform = `scale(${cropper.scale})`
+
+  //   // pinch.memo = {bounds: node.getBoundingClientRect()}
+
+  //   const nodeBounds = node.getBoundingClientRect()
+  //   // console.log(nodeBounds)
+  //   const nodeX = nodeBounds.x + nodeBounds.width / 2
+  //   const nodeY = nodeBounds.y + nodeBounds.height / 2
+
+  //   const zoomX = nodeX - pinch.origin[0]
+  //   const zoomY = nodeY - pinch.origin[1]
+
+  //   if(pinch.offset[0] >= 1 && !stateRef.current.edges.length) {
+  //     setCropper((zoom) => ({
+  //       ...zoom,
+  //       scale: pinch.offset[0],
+  //       // zoomDX: zoomX * pinch.offset[0] / 50,
+  //       // zoomDY: zoomY * pinch.offset[0] / 50
+  //     }))
+  //     // console.log(cropZoom.zoomDX, cropZoom.zoomDY)
+  //     // img.style.transformOrigin = `${cropZoom.zoomDX} ${cropZoom.zoomDY}`
+  //   }
+  //   if(pinch.last) setCropper({zooming: false})
+  //   // return pinch.memo
+  // }, {target: selectionRef.current})
 
   React.useEffect(
     () => {
@@ -75,11 +153,12 @@ export function SelectionWindow({
   )
 
   const crop = stateRef.current.crop
+  // console.log(selectionRef)
 
   return (
     <div ref={setNode} className={cx(className, styles.component)} style={{ width: px(width), height: px(height) }}>
       <div
-        {...dragGesture()}
+        // {...dragGesture()}
         ref={selectionRef}
         className={styles.selection}
         style={{
@@ -88,6 +167,10 @@ export function SelectionWindow({
           top: px(crop?.top ?? 0),
           width: px((crop?.right ?? 0) - (crop?.left ?? 0)),
           height: px((crop?.bottom ?? 0) - (crop?.top ?? 0)),
+          // left: 0,
+          // top: px(0),
+          // width: containerWidth,
+          // height: px(containerHeight),
           touchAction: 'none'
         }}
         {...{ children }}
@@ -98,6 +181,11 @@ export function SelectionWindow({
   function handleCropChange(crop) {
     stateRef.current.crop = updateSizes(crop)
     onCropChange(stateRef.current.crop)
+
+    const imgWrapper = document.getElementById('imageWrapper')
+    imgWrapperRef.current = imgWrapper
+    // imgWrapperRef.current.cropWrapper = updateSizes(crop)
+    console.log(imgWrapperRef.current)
     Object.assign(
       selectionRef.current.style,
       {
@@ -111,6 +199,7 @@ export function SelectionWindow({
 
   function handleDragStart(e) {
     e.preventDefault()
+    console.log(cropper.x, cropper.y)
     
     const { x, y } = getXY(e)
     const threshold = e.pointerType === 'mouse' ? mouseThreshold : touchThreshold
@@ -143,7 +232,7 @@ export function SelectionWindow({
     } else if (!stateRef.current.edges.length && stateRef.current.pointers.size === 2) {
       return
     } else if (e.pointerId === 1) {
-      moveSelection({ dx: e.movementX, dy: e.movementY })
+      // moveSelection({ dx: e.movementX, dy: e.movementY })
     }
   }
 
