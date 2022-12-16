@@ -27273,10 +27273,7 @@ function SelectionWindow({ children , onCropChange , className , width , height 
         pointers: new Map(),
         edges: []
     });
-    // const imgWrapper = document.getElementById('imageWrapper')
-    const imgWrapperRef = (0, _reactDefault.default).useRef({
-        cropWrapper: null
-    });
+    const imgWrapperRef = (0, _reactDefault.default).useRef();
     const [cropper, setCropper] = (0, _reactDefault.default).useState({
         scale: 1,
         x: 0,
@@ -27305,7 +27302,6 @@ function SelectionWindow({ children , onCropChange , className , width , height 
     ]);
     useGesture({
         onDrag: ({ offset: [dx, dy]  })=>{
-            // console.log('drag')
             imgWrapperRef.current.style.top = px(cropper.y);
             imgWrapperRef.current.style.left = px(cropper.x);
             if (!stateRef.current.edges.length) !zooming && setCropper((crop)=>({
@@ -27315,7 +27311,7 @@ function SelectionWindow({ children , onCropChange , className , width , height 
                 }));
         },
         onDragEnd: adjustImage,
-        onPinch: ({ offset: [d] , memo , origin: [originX, originY] , event  })=>{
+        onPinch: ({ offset: [d] , memo , origin: [originX, originY]  })=>{
             memo ??= {
                 bounds: selectionRef.current.getBoundingClientRect(),
                 cropper
@@ -27334,15 +27330,9 @@ function SelectionWindow({ children , onCropChange , className , width , height 
                     x: memo.cropper.x + displacementX * d / 50 * 2,
                     y: memo.cropper.y + displacementY * d / 50 * 2
                 }));
-            // console.log(imgWrapperRef.current.style.left)
-            console.log(zooming);
             return memo;
         },
-        onPinchEnd: ()=>{
-            adjustImage();
-            // setCropper({zooming: false})
-            console.log(zooming);
-        }
+        onPinchEnd: adjustImage
     }, {
         drag: {
             from: ()=>[
@@ -27389,7 +27379,6 @@ function SelectionWindow({ children , onCropChange , className , width , height 
         node
     ]);
     const crop = stateRef.current.crop;
-    // console.log(selectionRef)
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
         ref: setNode,
         className: cx(className, (0, _selectionWindowModuleCssDefault.default).component),
@@ -27398,7 +27387,6 @@ function SelectionWindow({ children , onCropChange , className , width , height 
             height: px(height)
         },
         children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-            // {...dragGesture()}
             ref: selectionRef,
             className: (0, _selectionWindowModuleCssDefault.default).selection,
             style: {
@@ -27412,12 +27400,12 @@ function SelectionWindow({ children , onCropChange , className , width , height 
             children
         }, void 0, false, {
             fileName: "src/SelectionWindow.js",
-            lineNumber: 156,
+            lineNumber: 147,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "src/SelectionWindow.js",
-        lineNumber: 155,
+        lineNumber: 146,
         columnNumber: 5
     }, this);
     function handleCropChange(crop) {
