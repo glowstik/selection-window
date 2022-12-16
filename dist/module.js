@@ -2,7 +2,7 @@ import "./main.css";
 import {jsx as $2WDAj$jsx} from "react/jsx-runtime";
 import $2WDAj$react from "react";
 import $2WDAj$reacthooksize from "@react-hook/size";
-import {useDrag as $2WDAj$useDrag} from "@use-gesture/react";
+import {createUseGesture as $2WDAj$createUseGesture, dragAction as $2WDAj$dragAction, pinchAction as $2WDAj$pinchAction} from "@use-gesture/react";
 
 function $parcel$interopDefault(a) {
   return a && a.__esModule ? a.default : a;
@@ -33,6 +33,13 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , onCrop
         pointers: new Map(),
         edges: []
     });
+    const imgWrapperRef = (0, $2WDAj$react).useRef();
+    const [cropper, setCropper] = (0, $2WDAj$react).useState({
+        scale: 1,
+        x: 0,
+        y: 0
+    });
+    const [zooming, setZooming] = (0, $2WDAj$react).useState(false);
     const [containerWidth, containerHeight] = (0, $2WDAj$reacthooksize)(node);
     (0, $2WDAj$react).useEffect(()=>{
         if (!crop && containerWidth && containerHeight) handleCropChange({
@@ -49,12 +56,77 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , onCrop
     const dragStartEvent = $7c8ba892eba51f50$var$useEvent(handleDragStart);
     const dragEvent = $7c8ba892eba51f50$var$useEvent(handleDrag);
     const dragEndEvent = $7c8ba892eba51f50$var$useEvent(handleDragEnd);
-    const dragGesture = (0, $2WDAj$useDrag)((touch)=>{
-        if (!stateRef.current.edges.length && touch._pointerId > 1 || touch._pointerId < 0) moveSelection({
-            dx: touch.delta[0],
-            dy: touch.delta[1]
-        });
+    const useGesture = (0, $2WDAj$createUseGesture)([
+        (0, $2WDAj$dragAction),
+        (0, $2WDAj$pinchAction)
+    ]);
+    useGesture({
+        onDrag: ({ offset: [dx, dy]  })=>{
+            imgWrapperRef.current.style.top = $7c8ba892eba51f50$var$px(cropper.y);
+            imgWrapperRef.current.style.left = $7c8ba892eba51f50$var$px(cropper.x);
+            if (!stateRef.current.edges.length) !zooming && setCropper((crop)=>({
+                    ...crop,
+                    x: dx,
+                    y: dy
+                }));
+        },
+        onDragEnd: adjustImage,
+        onPinch: ({ offset: [d] , memo: memo , origin: [originX, originY]  })=>{
+            memo ??= {
+                bounds: selectionRef.current.getBoundingClientRect(),
+                cropper: cropper
+            };
+            setZooming(true);
+            imgWrapperRef.current.style.transform = `scale(${cropper.scale})`;
+            imgWrapperRef.current.style.top = $7c8ba892eba51f50$var$px(cropper.y);
+            imgWrapperRef.current.style.left = $7c8ba892eba51f50$var$px(cropper.x);
+            const imgOriginX = memo.bounds.x + memo.bounds.width / 2;
+            const imgOriginY = memo.bounds.y + memo.bounds.height / 2;
+            const displacementX = (imgOriginX - originX) / memo.cropper.scale;
+            const displacementY = (imgOriginY - originY) / memo.cropper.scale;
+            if (!stateRef.current.edges.length) setCropper((zoom)=>({
+                    ...zoom,
+                    scale: 1 + d / 50 * 2,
+                    x: memo.cropper.x + displacementX * d / 50 * 2,
+                    y: memo.cropper.y + displacementY * d / 50 * 2
+                }));
+            return memo;
+        },
+        onPinchEnd: adjustImage
+    }, {
+        drag: {
+            from: ()=>[
+                    cropper.x,
+                    cropper.y
+                ]
+        },
+        pinch: {
+            scaleBounds: {
+                min: 1
+            }
+        },
+        target: selectionRef.current,
+        eventOptions: {
+            passive: false
+        }
     });
+    function adjustImage() {
+        setZooming(false);
+        const newCrop = cropper;
+        const imgRect = imgWrapperRef.current.getBoundingClientRect();
+        const cropperRect = selectionRef.current.getBoundingClientRect();
+        const originalWidth = imgWrapperRef.current.clientWidth;
+        const widthOverhang = (imgRect.width - originalWidth) / 2;
+        if (cropperRect.left < imgRect.left) newCrop.x = widthOverhang + stateRef.current.crop.left;
+        else if (cropperRect.right > imgRect.right) newCrop.x = -(imgRect.width - cropperRect.width / 2) + widthOverhang - -cropperRect.width;
+        if (cropperRect.top < imgRect.top) newCrop.y = widthOverhang + stateRef.current.crop.top;
+        else if (cropperRect.bottom > imgRect.bottom) newCrop.y = -(imgRect.height - cropperRect.height / 2) + widthOverhang - -cropperRect.height;
+        setCropper(newCrop);
+        imgWrapperRef.current.style.left = $7c8ba892eba51f50$var$px(cropper.x);
+        imgWrapperRef.current.style.right = $7c8ba892eba51f50$var$px(cropper.x);
+        imgWrapperRef.current.style.top = $7c8ba892eba51f50$var$px(cropper.y);
+        imgWrapperRef.current.style.bottom = $7c8ba892eba51f50$var$px(cropper.y);
+    }
     (0, $2WDAj$react).useEffect(()=>{
         if (!node) return;
         node.addEventListener("touchmove", touchMoveEvent);
@@ -75,7 +147,6 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , onCrop
             height: $7c8ba892eba51f50$var$px(height)
         },
         children: /*#__PURE__*/ (0, $2WDAj$jsx)("div", {
-            ...dragGesture(),
             ref: selectionRef,
             className: (0, (/*@__PURE__*/$parcel$interopDefault($ee54bb37bacb2026$exports))).selection,
             style: {
@@ -92,6 +163,10 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , onCrop
     function handleCropChange(crop) {
         stateRef.current.crop = updateSizes(crop);
         onCropChange(stateRef.current.crop);
+        const imgWrapper = document.getElementById("imageWrapper");
+        imgWrapperRef.current = imgWrapper;
+        // imgWrapperRef.current.cropWrapper = updateSizes(crop)
+        // console.log(imgWrapperRef.current)
         Object.assign(selectionRef.current.style, {
             left: $7c8ba892eba51f50$var$px(crop?.left ?? 0),
             top: $7c8ba892eba51f50$var$px(crop?.top ?? 0),
@@ -111,9 +186,7 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , onCrop
         stateRef.current.dragging = true;
         stateRef.current.pointers.set(e.pointerId, pointerState);
         stateRef.current.edges = stateRef.current.edges.concat(pointerState.edges);
-        window.addEventListener("pointermove", dragEvent, {
-            passive: true
-        });
+        // window.addEventListener('pointermove', dragEvent, { passive: true })
         window.addEventListener("pointerup", dragEndEvent);
         window.addEventListener("pointercancel", dragEndEvent);
     }
@@ -137,10 +210,7 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , onCrop
         } else if (!stateRef.current.edges.length && stateRef.current.pointers.size === 2) {
             return;
         } else if (e.pointerId === 1) {
-            moveSelection({
-                dx: e.movementX,
-                dy: e.movementY
-            });
+        // moveSelection({ dx: e.movementX, dy: e.movementY })
         }
     }
     function handleDragEnd(e) {
