@@ -339,7 +339,7 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , onCrop
         };
     }
 }
-const $7c8ba892eba51f50$export$63e82393dc8977bf = imgWrapperRef.current;
+var $7c8ba892eba51f50$export$2e2bcd8739ae039 = imgWrapperRef.current;
 function $7c8ba892eba51f50$var$px(n) {
     return typeof n === "number" || typeof n === "string" ? n + "px" : n;
 }
@@ -369,5 +369,5 @@ function $7c8ba892eba51f50$var$useEvent(fn) {
 }
 
 
-export {$7c8ba892eba51f50$export$c2644827bcb91f96 as SelectionWindow, $7c8ba892eba51f50$export$63e82393dc8977bf as imageContainer};
+export {$7c8ba892eba51f50$export$c2644827bcb91f96 as SelectionWindow, $7c8ba892eba51f50$export$2e2bcd8739ae039 as default};
 //# sourceMappingURL=module.js.map

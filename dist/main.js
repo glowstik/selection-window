@@ -7,12 +7,17 @@ var $dSH8u$usegesturereact = require("@use-gesture/react");
 function $parcel$interopDefault(a) {
   return a && a.__esModule ? a.default : a;
 }
+function $parcel$defineInteropFlag(a) {
+  Object.defineProperty(a, '__esModule', {value: true, configurable: true});
+}
 function $parcel$export(e, n, v, s) {
   Object.defineProperty(e, n, {get: v, set: s, enumerable: true, configurable: true});
 }
 
+$parcel$defineInteropFlag(module.exports);
+
 $parcel$export(module.exports, "SelectionWindow", () => $0d16028b28e5283f$export$c2644827bcb91f96);
-$parcel$export(module.exports, "imageContainer", () => $0d16028b28e5283f$export$63e82393dc8977bf);
+$parcel$export(module.exports, "default", () => $0d16028b28e5283f$export$2e2bcd8739ae039);
 
 
 
@@ -342,7 +347,7 @@ function $0d16028b28e5283f$export$c2644827bcb91f96({ children: children , onCrop
         };
     }
 }
-const $0d16028b28e5283f$export$63e82393dc8977bf = imgWrapperRef.current;
+var $0d16028b28e5283f$export$2e2bcd8739ae039 = imgWrapperRef.current;
 function $0d16028b28e5283f$var$px(n) {
     return typeof n === "number" || typeof n === "string" ? n + "px" : n;
 }

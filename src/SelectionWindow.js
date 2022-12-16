@@ -358,7 +358,7 @@ export function SelectionWindow({
   }
 }
 
-export const imageContainer = imgWrapperRef.current
+export default imgWrapperRef.current
 
 function px(n) {
   return (typeof n === 'number' || typeof n === 'string')
