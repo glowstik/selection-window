@@ -22,7 +22,8 @@ export function SelectionWindow({
   })
   // const imgWrapper = document.getElementById('imageWrapper')
   const imgWrapperRef = React.useRef({cropWrapper: null})
-  const [cropper, setCropper] = React.useState({scale: 1, x: 0, y: 0, zooming: false})
+  const [cropper, setCropper] = React.useState({scale: 1, x: 0, y: 0})
+  const [zooming, setZooming] = React.useState(false)
   const [containerWidth, containerHeight] = useSize(node)
 
   React.useEffect(
@@ -46,31 +47,14 @@ export function SelectionWindow({
 
   const useGesture = createUseGesture([dragAction, pinchAction])
 
-  // useDrag((touch) => {
-  //   const imgWrapper = document.getElementById('imageWrapper')
-  //   imgWrapper.style.top = cropper.y+'px'
-  //   imgWrapper.style.left = cropper.x+'px'
-
-  //   const nodeBounds = node.getBoundingClientRect()
-  //   console.log(nodeBounds)
-    
-    // if(!stateRef.current.edges.length) {
-    //   !cropper.zooming ? setCropper((crop) => ({
-    //     ...crop,
-    //     x: touch.offset[0],
-    //     y: touch.offset[1]
-    //   })) : null
-    // }
-  //   // console.log(cropper.x, cropper.y)
-  // }, {target: selectionRef.current})
-
   useGesture({
     onDrag: ({offset: [dx, dy]}) => {
+      // console.log('drag')
       imgWrapperRef.current.style.top = px(cropper.y)
       imgWrapperRef.current.style.left = px(cropper.x)
 
       if(!stateRef.current.edges.length) {
-        !cropper.zooming ? setCropper((crop) => ({
+        !zooming ? setCropper((crop) => ({
           ...crop,
           x: dx,
           y: dy
@@ -78,11 +62,12 @@ export function SelectionWindow({
       }
     },
     onDragEnd: adjustImage,
-    onPinch: ({offset: [d], memo, origin: [originX, originY]}) => {
+    onPinch: ({offset: [d], memo, origin: [originX, originY], event}) => {
       memo ??= {
         bounds: selectionRef.current.getBoundingClientRect(),
         cropper
       }
+      setZooming(true)
 
       imgWrapperRef.current.style.transform = `scale(${cropper.scale})`
       imgWrapperRef.current.style.top = px(cropper.y)
@@ -102,11 +87,15 @@ export function SelectionWindow({
           y: memo.cropper.y + (displacementY * d) / 50 * 2
         }))
       }
-      console.log(imgWrapperRef.current.style.left)
-      console.log(cropper.x)
+      // console.log(imgWrapperRef.current.style.left)
+      console.log(zooming)
       return memo
     },
-    onPinchEnd: adjustImage
+    onPinchEnd: () => {
+      adjustImage()
+      // setCropper({zooming: false})
+      console.log(zooming)
+    }
   },
     {
       drag: {
@@ -120,6 +109,7 @@ export function SelectionWindow({
     })
 
     function adjustImage() {
+      setZooming(false)
       const newCrop = cropper
       const imgRect = imgWrapperRef.current.getBoundingClientRect()
       const cropperRect = selectionRef.current.getBoundingClientRect()

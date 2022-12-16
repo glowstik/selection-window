@@ -27280,9 +27280,9 @@ function SelectionWindow({ children , onCropChange , className , width , height 
     const [cropper, setCropper] = (0, _reactDefault.default).useState({
         scale: 1,
         x: 0,
-        y: 0,
-        zooming: false
+        y: 0
     });
+    const [zooming, setZooming] = (0, _reactDefault.default).useState(false);
     const [containerWidth, containerHeight] = (0, _sizeDefault.default)(node);
     (0, _reactDefault.default).useEffect(()=>{
         if (!crop && containerWidth && containerHeight) handleCropChange({
@@ -27303,37 +27303,24 @@ function SelectionWindow({ children , onCropChange , className , width , height 
         (0, _react1.dragAction),
         (0, _react1.pinchAction)
     ]);
-    // useDrag((touch) => {
-    //   const imgWrapper = document.getElementById('imageWrapper')
-    //   imgWrapper.style.top = cropper.y+'px'
-    //   imgWrapper.style.left = cropper.x+'px'
-    //   const nodeBounds = node.getBoundingClientRect()
-    //   console.log(nodeBounds)
-    // if(!stateRef.current.edges.length) {
-    //   !cropper.zooming ? setCropper((crop) => ({
-    //     ...crop,
-    //     x: touch.offset[0],
-    //     y: touch.offset[1]
-    //   })) : null
-    // }
-    //   // console.log(cropper.x, cropper.y)
-    // }, {target: selectionRef.current})
     useGesture({
         onDrag: ({ offset: [dx, dy]  })=>{
+            // console.log('drag')
             imgWrapperRef.current.style.top = px(cropper.y);
             imgWrapperRef.current.style.left = px(cropper.x);
-            if (!stateRef.current.edges.length) !cropper.zooming && setCropper((crop)=>({
+            if (!stateRef.current.edges.length) !zooming && setCropper((crop)=>({
                     ...crop,
                     x: dx,
                     y: dy
                 }));
         },
         onDragEnd: adjustImage,
-        onPinch: ({ offset: [d] , memo , origin: [originX, originY]  })=>{
+        onPinch: ({ offset: [d] , memo , origin: [originX, originY] , event  })=>{
             memo ??= {
                 bounds: selectionRef.current.getBoundingClientRect(),
                 cropper
             };
+            setZooming(true);
             imgWrapperRef.current.style.transform = `scale(${cropper.scale})`;
             imgWrapperRef.current.style.top = px(cropper.y);
             imgWrapperRef.current.style.left = px(cropper.x);
@@ -27347,11 +27334,15 @@ function SelectionWindow({ children , onCropChange , className , width , height 
                     x: memo.cropper.x + displacementX * d / 50 * 2,
                     y: memo.cropper.y + displacementY * d / 50 * 2
                 }));
-            console.log(imgWrapperRef.current.style.left);
-            console.log(cropper.x);
+            // console.log(imgWrapperRef.current.style.left)
+            console.log(zooming);
             return memo;
         },
-        onPinchEnd: adjustImage
+        onPinchEnd: ()=>{
+            adjustImage();
+            // setCropper({zooming: false})
+            console.log(zooming);
+        }
     }, {
         drag: {
             from: ()=>[
@@ -27370,6 +27361,7 @@ function SelectionWindow({ children , onCropChange , className , width , height 
         }
     });
     function adjustImage() {
+        setZooming(false);
         const newCrop = cropper;
         const imgRect = imgWrapperRef.current.getBoundingClientRect();
         const cropperRect = selectionRef.current.getBoundingClientRect();
@@ -27420,12 +27412,12 @@ function SelectionWindow({ children , onCropChange , className , width , height 
             children
         }, void 0, false, {
             fileName: "src/SelectionWindow.js",
-            lineNumber: 166,
+            lineNumber: 156,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "src/SelectionWindow.js",
-        lineNumber: 165,
+        lineNumber: 155,
         columnNumber: 5
     }, this);
     function handleCropChange(crop) {
@@ -27605,7 +27597,7 @@ function SelectionWindow({ children , onCropChange , className , width , height 
         };
     }
 }
-_s(SelectionWindow, "/NftxbvzrN9w2EEg37rp3jzYyRs=", true, function() {
+_s(SelectionWindow, "HxiX9MzE+jnY24+I+Tyx55BUzCs=", true, function() {
     return [
         (0, _sizeDefault.default),
         useEvent,
