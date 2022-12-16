@@ -27320,67 +27320,38 @@ function SelectionWindow({ children , onCropChange , className , width , height 
     // }, {target: selectionRef.current})
     useGesture({
         onDrag: ({ offset: [dx, dy]  })=>{
-            const imgWrapper = document.getElementById("imageWrapper");
-            imgWrapperRef.current.style.top = cropper.y + "px";
-            imgWrapperRef.current.style.left = cropper.x + "px";
-            // console.log(imgWrapperRef.current.style.left)
+            imgWrapperRef.current.style.top = px(cropper.y);
+            imgWrapperRef.current.style.left = px(cropper.x);
             if (!stateRef.current.edges.length) !cropper.zooming && setCropper((crop)=>({
                     ...crop,
                     x: dx,
                     y: dy
                 }));
-        // console.log(cropper.x, cropper.y)
         },
-        onDragEnd: (e)=>{
-            // console.log(stateRef.current.crop.left)
-            const newCrop = cropper;
-            const imgRect = imgWrapperRef.current.getBoundingClientRect();
-            const cropperRect = selectionRef.current.getBoundingClientRect();
-            const originalWidth = imgWrapperRef.current.clientWidth;
-            const widthOverhang = (imgRect.width - originalWidth) / 2;
-            // console.log(widthOverhang)
-            if (cropperRect.left < imgRect.left) newCrop.x = widthOverhang + stateRef.current.crop.left;
-            else if (cropperRect.right > imgRect.right) newCrop.x = -(imgRect.width - cropperRect.width / 2) + widthOverhang - -cropperRect.width;
-            if (cropperRect.top < imgRect.top) newCrop.y = widthOverhang + stateRef.current.crop.top;
-            else if (cropperRect.bottom > imgRect.bottom) newCrop.y = -(imgRect.height - cropperRect.height / 2) + widthOverhang - -cropperRect.height;
-            setCropper(newCrop);
-            imgWrapperRef.current.style.left = cropper.x + "px";
-            imgWrapperRef.current.style.right = cropper.x + "px";
-            imgWrapperRef.current.style.top = cropper.y + "px";
-            imgWrapperRef.current.style.bottom = cropper.y + "px";
-        },
-        onPinch: ({ offset: [d] , event  })=>{
-            // console.log(event.offsetX, event.offsetY)
-            setCropper({
-                zooming: true
-            });
-            const imageWrapper = document.getElementById("imageWrapper");
-            imageWrapper.style.transform = `scale(${cropper.scale})`;
-            // console.log(imgWrapperRef.current)
-            // pinch.memo = {bounds: node.getBoundingClientRect()}
-            // const nodeBounds = node.getBoundingClientRect()
-            // const nodeX = nodeBounds.x + nodeBounds.width / 2
-            // const nodeY = nodeBounds.y + nodeBounds.height / 2
-            // const zoomX = nodeX - pinch.origin[0]
-            // const zoomY = nodeY - pinch.origin[1]
+        onDragEnd: adjustImage,
+        onPinch: ({ offset: [d] , memo , origin: [originX, originY]  })=>{
+            memo ??= {
+                bounds: selectionRef.current.getBoundingClientRect(),
+                cropper
+            };
+            imgWrapperRef.current.style.transform = `scale(${cropper.scale})`;
+            imgWrapperRef.current.style.top = px(cropper.y);
+            imgWrapperRef.current.style.left = px(cropper.x);
+            const imgOriginX = memo.bounds.x + memo.bounds.width / 2;
+            const imgOriginY = memo.bounds.y + memo.bounds.height / 2;
+            const displacementX = (imgOriginX - originX) / memo.cropper.scale;
+            const displacementY = (imgOriginY - originY) / memo.cropper.scale;
             if (!stateRef.current.edges.length) setCropper((zoom)=>({
                     ...zoom,
-                    scale: d
+                    scale: 1 + d / 50 * 2,
+                    x: memo.cropper.x + displacementX * d / 50 * 2,
+                    y: memo.cropper.y + displacementY * d / 50 * 2
                 }));
-        // if(!pinch.pinching) setCropper({zooming: false})
+            console.log(imgWrapperRef.current.style.left);
+            console.log(cropper.x);
+            return memo;
         },
-        onPinchEnd: ({ offset: [dx, dy]  })=>{
-            setCropper({
-                zooming: false
-            });
-            imgWrapperRef.current.style.top = cropper.y + "px";
-            imgWrapperRef.current.style.left = cropper.x + "px";
-            setCropper((zoom)=>({
-                    ...zoom,
-                    x: dx,
-                    y: dy
-                }));
-        }
+        onPinchEnd: adjustImage
     }, {
         drag: {
             from: ()=>[
@@ -27398,6 +27369,22 @@ function SelectionWindow({ children , onCropChange , className , width , height 
             passive: false
         }
     });
+    function adjustImage() {
+        const newCrop = cropper;
+        const imgRect = imgWrapperRef.current.getBoundingClientRect();
+        const cropperRect = selectionRef.current.getBoundingClientRect();
+        const originalWidth = imgWrapperRef.current.clientWidth;
+        const widthOverhang = (imgRect.width - originalWidth) / 2;
+        if (cropperRect.left < imgRect.left) newCrop.x = widthOverhang + stateRef.current.crop.left;
+        else if (cropperRect.right > imgRect.right) newCrop.x = -(imgRect.width - cropperRect.width / 2) + widthOverhang - -cropperRect.width;
+        if (cropperRect.top < imgRect.top) newCrop.y = widthOverhang + stateRef.current.crop.top;
+        else if (cropperRect.bottom > imgRect.bottom) newCrop.y = -(imgRect.height - cropperRect.height / 2) + widthOverhang - -cropperRect.height;
+        setCropper(newCrop);
+        imgWrapperRef.current.style.left = px(cropper.x);
+        imgWrapperRef.current.style.right = px(cropper.x);
+        imgWrapperRef.current.style.top = px(cropper.y);
+        imgWrapperRef.current.style.bottom = px(cropper.y);
+    }
     (0, _reactDefault.default).useEffect(()=>{
         if (!node) return;
         node.addEventListener("touchmove", touchMoveEvent);
@@ -27433,12 +27420,12 @@ function SelectionWindow({ children , onCropChange , className , width , height 
             children
         }, void 0, false, {
             fileName: "src/SelectionWindow.js",
-            lineNumber: 180,
+            lineNumber: 166,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "src/SelectionWindow.js",
-        lineNumber: 179,
+        lineNumber: 165,
         columnNumber: 5
     }, this);
     function handleCropChange(crop) {
@@ -27665,7 +27652,7 @@ $RefreshReg$(_c, "SelectionWindow");
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","@react-hook/size":"3K4FR","./SelectionWindow.module.css":"7dbn6","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru","@use-gesture/react":"gVqEQ"}],"3K4FR":[function(require,module,exports) {
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","@react-hook/size":"3K4FR","@use-gesture/react":"gVqEQ","./SelectionWindow.module.css":"7dbn6","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"3K4FR":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _react = require("react");
@@ -28490,131 +28477,7 @@ const useLatest = (current)=>{
 };
 exports.default = useLatest;
 
-},{"react":"21dqq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7dbn6":[function(require,module,exports) {
-module.exports["selection"] = `wAMUBW_selection`;
-module.exports["component"] = `wAMUBW_component`;
-
-},{}],"km3Ru":[function(require,module,exports) {
-"use strict";
-var Refresh = require("react-refresh/runtime");
-function debounce(func, delay) {
-    var args;
-    var timeout = undefined;
-    return function(args) {
-        clearTimeout(timeout);
-        timeout = setTimeout(function() {
-            timeout = undefined;
-            func.call(null, args);
-        }, delay);
-    };
-}
-var enqueueUpdate = debounce(function() {
-    Refresh.performReactRefresh();
-}, 30); // Everthing below is either adapted or copied from
-// https://github.com/facebook/metro/blob/61de16bd1edd7e738dd0311c89555a644023ab2d/packages/metro/src/lib/polyfills/require.js
-// MIT License - Copyright (c) Facebook, Inc. and its affiliates.
-module.exports.prelude = function(module1) {
-    window.$RefreshReg$ = function(type, id) {
-        Refresh.register(type, module1.id + " " + id);
-    };
-    window.$RefreshSig$ = Refresh.createSignatureFunctionForTransform;
-};
-module.exports.postlude = function(module1) {
-    if (isReactRefreshBoundary(module1.exports)) {
-        registerExportsForReactRefresh(module1);
-        if (module1.hot) {
-            module1.hot.dispose(function(data) {
-                if (Refresh.hasUnrecoverableErrors()) window.location.reload();
-                data.prevExports = module1.exports;
-            });
-            module1.hot.accept(function(getParents) {
-                var prevExports = module1.hot.data.prevExports;
-                var nextExports = module1.exports; // Since we just executed the code for it, it's possible
-                // that the new exports make it ineligible for being a boundary.
-                var isNoLongerABoundary = !isReactRefreshBoundary(nextExports); // It can also become ineligible if its exports are incompatible
-                // with the previous exports.
-                // For example, if you add/remove/change exports, we'll want
-                // to re-execute the importing modules, and force those components
-                // to re-render. Similarly, if you convert a class component
-                // to a function, we want to invalidate the boundary.
-                var didInvalidate = shouldInvalidateReactRefreshBoundary(prevExports, nextExports);
-                if (isNoLongerABoundary || didInvalidate) {
-                    // We'll be conservative. The only case in which we won't do a full
-                    // reload is if all parent modules are also refresh boundaries.
-                    // In that case we'll add them to the current queue.
-                    var parents = getParents();
-                    if (parents.length === 0) {
-                        // Looks like we bubbled to the root. Can't recover from that.
-                        window.location.reload();
-                        return;
-                    }
-                    return parents;
-                }
-                enqueueUpdate();
-            });
-        }
-    }
-};
-function isReactRefreshBoundary(exports) {
-    if (Refresh.isLikelyComponentType(exports)) return true;
-    if (exports == null || typeof exports !== "object") // Exit if we can't iterate over exports.
-    return false;
-    var hasExports = false;
-    var areAllExportsComponents = true;
-    let isESM = "__esModule" in exports;
-    for(var key in exports){
-        hasExports = true;
-        if (key === "__esModule") continue;
-        var desc = Object.getOwnPropertyDescriptor(exports, key);
-        if (desc && desc.get && !isESM) // Don't invoke getters for CJS as they may have side effects.
-        return false;
-        var exportValue = exports[key];
-        if (!Refresh.isLikelyComponentType(exportValue)) areAllExportsComponents = false;
-    }
-    return hasExports && areAllExportsComponents;
-}
-function shouldInvalidateReactRefreshBoundary(prevExports, nextExports) {
-    var prevSignature = getRefreshBoundarySignature(prevExports);
-    var nextSignature = getRefreshBoundarySignature(nextExports);
-    if (prevSignature.length !== nextSignature.length) return true;
-    for(var i = 0; i < nextSignature.length; i++){
-        if (prevSignature[i] !== nextSignature[i]) return true;
-    }
-    return false;
-} // When this signature changes, it's unsafe to stop at this refresh boundary.
-function getRefreshBoundarySignature(exports) {
-    var signature = [];
-    signature.push(Refresh.getFamilyByType(exports));
-    if (exports == null || typeof exports !== "object") // Exit if we can't iterate over exports.
-    // (This is important for legacy environments.)
-    return signature;
-    let isESM = "__esModule" in exports;
-    for(var key in exports){
-        if (key === "__esModule") continue;
-        var desc = Object.getOwnPropertyDescriptor(exports, key);
-        if (desc && desc.get && !isESM) continue;
-        var exportValue = exports[key];
-        signature.push(key);
-        signature.push(Refresh.getFamilyByType(exportValue));
-    }
-    return signature;
-}
-function registerExportsForReactRefresh(module1) {
-    var exports = module1.exports, id = module1.id;
-    Refresh.register(exports, id + " %exports%");
-    if (exports == null || typeof exports !== "object") // Exit if we can't iterate over exports.
-    // (This is important for legacy environments.)
-    return;
-    let isESM = "__esModule" in exports;
-    for(var key in exports){
-        var desc = Object.getOwnPropertyDescriptor(exports, key);
-        if (desc && desc.get && !isESM) continue;
-        var exportValue = exports[key];
-        Refresh.register(exportValue, id + " %exports% " + key);
-    }
-}
-
-},{"react-refresh/runtime":"786KC"}],"gVqEQ":[function(require,module,exports) {
+},{"react":"21dqq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gVqEQ":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "createUseGesture", ()=>createUseGesture);
@@ -30557,6 +30420,130 @@ var _mathsB28D9B98EsmJs = require("../../dist/maths-b28d9b98.esm.js");
 
 },{"../../dist/maths-b28d9b98.esm.js":"iBQ8u","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"4a9W9":[function(require,module,exports) {
 
-},{}]},["1xC6H","ShInH","8lqZg"], "8lqZg", "parcelRequire0a95")
+},{}],"7dbn6":[function(require,module,exports) {
+module.exports["component"] = `wAMUBW_component`;
+module.exports["selection"] = `wAMUBW_selection`;
+
+},{}],"km3Ru":[function(require,module,exports) {
+"use strict";
+var Refresh = require("react-refresh/runtime");
+function debounce(func, delay) {
+    var args;
+    var timeout = undefined;
+    return function(args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(function() {
+            timeout = undefined;
+            func.call(null, args);
+        }, delay);
+    };
+}
+var enqueueUpdate = debounce(function() {
+    Refresh.performReactRefresh();
+}, 30); // Everthing below is either adapted or copied from
+// https://github.com/facebook/metro/blob/61de16bd1edd7e738dd0311c89555a644023ab2d/packages/metro/src/lib/polyfills/require.js
+// MIT License - Copyright (c) Facebook, Inc. and its affiliates.
+module.exports.prelude = function(module1) {
+    window.$RefreshReg$ = function(type, id) {
+        Refresh.register(type, module1.id + " " + id);
+    };
+    window.$RefreshSig$ = Refresh.createSignatureFunctionForTransform;
+};
+module.exports.postlude = function(module1) {
+    if (isReactRefreshBoundary(module1.exports)) {
+        registerExportsForReactRefresh(module1);
+        if (module1.hot) {
+            module1.hot.dispose(function(data) {
+                if (Refresh.hasUnrecoverableErrors()) window.location.reload();
+                data.prevExports = module1.exports;
+            });
+            module1.hot.accept(function(getParents) {
+                var prevExports = module1.hot.data.prevExports;
+                var nextExports = module1.exports; // Since we just executed the code for it, it's possible
+                // that the new exports make it ineligible for being a boundary.
+                var isNoLongerABoundary = !isReactRefreshBoundary(nextExports); // It can also become ineligible if its exports are incompatible
+                // with the previous exports.
+                // For example, if you add/remove/change exports, we'll want
+                // to re-execute the importing modules, and force those components
+                // to re-render. Similarly, if you convert a class component
+                // to a function, we want to invalidate the boundary.
+                var didInvalidate = shouldInvalidateReactRefreshBoundary(prevExports, nextExports);
+                if (isNoLongerABoundary || didInvalidate) {
+                    // We'll be conservative. The only case in which we won't do a full
+                    // reload is if all parent modules are also refresh boundaries.
+                    // In that case we'll add them to the current queue.
+                    var parents = getParents();
+                    if (parents.length === 0) {
+                        // Looks like we bubbled to the root. Can't recover from that.
+                        window.location.reload();
+                        return;
+                    }
+                    return parents;
+                }
+                enqueueUpdate();
+            });
+        }
+    }
+};
+function isReactRefreshBoundary(exports) {
+    if (Refresh.isLikelyComponentType(exports)) return true;
+    if (exports == null || typeof exports !== "object") // Exit if we can't iterate over exports.
+    return false;
+    var hasExports = false;
+    var areAllExportsComponents = true;
+    let isESM = "__esModule" in exports;
+    for(var key in exports){
+        hasExports = true;
+        if (key === "__esModule") continue;
+        var desc = Object.getOwnPropertyDescriptor(exports, key);
+        if (desc && desc.get && !isESM) // Don't invoke getters for CJS as they may have side effects.
+        return false;
+        var exportValue = exports[key];
+        if (!Refresh.isLikelyComponentType(exportValue)) areAllExportsComponents = false;
+    }
+    return hasExports && areAllExportsComponents;
+}
+function shouldInvalidateReactRefreshBoundary(prevExports, nextExports) {
+    var prevSignature = getRefreshBoundarySignature(prevExports);
+    var nextSignature = getRefreshBoundarySignature(nextExports);
+    if (prevSignature.length !== nextSignature.length) return true;
+    for(var i = 0; i < nextSignature.length; i++){
+        if (prevSignature[i] !== nextSignature[i]) return true;
+    }
+    return false;
+} // When this signature changes, it's unsafe to stop at this refresh boundary.
+function getRefreshBoundarySignature(exports) {
+    var signature = [];
+    signature.push(Refresh.getFamilyByType(exports));
+    if (exports == null || typeof exports !== "object") // Exit if we can't iterate over exports.
+    // (This is important for legacy environments.)
+    return signature;
+    let isESM = "__esModule" in exports;
+    for(var key in exports){
+        if (key === "__esModule") continue;
+        var desc = Object.getOwnPropertyDescriptor(exports, key);
+        if (desc && desc.get && !isESM) continue;
+        var exportValue = exports[key];
+        signature.push(key);
+        signature.push(Refresh.getFamilyByType(exportValue));
+    }
+    return signature;
+}
+function registerExportsForReactRefresh(module1) {
+    var exports = module1.exports, id = module1.id;
+    Refresh.register(exports, id + " %exports%");
+    if (exports == null || typeof exports !== "object") // Exit if we can't iterate over exports.
+    // (This is important for legacy environments.)
+    return;
+    let isESM = "__esModule" in exports;
+    for(var key in exports){
+        var desc = Object.getOwnPropertyDescriptor(exports, key);
+        if (desc && desc.get && !isESM) continue;
+        var exportValue = exports[key];
+        Refresh.register(exportValue, id + " %exports% " + key);
+    }
+}
+
+},{"react-refresh/runtime":"786KC"}]},["1xC6H","ShInH","8lqZg"], "8lqZg", "parcelRequire0a95")
 
 //# sourceMappingURL=index.975ef6c8.js.map
