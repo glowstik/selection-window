@@ -6,7 +6,6 @@ import styles from './SelectionWindow.module.css'
 export function SelectionWindow({
   children,
   onCropChange,
-  imageContainer,
   className = undefined,
   width = undefined,
   height = undefined,
@@ -142,6 +141,7 @@ export function SelectionWindow({
   )
 
   const crop = stateRef.current.crop
+  const imageContainer = imgWrapperRef.current
 
   return (
     <div ref={setNode} className={cx(className, styles.component)} style={{ width: px(width), height: px(height) }}>
@@ -157,6 +157,7 @@ export function SelectionWindow({
           touchAction: 'none'
         }}
         {...{ children }}
+        {...imageContainer}
       />
     </div>
   )
@@ -167,7 +168,7 @@ export function SelectionWindow({
 
     const imgWrapper = document.getElementById('imageWrapper')
     imgWrapperRef.current = imgWrapper
-    imageContainer(imgWrapperRef.current)
+    // imageContainer(imgWrapperRef.current)
     Object.assign(
       selectionRef.current.style,
       {
