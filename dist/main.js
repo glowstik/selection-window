@@ -18,12 +18,12 @@ $parcel$export(module.exports, "SelectionWindow", () => $0d16028b28e5283f$export
 
 var $5d4abfe7f70a3dcc$exports = {};
 
-$parcel$export($5d4abfe7f70a3dcc$exports, "component", () => $5d4abfe7f70a3dcc$export$d8556a2a8f973135, (v) => $5d4abfe7f70a3dcc$export$d8556a2a8f973135 = v);
 $parcel$export($5d4abfe7f70a3dcc$exports, "selection", () => $5d4abfe7f70a3dcc$export$7c69810f7b8835c9, (v) => $5d4abfe7f70a3dcc$export$7c69810f7b8835c9 = v);
-var $5d4abfe7f70a3dcc$export$d8556a2a8f973135;
+$parcel$export($5d4abfe7f70a3dcc$exports, "component", () => $5d4abfe7f70a3dcc$export$d8556a2a8f973135, (v) => $5d4abfe7f70a3dcc$export$d8556a2a8f973135 = v);
 var $5d4abfe7f70a3dcc$export$7c69810f7b8835c9;
-$5d4abfe7f70a3dcc$export$d8556a2a8f973135 = `wAMUBW_component`;
+var $5d4abfe7f70a3dcc$export$d8556a2a8f973135;
 $5d4abfe7f70a3dcc$export$7c69810f7b8835c9 = `wAMUBW_selection`;
+$5d4abfe7f70a3dcc$export$d8556a2a8f973135 = `wAMUBW_component`;
 
 
 function $0d16028b28e5283f$export$c2644827bcb91f96({ children: children , onCropChange: onCropChange , className: className , width: width , height: height , mouseThreshold: mouseThreshold = 20 , touchThreshold: touchThreshold = 45  }) {
@@ -159,7 +159,9 @@ function $0d16028b28e5283f$export$c2644827bcb91f96({ children: children , onCrop
                 height: $0d16028b28e5283f$var$px((crop?.bottom ?? 0) - (crop?.top ?? 0)),
                 touchAction: "none"
             },
-            imgContainer: imgWrapperRef.current,
+            imgContainer: (container)=>{
+                imgWrapperRef.current = container;
+            },
             children: children
         })
     });

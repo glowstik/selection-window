@@ -155,7 +155,7 @@ export function SelectionWindow({
           height: px((crop?.bottom ?? 0) - (crop?.top ?? 0)),
           touchAction: 'none'
         }}
-        imgContainer={imgWrapperRef.current}
+        imgContainer={container => {imgWrapperRef.current = container}}
         {...{ children }}
       />
     </div>
