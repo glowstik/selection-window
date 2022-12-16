@@ -10,7 +10,7 @@ export function SelectionWindow({
   width = undefined,
   height = undefined,
   mouseThreshold = 20,
-  touchThreshold = 45 
+  touchThreshold = 45
 }) {
   const [node, setNode] = React.useState(null)
   const selectionRef = React.useRef(null)
@@ -155,6 +155,7 @@ export function SelectionWindow({
           height: px((crop?.bottom ?? 0) - (crop?.top ?? 0)),
           touchAction: 'none'
         }}
+        imgContainer={imgWrapperRef.current}
         {...{ children }}
       />
     </div>

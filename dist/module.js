@@ -157,6 +157,7 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , onCrop
                 height: $7c8ba892eba51f50$var$px((crop?.bottom ?? 0) - (crop?.top ?? 0)),
                 touchAction: "none"
             },
+            imgContainer: imgWrapperRef.current,
             children: children
         })
     });

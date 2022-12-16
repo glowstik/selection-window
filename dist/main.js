@@ -159,6 +159,7 @@ function $0d16028b28e5283f$export$c2644827bcb91f96({ children: children , onCrop
                 height: $0d16028b28e5283f$var$px((crop?.bottom ?? 0) - (crop?.top ?? 0)),
                 touchAction: "none"
             },
+            imgContainer: imgWrapperRef.current,
             children: children
         })
     });
