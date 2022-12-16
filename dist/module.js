@@ -24,7 +24,7 @@ $ee54bb37bacb2026$export$d8556a2a8f973135 = `wAMUBW_component`;
 $ee54bb37bacb2026$export$7c69810f7b8835c9 = `wAMUBW_selection`;
 
 
-function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , onCropChange: onCropChange , className: className , width: width , height: height , mouseThreshold: mouseThreshold = 20 , touchThreshold: touchThreshold = 45  }) {
+function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , onCropChange: onCropChange , imageContainer: imageContainer , className: className , width: width , height: height , mouseThreshold: mouseThreshold = 20 , touchThreshold: touchThreshold = 45 ,  }) {
     const [node, setNode] = (0, $2WDAj$react).useState(null);
     const selectionRef = (0, $2WDAj$react).useRef(null);
     const stateRef = (0, $2WDAj$react).useRef({
@@ -157,9 +157,6 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , onCrop
                 height: $7c8ba892eba51f50$var$px((crop?.bottom ?? 0) - (crop?.top ?? 0)),
                 touchAction: "none"
             },
-            imgContainer: (container)=>{
-                imgWrapperRef.current = container;
-            },
             children: children
         })
     });
@@ -168,8 +165,7 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , onCrop
         onCropChange(stateRef.current.crop);
         const imgWrapper = document.getElementById("imageWrapper");
         imgWrapperRef.current = imgWrapper;
-        // imgWrapperRef.current.cropWrapper = updateSizes(crop)
-        // console.log(imgWrapperRef.current)
+        imageContainer(imgWrapperRef.current);
         Object.assign(selectionRef.current.style, {
             left: $7c8ba892eba51f50$var$px(crop?.left ?? 0),
             top: $7c8ba892eba51f50$var$px(crop?.top ?? 0),

@@ -6,11 +6,12 @@ import styles from './SelectionWindow.module.css'
 export function SelectionWindow({
   children,
   onCropChange,
+  imageContainer,
   className = undefined,
   width = undefined,
   height = undefined,
   mouseThreshold = 20,
-  touchThreshold = 45
+  touchThreshold = 45,
 }) {
   const [node, setNode] = React.useState(null)
   const selectionRef = React.useRef(null)
@@ -155,7 +156,6 @@ export function SelectionWindow({
           height: px((crop?.bottom ?? 0) - (crop?.top ?? 0)),
           touchAction: 'none'
         }}
-        imgContainer={container => {imgWrapperRef.current = container}}
         {...{ children }}
       />
     </div>
@@ -167,8 +167,7 @@ export function SelectionWindow({
 
     const imgWrapper = document.getElementById('imageWrapper')
     imgWrapperRef.current = imgWrapper
-    // imgWrapperRef.current.cropWrapper = updateSizes(crop)
-    // console.log(imgWrapperRef.current)
+    imageContainer(imgWrapperRef.current)
     Object.assign(
       selectionRef.current.style,
       {
