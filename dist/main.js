@@ -147,29 +147,37 @@ function $0d16028b28e5283f$export$c2644827bcb91f96({ children: children , onCrop
         node
     ]);
     const crop = stateRef.current.crop;
-    return /*#__PURE__*/ (0, $dSH8u$reactjsxruntime.jsx)("div", {
-        ref: setNode,
-        className: $0d16028b28e5283f$var$cx(className, (0, (/*@__PURE__*/$parcel$interopDefault($5d4abfe7f70a3dcc$exports))).component),
-        style: {
-            width: $0d16028b28e5283f$var$px(width),
-            height: $0d16028b28e5283f$var$px(height)
-        },
-        children: /*#__PURE__*/ (0, $dSH8u$reactjsxruntime.jsx)("div", {
-            ref: selectionRef,
-            className: (0, (/*@__PURE__*/$parcel$interopDefault($5d4abfe7f70a3dcc$exports))).selection,
-            style: {
-                position: "absolute",
-                left: $0d16028b28e5283f$var$px(crop?.left ?? 0),
-                top: $0d16028b28e5283f$var$px(crop?.top ?? 0),
-                width: $0d16028b28e5283f$var$px((crop?.right ?? 0) - (crop?.left ?? 0)),
-                height: $0d16028b28e5283f$var$px((crop?.bottom ?? 0) - (crop?.top ?? 0)),
-                touchAction: "none"
-            },
-            children: children,
-            imageContainer: (image)=>{
-                imgWrapperRef1.current = image;
-            }
-        })
+    const imageContainer = imgWrapperRef1;
+    return /*#__PURE__*/ (0, $dSH8u$reactjsxruntime.jsxs)((0, $dSH8u$reactjsxruntime.Fragment), {
+        children: [
+            /*#__PURE__*/ (0, $dSH8u$reactjsxruntime.jsx)("div", {
+                ref: imageContainer
+            }),
+            /*#__PURE__*/ (0, $dSH8u$reactjsxruntime.jsx)("div", {
+                ref: setNode,
+                className: $0d16028b28e5283f$var$cx(className, (0, (/*@__PURE__*/$parcel$interopDefault($5d4abfe7f70a3dcc$exports))).component),
+                style: {
+                    width: $0d16028b28e5283f$var$px(width),
+                    height: $0d16028b28e5283f$var$px(height)
+                },
+                children: /*#__PURE__*/ (0, $dSH8u$reactjsxruntime.jsx)("div", {
+                    ref: selectionRef,
+                    className: (0, (/*@__PURE__*/$parcel$interopDefault($5d4abfe7f70a3dcc$exports))).selection,
+                    style: {
+                        position: "absolute",
+                        left: $0d16028b28e5283f$var$px(crop?.left ?? 0),
+                        top: $0d16028b28e5283f$var$px(crop?.top ?? 0),
+                        width: $0d16028b28e5283f$var$px((crop?.right ?? 0) - (crop?.left ?? 0)),
+                        height: $0d16028b28e5283f$var$px((crop?.bottom ?? 0) - (crop?.top ?? 0)),
+                        touchAction: "none"
+                    },
+                    children: children,
+                    imageContainer: (image)=>{
+                        imgWrapperRef1.current = image;
+                    }
+                })
+            })
+        ]
     });
     function handleCropChange(crop) {
         stateRef.current.crop = updateSizes(crop);

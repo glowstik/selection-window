@@ -141,8 +141,11 @@ export function SelectionWindow({
   )
 
   const crop = stateRef.current.crop
+  const imageContainer = imgWrapperRef
 
   return (
+    <>
+    <div ref={imageContainer} />
     <div ref={setNode} className={cx(className, styles.component)} style={{ width: px(width), height: px(height) }}>
       <div
         ref={selectionRef}
@@ -156,9 +159,9 @@ export function SelectionWindow({
           touchAction: 'none'
         }}
         {...{ children }}
-        imageContainer={image => { imgWrapperRef.current = image }}
-      />
+        imageContainer={image => { imgWrapperRef.current = image } } />
     </div>
+    </>
   )
 
   function handleCropChange(crop) {
