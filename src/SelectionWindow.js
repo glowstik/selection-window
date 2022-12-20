@@ -1,26 +1,27 @@
 import React from "react"
+import {forwardRef} from "react"
 import useSize from "@react-hook/size"
 import {createUseGesture, dragAction, pinchAction} from '@use-gesture/react'
 import styles from './SelectionWindow.module.css'
 
-export function SelectionWindow({
+function SelectionWindow({
   children,
   onCropChange,
   className = undefined,
   width = undefined,
   height = undefined,
   mouseThreshold = 20,
-  touchThreshold = 45,
-}) {
+  touchThreshold = 45 
+}, imgWrapperRef) {
   const [node, setNode] = React.useState(null)
   const selectionRef = React.useRef(null)
-  const stateRef = React.useRef({ 
+  const stateRef = React.useRef({
     crop: null,
     dragging: false,
     pointers: new Map(),
     edges: []
   })
-  const imgWrapperRef = React.useRef()
+  const imgPointerRef = React.useRef(null)
   const [cropper, setCropper] = React.useState({scale: 1, x: 0, y: 0})
   const [zooming, setZooming] = React.useState(false)
   const [containerWidth, containerHeight] = useSize(node)
@@ -141,11 +142,8 @@ export function SelectionWindow({
   )
 
   const crop = stateRef.current.crop
-  const imageContainer = imgWrapperRef
 
   return (
-    <>
-    <div ref={imageContainer} />
     <div ref={setNode} className={cx(className, styles.component)} style={{ width: px(width), height: px(height) }}>
       <div
         ref={selectionRef}
@@ -159,18 +157,19 @@ export function SelectionWindow({
           touchAction: 'none'
         }}
         {...{ children }}
-        imageContainer={image => { imgWrapperRef.current = image } } />
+      />
     </div>
-    </>
   )
 
   function handleCropChange(crop) {
     stateRef.current.crop = updateSizes(crop)
     onCropChange(stateRef.current.crop)
+    imgPointerRef = imgWrapperRef.current
 
-    const imgWrapper = document.getElementById('imageWrapper')
-    imgWrapperRef.current = imgWrapper
-    // imageContainer(imgWrapperRef.current)
+    // const imgWrapper = document.getElementById('imageWrapper')
+    // imgWrapperRef.current = imgWrapper
+    // imgWrapperRef.current.cropWrapper = updateSizes(crop)
+    // console.log(imgWrapperRef.current)
     Object.assign(
       selectionRef.current.style,
       {
@@ -361,7 +360,7 @@ export function SelectionWindow({
   }
 }
 
-export default imgWrapperRef.current
+export default forwardRef(SelectionWindow)
 
 function px(n) {
   return (typeof n === 'number' || typeof n === 'string')

@@ -1,6 +1,6 @@
 import "./main.css";
-import {jsxs as $2WDAj$jsxs, Fragment as $2WDAj$Fragment, jsx as $2WDAj$jsx} from "react/jsx-runtime";
-import $2WDAj$react from "react";
+import {jsx as $2WDAj$jsx} from "react/jsx-runtime";
+import $2WDAj$react, {forwardRef as $2WDAj$forwardRef} from "react";
 import $2WDAj$reacthooksize from "@react-hook/size";
 import {createUseGesture as $2WDAj$createUseGesture, dragAction as $2WDAj$dragAction, pinchAction as $2WDAj$pinchAction} from "@use-gesture/react";
 
@@ -10,6 +10,7 @@ function $parcel$interopDefault(a) {
 function $parcel$export(e, n, v, s) {
   Object.defineProperty(e, n, {get: v, set: s, enumerable: true, configurable: true});
 }
+
 
 
 
@@ -24,7 +25,7 @@ $ee54bb37bacb2026$export$d8556a2a8f973135 = `wAMUBW_component`;
 $ee54bb37bacb2026$export$7c69810f7b8835c9 = `wAMUBW_selection`;
 
 
-function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , onCropChange: onCropChange , className: className , width: width , height: height , mouseThreshold: mouseThreshold = 20 , touchThreshold: touchThreshold = 45 ,  }) {
+function $7c8ba892eba51f50$var$SelectionWindow({ children: children , onCropChange: onCropChange , className: className , width: width , height: height , mouseThreshold: mouseThreshold = 20 , touchThreshold: touchThreshold = 45  }, imgWrapperRef) {
     const [node, setNode] = (0, $2WDAj$react).useState(null);
     const selectionRef = (0, $2WDAj$react).useRef(null);
     const stateRef = (0, $2WDAj$react).useRef({
@@ -33,7 +34,7 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , onCrop
         pointers: new Map(),
         edges: []
     });
-    const imgWrapperRef1 = (0, $2WDAj$react).useRef();
+    const imgPointerRef = (0, $2WDAj$react).useRef(null);
     const [cropper, setCropper] = (0, $2WDAj$react).useState({
         scale: 1,
         x: 0,
@@ -62,8 +63,8 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , onCrop
     ]);
     useGesture({
         onDrag: ({ offset: [dx, dy]  })=>{
-            imgWrapperRef1.current.style.top = $7c8ba892eba51f50$var$px(cropper.y);
-            imgWrapperRef1.current.style.left = $7c8ba892eba51f50$var$px(cropper.x);
+            imgWrapperRef.current.style.top = $7c8ba892eba51f50$var$px(cropper.y);
+            imgWrapperRef.current.style.left = $7c8ba892eba51f50$var$px(cropper.x);
             if (!stateRef.current.edges.length) !zooming && setCropper((crop)=>({
                     ...crop,
                     x: dx,
@@ -77,9 +78,9 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , onCrop
                 cropper: cropper
             };
             setZooming(true);
-            imgWrapperRef1.current.style.transform = `scale(${cropper.scale})`;
-            imgWrapperRef1.current.style.top = $7c8ba892eba51f50$var$px(cropper.y);
-            imgWrapperRef1.current.style.left = $7c8ba892eba51f50$var$px(cropper.x);
+            imgWrapperRef.current.style.transform = `scale(${cropper.scale})`;
+            imgWrapperRef.current.style.top = $7c8ba892eba51f50$var$px(cropper.y);
+            imgWrapperRef.current.style.left = $7c8ba892eba51f50$var$px(cropper.x);
             const imgOriginX = memo.bounds.x + memo.bounds.width / 2;
             const imgOriginY = memo.bounds.y + memo.bounds.height / 2;
             const displacementX = (imgOriginX - originX) / memo.cropper.scale;
@@ -113,19 +114,19 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , onCrop
     function adjustImage() {
         setZooming(false);
         const newCrop = cropper;
-        const imgRect = imgWrapperRef1.current.getBoundingClientRect();
+        const imgRect = imgWrapperRef.current.getBoundingClientRect();
         const cropperRect = selectionRef.current.getBoundingClientRect();
-        const originalWidth = imgWrapperRef1.current.clientWidth;
+        const originalWidth = imgWrapperRef.current.clientWidth;
         const widthOverhang = (imgRect.width - originalWidth) / 2;
         if (cropperRect.left < imgRect.left) newCrop.x = widthOverhang + stateRef.current.crop.left;
         else if (cropperRect.right > imgRect.right) newCrop.x = -(imgRect.width - cropperRect.width / 2) + widthOverhang - -cropperRect.width;
         if (cropperRect.top < imgRect.top) newCrop.y = widthOverhang + stateRef.current.crop.top;
         else if (cropperRect.bottom > imgRect.bottom) newCrop.y = -(imgRect.height - cropperRect.height / 2) + widthOverhang - -cropperRect.height;
         setCropper(newCrop);
-        imgWrapperRef1.current.style.left = $7c8ba892eba51f50$var$px(cropper.x);
-        imgWrapperRef1.current.style.right = $7c8ba892eba51f50$var$px(cropper.x);
-        imgWrapperRef1.current.style.top = $7c8ba892eba51f50$var$px(cropper.y);
-        imgWrapperRef1.current.style.bottom = $7c8ba892eba51f50$var$px(cropper.y);
+        imgWrapperRef.current.style.left = $7c8ba892eba51f50$var$px(cropper.x);
+        imgWrapperRef.current.style.right = $7c8ba892eba51f50$var$px(cropper.x);
+        imgWrapperRef.current.style.top = $7c8ba892eba51f50$var$px(cropper.y);
+        imgWrapperRef.current.style.bottom = $7c8ba892eba51f50$var$px(cropper.y);
     }
     (0, $2WDAj$react).useEffect(()=>{
         if (!node) return;
@@ -139,44 +140,35 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , onCrop
         node
     ]);
     const crop = stateRef.current.crop;
-    const imageContainer = imgWrapperRef1;
-    return /*#__PURE__*/ (0, $2WDAj$jsxs)((0, $2WDAj$Fragment), {
-        children: [
-            /*#__PURE__*/ (0, $2WDAj$jsx)("div", {
-                ref: imageContainer
-            }),
-            /*#__PURE__*/ (0, $2WDAj$jsx)("div", {
-                ref: setNode,
-                className: $7c8ba892eba51f50$var$cx(className, (0, (/*@__PURE__*/$parcel$interopDefault($ee54bb37bacb2026$exports))).component),
-                style: {
-                    width: $7c8ba892eba51f50$var$px(width),
-                    height: $7c8ba892eba51f50$var$px(height)
-                },
-                children: /*#__PURE__*/ (0, $2WDAj$jsx)("div", {
-                    ref: selectionRef,
-                    className: (0, (/*@__PURE__*/$parcel$interopDefault($ee54bb37bacb2026$exports))).selection,
-                    style: {
-                        position: "absolute",
-                        left: $7c8ba892eba51f50$var$px(crop?.left ?? 0),
-                        top: $7c8ba892eba51f50$var$px(crop?.top ?? 0),
-                        width: $7c8ba892eba51f50$var$px((crop?.right ?? 0) - (crop?.left ?? 0)),
-                        height: $7c8ba892eba51f50$var$px((crop?.bottom ?? 0) - (crop?.top ?? 0)),
-                        touchAction: "none"
-                    },
-                    children: children,
-                    imageContainer: (image)=>{
-                        imgWrapperRef1.current = image;
-                    }
-                })
-            })
-        ]
+    return /*#__PURE__*/ (0, $2WDAj$jsx)("div", {
+        ref: setNode,
+        className: $7c8ba892eba51f50$var$cx(className, (0, (/*@__PURE__*/$parcel$interopDefault($ee54bb37bacb2026$exports))).component),
+        style: {
+            width: $7c8ba892eba51f50$var$px(width),
+            height: $7c8ba892eba51f50$var$px(height)
+        },
+        children: /*#__PURE__*/ (0, $2WDAj$jsx)("div", {
+            ref: selectionRef,
+            className: (0, (/*@__PURE__*/$parcel$interopDefault($ee54bb37bacb2026$exports))).selection,
+            style: {
+                position: "absolute",
+                left: $7c8ba892eba51f50$var$px(crop?.left ?? 0),
+                top: $7c8ba892eba51f50$var$px(crop?.top ?? 0),
+                width: $7c8ba892eba51f50$var$px((crop?.right ?? 0) - (crop?.left ?? 0)),
+                height: $7c8ba892eba51f50$var$px((crop?.bottom ?? 0) - (crop?.top ?? 0)),
+                touchAction: "none"
+            },
+            children: children
+        })
     });
     function handleCropChange(crop) {
         stateRef.current.crop = updateSizes(crop);
         onCropChange(stateRef.current.crop);
-        const imgWrapper = document.getElementById("imageWrapper");
-        imgWrapperRef1.current = imgWrapper;
-        // imageContainer(imgWrapperRef.current)
+        imgPointerRef = imgWrapperRef.current;
+        // const imgWrapper = document.getElementById('imageWrapper')
+        // imgWrapperRef.current = imgWrapper
+        // imgWrapperRef.current.cropWrapper = updateSizes(crop)
+        // console.log(imgWrapperRef.current)
         Object.assign(selectionRef.current.style, {
             left: $7c8ba892eba51f50$var$px(crop?.left ?? 0),
             top: $7c8ba892eba51f50$var$px(crop?.top ?? 0),
@@ -347,7 +339,7 @@ function $7c8ba892eba51f50$export$c2644827bcb91f96({ children: children , onCrop
         };
     }
 }
-var $7c8ba892eba51f50$export$2e2bcd8739ae039 = imgWrapperRef.current;
+var $7c8ba892eba51f50$export$2e2bcd8739ae039 = /*#__PURE__*/ (0, $2WDAj$forwardRef)($7c8ba892eba51f50$var$SelectionWindow);
 function $7c8ba892eba51f50$var$px(n) {
     return typeof n === "number" || typeof n === "string" ? n + "px" : n;
 }
@@ -377,5 +369,5 @@ function $7c8ba892eba51f50$var$useEvent(fn) {
 }
 
 
-export {$7c8ba892eba51f50$export$c2644827bcb91f96 as SelectionWindow, $7c8ba892eba51f50$export$2e2bcd8739ae039 as default};
+export {$7c8ba892eba51f50$export$2e2bcd8739ae039 as default};
 //# sourceMappingURL=module.js.map
