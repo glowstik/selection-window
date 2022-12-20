@@ -27093,32 +27093,36 @@ var _imageJpg = require("./image.jpg");
 var _imageJpgDefault = parcelHelpers.interopDefault(_imageJpg);
 var _appModuleCss = require("./App.module.css");
 var _selectionWindow = require("./SelectionWindow");
+var _selectionWindowDefault = parcelHelpers.interopDefault(_selectionWindow);
 var _s = $RefreshSig$();
 function App() {
     _s();
     const cropRectRef = (0, _reactDefault.default).useRef(null);
+    const imgWrapperRef = (0, _reactDefault.default).useRef(null);
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
         className: _appModuleCss.app,
         children: [
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                 id: "imageWrapper",
                 className: _appModuleCss.imageWrapper,
+                ref: imgWrapperRef,
                 children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("img", {
                     id: "img",
                     className: _appModuleCss.image,
                     src: (0, _imageJpgDefault.default)
                 }, void 0, false, {
                     fileName: "src/App.js",
-                    lineNumber: 12,
+                    lineNumber: 13,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "src/App.js",
-                lineNumber: 11,
+                lineNumber: 12,
                 columnNumber: 7
             }, this),
-            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _selectionWindow.SelectionWindow), {
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _selectionWindowDefault.default), {
                 className: _appModuleCss.window,
+                ref: imgWrapperRef,
                 onCropChange: (rect)=>{
                     cropRectRef.current = rect;
                 },
@@ -27132,7 +27136,7 @@ function App() {
                             ].join(" ")
                         }, void 0, false, {
                             fileName: "src/App.js",
-                            lineNumber: 19,
+                            lineNumber: 21,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -27142,7 +27146,7 @@ function App() {
                             ].join(" ")
                         }, void 0, false, {
                             fileName: "src/App.js",
-                            lineNumber: 20,
+                            lineNumber: 22,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -27152,7 +27156,7 @@ function App() {
                             ].join(" ")
                         }, void 0, false, {
                             fileName: "src/App.js",
-                            lineNumber: 21,
+                            lineNumber: 23,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -27162,29 +27166,29 @@ function App() {
                             ].join(" ")
                         }, void 0, false, {
                             fileName: "src/App.js",
-                            lineNumber: 22,
+                            lineNumber: 24,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "src/App.js",
-                    lineNumber: 18,
+                    lineNumber: 20,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "src/App.js",
-                lineNumber: 14,
+                lineNumber: 15,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "src/App.js",
-        lineNumber: 10,
+        lineNumber: 11,
         columnNumber: 5
     }, this);
 }
 exports.default = App;
-_s(App, "bgPGeNJ6B22OMXJA5NMp/BQXjio=");
+_s(App, "Nu6R7kssMRMQpzbK9R8CrqFqZd4=");
 _c = App;
 var _c;
 $RefreshReg$(_c, "App");
@@ -27232,17 +27236,17 @@ exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
 },{}],"c4nSm":[function(require,module,exports) {
+module.exports["bottomLeft"] = `gPMrEW_bottomLeft`;
+module.exports["strict"] = `gPMrEW_strict`;
+module.exports["app"] = `gPMrEW_app`;
+module.exports["window"] = `gPMrEW_window`;
+module.exports["selection"] = `gPMrEW_selection`;
 module.exports["handle"] = `gPMrEW_handle`;
 module.exports["imageWrapper"] = `gPMrEW_imageWrapper`;
-module.exports["selection"] = `gPMrEW_selection`;
-module.exports["window"] = `gPMrEW_window`;
 module.exports["image"] = `gPMrEW_image`;
 module.exports["topLeft"] = `gPMrEW_topLeft`;
-module.exports["bottomRight"] = `gPMrEW_bottomRight`;
-module.exports["bottomLeft"] = `gPMrEW_bottomLeft`;
-module.exports["app"] = `gPMrEW_app`;
-module.exports["strict"] = `gPMrEW_strict`;
 module.exports["topRight"] = `gPMrEW_topRight`;
+module.exports["bottomRight"] = `gPMrEW_bottomRight`;
 
 },{}],"crMHi":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$3990 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
@@ -27253,7 +27257,6 @@ $parcel$ReactRefreshHelpers$3990.prelude(module);
 try {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "SelectionWindow", ()=>SelectionWindow);
 var _jsxDevRuntime = require("react/jsx-dev-runtime");
 var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
@@ -27263,7 +27266,7 @@ var _react1 = require("@use-gesture/react");
 var _selectionWindowModuleCss = require("./SelectionWindow.module.css");
 var _selectionWindowModuleCssDefault = parcelHelpers.interopDefault(_selectionWindowModuleCss);
 var _s = $RefreshSig$(), _s1 = $RefreshSig$();
-function SelectionWindow({ children , onCropChange , className , width , height , mouseThreshold =20 , touchThreshold =45  }) {
+function SelectionWindow({ children , onCropChange , className , width , height , mouseThreshold =20 , touchThreshold =45  }, imgWrapperRef) {
     _s();
     const [node, setNode] = (0, _reactDefault.default).useState(null);
     const selectionRef = (0, _reactDefault.default).useRef(null);
@@ -27273,7 +27276,7 @@ function SelectionWindow({ children , onCropChange , className , width , height 
         pointers: new Map(),
         edges: []
     });
-    const imgWrapperRef = (0, _reactDefault.default).useRef();
+    // const imgWrapperRef = React.useRef()
     const [cropper, setCropper] = (0, _reactDefault.default).useState({
         scale: 1,
         x: 0,
@@ -27400,19 +27403,19 @@ function SelectionWindow({ children , onCropChange , className , width , height 
             children
         }, void 0, false, {
             fileName: "src/SelectionWindow.js",
-            lineNumber: 147,
+            lineNumber: 148,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "src/SelectionWindow.js",
-        lineNumber: 146,
+        lineNumber: 147,
         columnNumber: 5
     }, this);
     function handleCropChange(crop) {
         stateRef.current.crop = updateSizes(crop);
         onCropChange(stateRef.current.crop);
-        const imgWrapper = document.getElementById("imageWrapper");
-        imgWrapperRef.current = imgWrapper;
+        // const imgWrapper = document.getElementById('imageWrapper')
+        // imgWrapperRef.current = imgWrapper
         // imgWrapperRef.current.cropWrapper = updateSizes(crop)
         // console.log(imgWrapperRef.current)
         Object.assign(selectionRef.current.style, {
@@ -27585,7 +27588,7 @@ function SelectionWindow({ children , onCropChange , className , width , height 
         };
     }
 }
-_s(SelectionWindow, "HxiX9MzE+jnY24+I+Tyx55BUzCs=", true, function() {
+_s(SelectionWindow, "ViQqpbj91rJ+velpJRve4fhHv8w=", true, function() {
     return [
         (0, _sizeDefault.default),
         useEvent,
@@ -27595,6 +27598,7 @@ _s(SelectionWindow, "HxiX9MzE+jnY24+I+Tyx55BUzCs=", true, function() {
     ];
 });
 _c = SelectionWindow;
+exports.default = /*#__PURE__*/ _c1 = (0, _react.forwardRef)(SelectionWindow);
 function px(n) {
     return typeof n === "number" || typeof n === "string" ? n + "px" : n;
 }
@@ -27624,8 +27628,9 @@ function useEvent(fn) {
     return (0, _reactDefault.default).useCallback((...args)=>fnRef.current(...args), []);
 }
 _s1(useEvent, "3JC6J2EFGrN8k9AnAlJ6rLSfXuc=");
-var _c;
+var _c, _c1;
 $RefreshReg$(_c, "SelectionWindow");
+$RefreshReg$(_c1, "%default%");
 
   $parcel$ReactRefreshHelpers$3990.postlude(module);
 } finally {

@@ -1,9 +1,10 @@
 import React from "react"
+import {forwardRef} from "react"
 import useSize from "@react-hook/size"
 import {createUseGesture, dragAction, pinchAction} from '@use-gesture/react'
 import styles from './SelectionWindow.module.css'
 
-export function SelectionWindow({
+function SelectionWindow({
   children,
   onCropChange,
   className = undefined,
@@ -11,16 +12,16 @@ export function SelectionWindow({
   height = undefined,
   mouseThreshold = 20,
   touchThreshold = 45 
-}) {
+}, imgWrapperRef) {
   const [node, setNode] = React.useState(null)
   const selectionRef = React.useRef(null)
-  const stateRef = React.useRef({ 
+  const stateRef = React.useRef({
     crop: null,
     dragging: false,
     pointers: new Map(),
     edges: []
   })
-  const imgWrapperRef = React.useRef()
+  // const imgWrapperRef = React.useRef()
   const [cropper, setCropper] = React.useState({scale: 1, x: 0, y: 0})
   const [zooming, setZooming] = React.useState(false)
   const [containerWidth, containerHeight] = useSize(node)
@@ -164,8 +165,8 @@ export function SelectionWindow({
     stateRef.current.crop = updateSizes(crop)
     onCropChange(stateRef.current.crop)
 
-    const imgWrapper = document.getElementById('imageWrapper')
-    imgWrapperRef.current = imgWrapper
+    // const imgWrapper = document.getElementById('imageWrapper')
+    // imgWrapperRef.current = imgWrapper
     // imgWrapperRef.current.cropWrapper = updateSizes(crop)
     // console.log(imgWrapperRef.current)
     Object.assign(
@@ -357,6 +358,8 @@ export function SelectionWindow({
     }
   }
 }
+
+export default forwardRef(SelectionWindow)
 
 function px(n) {
   return (typeof n === 'number' || typeof n === 'string')
